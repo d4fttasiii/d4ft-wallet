@@ -45,15 +45,21 @@
     "lint": "ng lint"
   },
   "dependencies": {
+    "@angular/animations": "13.2.4",
+    "@angular/cdk": "13.3.0",
     "@angular/common": "13.2.4",
     "@angular/compiler": "13.2.4",
     "@angular/core": "13.2.4",
     "@angular/forms": "13.2.4",
     "@angular/language-service": "13.2.4",
+    "@angular/material": "13.3.0",
     "@angular/platform-browser": "13.2.4",
     "@angular/platform-browser-dynamic": "13.2.4",
     "@angular/router": "13.2.4",
+    "@polkadot/api": "7.13.1",
+    "@substrate/txwrapper-polkadot": "1.5.7",
     "rxjs": "7.5.0",
+    "stellar-sdk": "10.0.1",
     "tslib": "^2.1.0",
     "zone.js": "~0.11.4"
   },
