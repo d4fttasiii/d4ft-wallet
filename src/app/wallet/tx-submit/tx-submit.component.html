@@ -1,0 +1,42 @@
+<div class="content-card">
+    <mat-card>
+        <mat-card-title>Tx Submit</mat-card-title>
+        <mat-card-subtitle>Submit signed transaction to the network.</mat-card-subtitle>
+        <mat-card-content>
+            <form>
+                <mat-form-field class="input-full-width" appearance="fill">
+                    <mat-label>Blockchain</mat-label>
+                    <mat-select name="blockchain" (selectionChange)="setBlockchainClient($event)">
+                        <mat-option *ngFor="let blockchain of supportedBlockchains" [value]="blockchain">{{
+                            Blockchains[blockchain] }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div class="animate__animated animate__fadeIn" *ngIf="client">
+                    <mat-form-field class="input-full-width" appearance="fill">
+                        <mat-label>Signed transaction</mat-label>
+                        <textarea matInput rows="4" name="signedTx" [(ngModel)]="signedTx"></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="input-full-width ta-r">
+                    <button mat-raised-button (click)="submit()" color="primary">Submit</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+    <mat-card class="animate__animated animate__fadeIn result-card" *ngIf="txId">
+        <div class="result">
+            <div class="header">
+                <div>
+                    <strong>Transaction Id</strong>
+                </div>
+                <div>
+                    <button type="button" mat-icon-button [appCopyClipboard]="txId">
+                        <mat-icon fontSet="fa" fontIcon="fa-copy"></mat-icon>
+                    </button>
+                </div>
+            </div>
+            <em>{{ txId }}</em>
+        </div>
+    </mat-card>
+</div>

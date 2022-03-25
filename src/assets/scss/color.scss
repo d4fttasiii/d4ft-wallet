@@ -1,0 +1,29 @@
+$prm: #293559;
+$sec: #b7d6f2;
+$ter: #303741;
+
+$wht: #ffffff;
+$blk: #000000;
+$dgr: #ff003c;
+$wrn: #fdc700;
+$scs: #1ce11f;
+
+$color-list: (
+  prm: $prm,
+  sec: $sec,
+  ter: $ter,
+  wht: $wht,
+  blk: $blk,
+  dgr: $dgr,
+  scs: $scs,
+  wrn: $wrn,
+);
+
+@each $key, $val in $color-list {
+  .bg-#{$key} {
+    background-color: #{$val};
+  }
+  .clr-#{$key} {
+    color: #{$val};
+  }
+}

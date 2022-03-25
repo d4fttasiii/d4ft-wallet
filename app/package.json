@@ -1,6 +1,6 @@
 {
-  "name": "angular-electron",
-  "version": "10.5.0",
+  "name": "d4ft-wallet",
+  "version": "0.0.1",
   "main": "main.js",
   "private": true,
   "dependencies": {}

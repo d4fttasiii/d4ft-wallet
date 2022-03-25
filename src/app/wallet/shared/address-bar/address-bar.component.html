@@ -1,0 +1,13 @@
+<mat-form-field class="mg-b2 full-width" appearance="fill">
+    <mat-label>{{ label }}</mat-label>
+    <input matInput name="address" type="text" #address [formControl]="addressFormControl" required
+        (keyup)="onAddressChange(address.value)">
+    <mat-error *ngIf="addressFormControl.hasError('required')">
+        Address is required!
+    </mat-error>
+    <mat-error *ngIf="hasValidated && !isValid">
+        Address is invalid!
+    </mat-error>
+    <mat-hint align="start" *ngIf="isLoading">Loading... <i class="fa-solid fa-spinner fa-spin"></i></mat-hint>
+    <mat-hint align="start" *ngIf="!isLoading && hasValidated && isValid">Address is valid!</mat-hint>
+</mat-form-field>

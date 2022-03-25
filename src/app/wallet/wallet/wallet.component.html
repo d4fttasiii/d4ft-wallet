@@ -1,0 +1,35 @@
+<div class="content-card">
+    <mat-card>
+        <mat-card-title>Wallet</mat-card-title>
+        <mat-card-subtitle>Send token from your wallet to any existing wallet.</mat-card-subtitle>
+        <mat-card-content>
+            <form>
+                <mat-form-field class="input-full-width" appearance="fill">
+                    <mat-label>Blockchain</mat-label>
+                    <mat-select name="blockchain" required [(ngModel)]="selectedBlockchain">
+                        <mat-option *ngFor="let blockchain of supportedBlockchains" [value]="blockchain">{{
+                            Blockchains[blockchain] }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div class="animate__animated animate__fadeIn" *ngIf="selectedBlockchain">
+                    <mat-form-field class="input-full-width" appearance="fill">
+                        <mat-label>Transferring from</mat-label>
+                        <input matInput name="from" type="text" [(ngModel)]="from">
+                    </mat-form-field>
+                    <mat-form-field class="input-full-width" appearance="fill">
+                        <mat-label>Transferring to</mat-label>
+                        <input matInput name="to" type="text" [(ngModel)]="to">
+                    </mat-form-field>
+                    <mat-form-field class="input-full-width" appearance="fill">
+                        <mat-label>Amount</mat-label>
+                        <input matInput name="amount" type="number" [(ngModel)]="amount">
+                    </mat-form-field>
+                </div>
+            </form>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button>Send</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

@@ -1,3 +1,24 @@
-:host {
-  
+@import "../assets/scss/color.scss";
+
+mat-toolbar {
+  background: $prm;
+  color: $wht;
+}
+
+mat-sidenav {
+  width: 350px;
+  border-right: none;
+  background: $wht;
+  color: $prm;
+  padding: 16px;
+}
+
+mat-sidenav-container {
+  height: calc(100vh - 65px);
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
 }

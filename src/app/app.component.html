@@ -1,1 +1,17 @@
-<router-outlet></router-outlet>
+<mat-toolbar class="mat-elevation-z8">
+    <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon fontSet="fa" fontIcon="fa-bars"></mat-icon>
+    </button>
+    <strong class="mg-l2">D4FT Wallet</strong>
+</mat-toolbar>
+
+<mat-sidenav-container>
+    <mat-sidenav #sidenav="matSidenav" class="mat-elevation-z8">
+        <app-menu [items]="menuItems" (navigated)="sidenav.toggle()"></app-menu>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="container">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

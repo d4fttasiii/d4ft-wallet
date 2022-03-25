@@ -1,14 +1,21 @@
-import { Component } from '@angular/core';
-import { ElectronService } from './core/services';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
 import { TranslateService } from '@ngx-translate/core';
+
 import { APP_CONFIG } from '../environments/environment';
+import { MenuItem } from './core/models/menu-item';
+import { ElectronService } from './core/services';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit, OnInit {
+  @ViewChild(MatSidenav)
+  sidenav!: MatSidenav;
+  menuItems: MenuItem[];
+
   constructor(
     private electronService: ElectronService,
     private translate: TranslateService
@@ -24,5 +31,35 @@ export class AppComponent {
     } else {
       console.log('Run in browser');
     }
+  }
+
+  ngOnInit(): void {
+    this.menuItems = [
+      {
+        icon: 'fa-wallet',
+        label: 'Wallet',
+        route: '',
+      },
+      {
+        icon: 'fa-trowel-bricks',
+        label: 'Tx Builder',
+        route: 'tx-builder',
+      },
+      {
+        icon: 'fa-pen-to-square',
+        label: 'Tx Signer',
+        route: 'tx-signer',
+      },
+      {
+        icon: 'fa-paper-plane',
+        label: 'Tx Submit',
+        route: 'tx-submit',
+      },
+    ];
+  }
+
+  ngAfterViewInit(): void {
+    this.sidenav.mode = 'over';
+    this.sidenav.close();
   }
 }

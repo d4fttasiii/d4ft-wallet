@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -28,8 +28,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { PageNotFoundComponent } from './components/';
 import { WebviewDirective, CopyClipboardDirective } from './directives/';
+import { MenuComponent } from './components/menu/menu.component';
+import { MenuItemComponent } from './components/menu-item/menu-item.component';
 
 const MAT_MODULES = [
   MatIconModule,
@@ -62,8 +63,26 @@ const MAT_MODULES = [
 ];
 
 @NgModule({
-  declarations: [PageNotFoundComponent, WebviewDirective, CopyClipboardDirective],
-  imports: [CommonModule, TranslateModule, FormsModule, ...MAT_MODULES],
-  exports: [TranslateModule, WebviewDirective, FormsModule, ...MAT_MODULES],
+  declarations: [
+    WebviewDirective,
+    CopyClipboardDirective,
+    MenuComponent,
+    MenuItemComponent
+  ],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ...MAT_MODULES],
+  exports: [
+    TranslateModule,
+    WebviewDirective,
+    CopyClipboardDirective,
+    ReactiveFormsModule,
+    FormsModule,
+    ...MAT_MODULES,
+    MenuComponent
+  ],
 })
-export class SharedModule {}
+export class SharedModule { }

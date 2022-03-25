@@ -1,40 +1,35 @@
 import { Injectable } from '@angular/core';
-import {
-  Asset,
-  Keypair,
-  Networks,
-  Operation,
-  Server,
-  TransactionBuilder,
-} from 'stellar-sdk';
+import * as StellarSdk from 'stellar-sdk/dist/stellar-sdk.min.js';
 
 import { IBlockchainClient } from './blockchain-client';
+
+declare const StellarSdk: any;
 
 @Injectable({
   providedIn: 'root',
 })
 export class StellarService implements IBlockchainClient {
-  constructor() {}
+  constructor() { }
 
   async buildRawTx(from: string, to: string, amount: number): Promise<string> {
     const srv = this.getServer();
     const fromAccount = await srv.loadAccount(from);
-    const toAccount = Keypair.fromPublicKey(to);
-    const txBuilder = new TransactionBuilder(fromAccount);
+    const toAccount = StellarSdk.Keypair.fromPublicKey(to);
+    const txBuilder = new StellarSdk.TransactionBuilder(fromAccount, { fee: 1000 });
     const accountExists = await this.accountExists(to);
 
     if (accountExists) {
       txBuilder.addOperation(
-        Operation.payment({
+        StellarSdk.Operation.payment({
           amount: amount.toString(),
-          asset: Asset.native(),
+          asset: StellarSdk.Asset.native(),
           source: fromAccount.accountId(),
           destination: toAccount.publicKey(),
         })
       );
     } else {
       txBuilder.addOperation(
-        Operation.createAccount({
+        StellarSdk.Operation.createAccount({
           destination: toAccount.publicKey(),
           startingBalance: amount.toString(),
           source: fromAccount.accountId(),
@@ -42,12 +37,16 @@ export class StellarService implements IBlockchainClient {
       );
     }
 
-    return txBuilder.build().toXDR();
+    return txBuilder
+      .setTimeout(StellarSdk.TimeoutInfinite)
+      .setNetworkPassphrase(StellarSdk.Networks.TESTNET)
+      .build()
+      .toXDR();
   }
 
   signRawTx(rawTx: string, pk: string): string {
-    const tx = TransactionBuilder.fromXDR(rawTx, Networks.PUBLIC);
-    const keypair = Keypair.fromSecret(pk);
+    const keypair = StellarSdk.Keypair.fromSecret(pk);
+    const tx = StellarSdk.TransactionBuilder.fromXDR(rawTx, StellarSdk.Networks.TESTNET);
     tx.sign(keypair);
 
     return tx.toXDR();
@@ -55,10 +54,29 @@ export class StellarService implements IBlockchainClient {
 
   async submitSignedTx(rawTx: string): Promise<string> {
     const srv = this.getServer();
-    const tx = TransactionBuilder.fromXDR(rawTx, Networks.PUBLIC);
+    const tx = StellarSdk.TransactionBuilder.fromXDR(rawTx, StellarSdk.Networks.TESTNET);
     const txResponse = await srv.submitTransaction(tx);
 
     return txResponse.hash;
+  }
+
+  async isAddressValid(address: string): Promise<boolean> {
+    try {
+      StellarSdk.Keypair.fromPublicKey(address);
+      return await Promise.resolve(true);
+    } catch {
+      return await Promise.resolve(false);
+    }
+  }
+
+  async getBalance(address: string): Promise<number> {
+    try {
+      const srv = this.getServer();
+      const account = await srv.loadAccount(address);
+      return parseFloat(account.balances.find(b => b.asset_type === 'native').balance);
+    } catch {
+      return 0;
+    }
   }
 
   private async accountExists(address: string): Promise<boolean> {
@@ -71,8 +89,8 @@ export class StellarService implements IBlockchainClient {
     }
   }
 
-  private getServer(): Server {
-    return new Server('https://horizon.stellar.org/', {
+  private getServer(): StellarSdk.Server {
+    return new StellarSdk.Server('https://horizon-testnet.stellar.org', {
       allowHttp: false,
     });
   }

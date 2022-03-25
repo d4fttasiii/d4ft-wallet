@@ -1,0 +1,46 @@
+<div class="content-card">
+    <mat-card>
+        <mat-card-title>Tx Builder</mat-card-title>
+        <mat-card-subtitle>Build a transaction locally and sign it on a secure machine offline.</mat-card-subtitle>
+        <mat-card-content>
+            <form>
+                <mat-form-field class="input-full-width" appearance="fill">
+                    <mat-label>Blockchain</mat-label>
+                    <mat-select name="blockchain" (selectionChange)="setBlockchainClient($event)">
+                        <mat-option *ngFor="let blockchain of supportedBlockchains" [value]="blockchain">{{
+                            Blockchains[blockchain] }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div class="animate__animated animate__fadeIn" *ngIf="client">
+                    <app-address-bar label="Transferring from" [blockchain]="selectedBlockchain"
+                        (addressChanged)="setFrom($event)"></app-address-bar>
+                    <app-amount-bar [blockchain]="selectedBlockchain" [address]="tx.from"
+                        (amountChanged)="setAmount($event)">
+                    </app-amount-bar>
+                    <app-address-bar label="Transferring to" [blockchain]="selectedBlockchain"
+                        (addressChanged)="setTo($event)">
+                    </app-address-bar>
+                </div>
+                <div class="input-full-width ta-r">
+                    <button mat-raised-button (click)="build()" [disabled]="tx.isInvalid()" color="primary">Submit</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+    <mat-card class="animate__animated animate__fadeIn result-card" *ngIf="rawTx">
+        <div class="result">
+            <div class="header">
+                <div>
+                    <strong>Raw transaction</strong>
+                </div>
+                <div>
+                    <button type="button" mat-icon-button [appCopyClipboard]="rawTx">
+                        <mat-icon fontSet="fa" fontIcon="fa-copy"></mat-icon>
+                    </button>
+                </div>
+            </div>
+            <em>{{ rawTx }}</em>
+        </div>
+    </mat-card>
+</div>
