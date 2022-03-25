@@ -4,25 +4,19 @@
         <mat-card-subtitle>Sign a previously built raw transaction locally.</mat-card-subtitle>
         <mat-card-content>
             <form>
-                <mat-form-field class="input-full-width" appearance="fill">
-                    <mat-label>Blockchain</mat-label>
-                    <mat-select name="blockchain" (selectionChange)="setBlockchainClient($event)">
-                        <mat-option *ngFor="let blockchain of supportedBlockchains" [value]="blockchain">{{
-                            Blockchains[blockchain] }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <app-blockchain-selector (blockchainSelected)="setSelectedBlockchain($event)">
+                </app-blockchain-selector>
                 <div class="animate__animated animate__fadeIn" *ngIf="client">
-                    <mat-form-field class="input-full-width" appearance="fill">
+                    <mat-form-field class="full-width" appearance="fill">
                         <mat-label>Transaction raw</mat-label>
                         <textarea matInput rows="4" name="unsignedTx" [(ngModel)]="unsignedTx"></textarea>
                     </mat-form-field>
-                    <mat-form-field class="input-full-width" appearance="fill">
+                    <mat-form-field class="full-width" appearance="fill">
                         <mat-label>Private key</mat-label>
                         <input matInput name="pk" type="text" [(ngModel)]="pk">
                     </mat-form-field>
                 </div>
-                <div class="input-full-width ta-r">
+                <div class="full-width ta-r">
                     <button mat-raised-button (click)="sign()" color="primary">Sign</button>
                 </div>
             </form>

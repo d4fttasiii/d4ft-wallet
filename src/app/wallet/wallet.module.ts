@@ -10,6 +10,7 @@ import { TxSignerComponent } from './tx-signer/tx-signer.component';
 import { TxSubmitComponent } from './tx-submit/tx-submit.component';
 import { WalletRoutingModule } from './wallet-routing.module';
 import { WalletComponent } from './wallet/wallet.component';
+import { BlockchainSelectorComponent } from './shared/blockchain-selector/blockchain-selector.component';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { WalletComponent } from './wallet/wallet.component';
     TxSubmitComponent,
     AddressBarComponent,
     AmountBarComponent,
+    BlockchainSelectorComponent,
   ],
   imports: [
     CommonModule,

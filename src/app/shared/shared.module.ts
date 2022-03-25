@@ -31,6 +31,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { WebviewDirective, CopyClipboardDirective } from './directives/';
 import { MenuComponent } from './components/menu/menu.component';
 import { MenuItemComponent } from './components/menu-item/menu-item.component';
+import { LoadingButtonComponent } from './components/loading-button/loading-button.component';
 
 const MAT_MODULES = [
   MatIconModule,
@@ -67,7 +68,8 @@ const MAT_MODULES = [
     WebviewDirective,
     CopyClipboardDirective,
     MenuComponent,
-    MenuItemComponent
+    MenuItemComponent,
+    LoadingButtonComponent
   ],
   imports: [
     CommonModule,
@@ -82,7 +84,8 @@ const MAT_MODULES = [
     ReactiveFormsModule,
     FormsModule,
     ...MAT_MODULES,
-    MenuComponent
+    MenuComponent,
+    LoadingButtonComponent,
   ],
 })
 export class SharedModule { }

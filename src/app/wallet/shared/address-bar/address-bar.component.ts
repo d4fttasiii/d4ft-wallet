@@ -37,6 +37,9 @@ export class AddressBarComponent implements OnInit {
   }
 
   loadDetails() {
+    if (!this.address) {
+      return;
+    }
     this.isLoading = true;
     const client = this.clientFactory.getClient(this.blockchain);
     client.isAddressValid(this.address)

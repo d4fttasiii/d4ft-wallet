@@ -4,14 +4,8 @@
         <mat-card-subtitle>Build a transaction locally and sign it on a secure machine offline.</mat-card-subtitle>
         <mat-card-content>
             <form>
-                <mat-form-field class="input-full-width" appearance="fill">
-                    <mat-label>Blockchain</mat-label>
-                    <mat-select name="blockchain" (selectionChange)="setBlockchainClient($event)">
-                        <mat-option *ngFor="let blockchain of supportedBlockchains" [value]="blockchain">{{
-                            Blockchains[blockchain] }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <app-blockchain-selector (blockchainSelected)="setSelectedBlockchain($event)">
+                </app-blockchain-selector>
                 <div class="animate__animated animate__fadeIn" *ngIf="client">
                     <app-address-bar label="Transferring from" [blockchain]="selectedBlockchain"
                         (addressChanged)="setFrom($event)"></app-address-bar>
@@ -22,7 +16,7 @@
                         (addressChanged)="setTo($event)">
                     </app-address-bar>
                 </div>
-                <div class="input-full-width ta-r">
+                <div class="ta-r">
                     <button mat-raised-button (click)="build()" [disabled]="tx.isInvalid()" color="primary">Submit</button>
                 </div>
             </form>

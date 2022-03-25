@@ -34,8 +34,8 @@ export class TxBuilderComponent implements OnInit {
       .finally(() => this.isLoading = false);
   }
 
-  setBlockchainClient(event: MatSelectChange) {
-    this.selectedBlockchain = event.value as Blockchains;
+  setSelectedBlockchain(blockchain: Blockchains){
+    this.selectedBlockchain = blockchain;
     this.client = this.clientFactory.getClient(this.selectedBlockchain);
   }
 

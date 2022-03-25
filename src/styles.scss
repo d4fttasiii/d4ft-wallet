@@ -1,127 +1,127 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 @include mat.core();
 
-@import './assets/scss/color.scss';
+@import "./assets/scss/color.scss";
 
 $primary: mat.define-palette(
-    (
-        50: #e5e7eb,
-        100: #bfc2cd,
-        200: #949aac,
-        300: #69728b,
-        400: #495372,
-        500: #293559,
-        600: #243051,
-        700: #1f2848,
-        800: #19223e,
-        900: #0f162e,
-        A100: #6c89ff,
-        A200: #3961ff,
-        A400: #0638ff,
-        A700: #002feb,
-        contrast: (
-            50: #000000,
-            100: #000000,
-            200: #000000,
-            300: #ffffff,
-            400: #ffffff,
-            500: #ffffff,
-            600: #ffffff,
-            700: #ffffff,
-            800: #ffffff,
-            900: #ffffff,
-            A100: #000000,
-            A200: #ffffff,
-            A400: #ffffff,
-            A700: #ffffff,
-        ),
-    )
+  (
+    50: #e5e7eb,
+    100: #bfc2cd,
+    200: #949aac,
+    300: #69728b,
+    400: #495372,
+    500: #293559,
+    600: #243051,
+    700: #1f2848,
+    800: #19223e,
+    900: #0f162e,
+    A100: #6c89ff,
+    A200: #3961ff,
+    A400: #0638ff,
+    A700: #002feb,
+    contrast: (
+      50: #000000,
+      100: #000000,
+      200: #000000,
+      300: #ffffff,
+      400: #ffffff,
+      500: #ffffff,
+      600: #ffffff,
+      700: #ffffff,
+      800: #ffffff,
+      900: #ffffff,
+      A100: #000000,
+      A200: #ffffff,
+      A400: #ffffff,
+      A700: #ffffff,
+    ),
+  )
 );
 
 $accent: mat.define-palette(
-    (
-        50: #f6fafd,
-        100: #e9f3fb,
-        200: #dbebf9,
-        300: #cde2f6,
-        400: #c2dcf4,
-        500: #b7d6f2,
-        600: #b0d1f0,
-        700: #a7ccee,
-        800: #9fc6ec,
-        900: #90bce8,
-        A100: #ffffff,
-        A200: #ffffff,
-        A400: #ffffff,
-        A700: #ffffff,
-        contrast: (
-            50: #000000,
-            100: #000000,
-            200: #000000,
-            300: #000000,
-            400: #000000,
-            500: #000000,
-            600: #000000,
-            700: #000000,
-            800: #000000,
-            900: #000000,
-            A100: #000000,
-            A200: #000000,
-            A400: #000000,
-            A700: #000000,
-        ),
-    )
+  (
+    50: #f6fafd,
+    100: #e9f3fb,
+    200: #dbebf9,
+    300: #cde2f6,
+    400: #c2dcf4,
+    500: #b7d6f2,
+    600: #b0d1f0,
+    700: #a7ccee,
+    800: #9fc6ec,
+    900: #90bce8,
+    A100: #ffffff,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff,
+    contrast: (
+      50: #000000,
+      100: #000000,
+      200: #000000,
+      300: #000000,
+      400: #000000,
+      500: #000000,
+      600: #000000,
+      700: #000000,
+      800: #000000,
+      900: #000000,
+      A100: #000000,
+      A200: #000000,
+      A400: #000000,
+      A700: #000000,
+    ),
+  )
 );
 
 $warn: mat.define-palette(
-    (
-        50: #ffe0e8,
-        100: #ffb3c5,
-        200: #ff809e,
-        300: #ff4d77,
-        400: #ff2659,
-        500: #ff003c,
-        600: #ff0036,
-        700: #ff002e,
-        800: #ff0027,
-        900: #ff001a,
-        A100: #ffffff,
-        A200: #fff2f3,
-        A400: #ffbfc3,
-        A700: #ffa6ab,
-        contrast: (
-            50: #000000,
-            100: #000000,
-            200: #000000,
-            300: #000000,
-            400: #ffffff,
-            500: #ffffff,
-            600: #ffffff,
-            700: #ffffff,
-            800: #ffffff,
-            900: #ffffff,
-            A100: #000000,
-            A200: #000000,
-            A400: #000000,
-            A700: #000000,
-        ),
-    )
+  (
+    50: #ffe0e8,
+    100: #ffb3c5,
+    200: #ff809e,
+    300: #ff4d77,
+    400: #ff2659,
+    500: #ff003c,
+    600: #ff0036,
+    700: #ff002e,
+    800: #ff0027,
+    900: #ff001a,
+    A100: #ffffff,
+    A200: #fff2f3,
+    A400: #ffbfc3,
+    A700: #ffa6ab,
+    contrast: (
+      50: #000000,
+      100: #000000,
+      200: #000000,
+      300: #000000,
+      400: #ffffff,
+      500: #ffffff,
+      600: #ffffff,
+      700: #ffffff,
+      800: #ffffff,
+      900: #ffffff,
+      A100: #000000,
+      A200: #000000,
+      A400: #000000,
+      A700: #000000,
+    ),
+  )
 );
 
 $theme: mat.define-light-theme(
-    (
-        color: (
-            primary: $primary,
-            accent: $accent,
-            warn: $warn,
-        ),
-    )
+  (
+    color: (
+      primary: $primary,
+      accent: $accent,
+      warn: $warn,
+    ),
+  )
 );
 
 @include mat.all-component-themes($theme);
 
-
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
 
@@ -129,49 +129,52 @@ html, body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-
 $base-gap: 5;
 
 @for $i from 0 through 10 {
-    .mg-#{$i} {
-        margin: #{($base-gap * $i)}px !important;
-    }
+  .mg-#{$i} {
+    margin: #{($base-gap * $i)}px !important;
+  }
 
-    .mg-l#{$i} {
-        margin-left: #{($base-gap * $i)}px !important;
-    }
+  .mg-l#{$i} {
+    margin-left: #{($base-gap * $i)}px !important;
+  }
 
-    .mg-r#{$i} {
-        margin-right: #{($base-gap * $i)}px !important;
-    }
+  .mg-r#{$i} {
+    margin-right: #{($base-gap * $i)}px !important;
+  }
 
-    .mg-b#{$i} {
-        margin-bottom: #{($base-gap * $i)}px !important;
-    }
+  .mg-b#{$i} {
+    margin-bottom: #{($base-gap * $i)}px !important;
+  }
 
-    .mg-t#{$i} {
-        margin-top: #{($base-gap * $i)}px !important;
-    }
+  .mg-t#{$i} {
+    margin-top: #{($base-gap * $i)}px !important;
+  }
 
-    .mg-y#{$i} {
-        margin-top: #{($base-gap * $i)}px !important;
-        margin-bottom: #{($base-gap * $i)}px !important;
-    }
+  .mg-y#{$i} {
+    margin-top: #{($base-gap * $i)}px !important;
+    margin-bottom: #{($base-gap * $i)}px !important;
+  }
 
-    .mg-x#{$i} {
-        margin-left: #{($base-gap * $i)}px !important;
-        margin-right: #{($base-gap * $i)}px !important;
-    }
+  .mg-x#{$i} {
+    margin-left: #{($base-gap * $i)}px !important;
+    margin-right: #{($base-gap * $i)}px !important;
+  }
 
-    .pd-#{$i} {
-        padding: #{($base-gap * $i)}px !important;
-    }
+  .pd-#{$i} {
+    padding: #{($base-gap * $i)}px !important;
+  }
 }
 
 .ta-r {
-    text-align: right;
+  text-align: right;
 }
 
 .ta-c {
-    text-align: center;
+  text-align: center;
+}
+
+.full-width {
+  width: 100%;
 }
