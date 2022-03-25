@@ -44,12 +44,12 @@ export class StellarService implements IBlockchainClient {
       .toXDR();
   }
 
-  signRawTx(rawTx: string, pk: string): string {
+  async signRawTx(rawTx: string, pk: string): Promise<string> {
     const keypair = StellarSdk.Keypair.fromSecret(pk);
     const tx = StellarSdk.TransactionBuilder.fromXDR(rawTx, StellarSdk.Networks.TESTNET);
     tx.sign(keypair);
 
-    return tx.toXDR();
+    return await Promise.resolve(tx.toXDR());
   }
 
   async submitSignedTx(rawTx: string): Promise<string> {

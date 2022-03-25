@@ -21,10 +21,10 @@ export class TxSignerComponent {
   constructor(private clientFactory: ClientFactoryService) { }
 
   sign() {
-    this.signedTx = this.client.signRawTx(this.unsignedTx, this.pk);
+    this.client.signRawTx(this.unsignedTx, this.pk).then((signedTx) => this.signedTx = signedTx);
   }
 
-  setSelectedBlockchain(blockchain: Blockchains){
+  setSelectedBlockchain(blockchain: Blockchains) {
     this.client = this.clientFactory.getClient(blockchain);
   }
 }
