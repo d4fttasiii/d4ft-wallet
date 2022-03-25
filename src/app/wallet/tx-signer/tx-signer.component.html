@@ -16,8 +16,9 @@
                         <input matInput name="pk" type="text" [(ngModel)]="pk">
                     </mat-form-field>
                 </div>
-                <div class="full-width ta-r">
-                    <button mat-raised-button (click)="sign()" color="primary">Sign</button>
+                <div class="ta-r">
+                    <app-loading-button label="Sign" [isDisabled]="!(unsignedTx && pk)" (clicked)="sign()">
+                    </app-loading-button>
                 </div>
             </form>
         </mat-card-content>

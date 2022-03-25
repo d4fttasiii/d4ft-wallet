@@ -17,7 +17,9 @@
                     </app-address-bar>
                 </div>
                 <div class="ta-r">
-                    <button mat-raised-button (click)="build()" [disabled]="tx.isInvalid()" color="primary">Submit</button>
+                    <app-loading-button label="Build" [isDisabled]="tx.isInvalid()"
+                        [isLoading]="isLoading" (clicked)="build()">
+                    </app-loading-button>
                 </div>
             </form>
         </mat-card-content>

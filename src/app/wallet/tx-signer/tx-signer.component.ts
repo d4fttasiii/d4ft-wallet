@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { AllBlockchains, Blockchains } from '../../core/models/blockchains';
 import { ClientFactoryService } from '../../core/services';
@@ -9,7 +9,7 @@ import { IBlockchainClient } from '../../core/services/blockchain/blockchain-cli
   templateUrl: './tx-signer.component.html',
   styleUrls: ['./tx-signer.component.scss']
 })
-export class TxSignerComponent implements OnInit {
+export class TxSignerComponent {
 
   client: IBlockchainClient;
   unsignedTx: string;
@@ -19,9 +19,6 @@ export class TxSignerComponent implements OnInit {
   Blockchains = Blockchains;
 
   constructor(private clientFactory: ClientFactoryService) { }
-
-  ngOnInit(): void {
-  }
 
   sign() {
     this.signedTx = this.client.signRawTx(this.unsignedTx, this.pk);

@@ -4,22 +4,18 @@
         <mat-card-subtitle>Submit signed transaction to the network.</mat-card-subtitle>
         <mat-card-content>
             <form>
-                <mat-form-field class="input-full-width" appearance="fill">
-                    <mat-label>Blockchain</mat-label>
-                    <mat-select name="blockchain" (selectionChange)="setBlockchainClient($event)">
-                        <mat-option *ngFor="let blockchain of supportedBlockchains" [value]="blockchain">{{
-                            Blockchains[blockchain] }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <app-blockchain-selector (blockchainSelected)="setBlockchainClient($event)">
+                </app-blockchain-selector>
                 <div class="animate__animated animate__fadeIn" *ngIf="client">
-                    <mat-form-field class="input-full-width" appearance="fill">
+                    <mat-form-field class="full-width" appearance="fill">
                         <mat-label>Signed transaction</mat-label>
                         <textarea matInput rows="4" name="signedTx" [(ngModel)]="signedTx"></textarea>
                     </mat-form-field>
                 </div>
-                <div class="input-full-width ta-r">
-                    <button mat-raised-button (click)="submit()" color="primary">Submit</button>
+                <div class="ta-r">
+                    <app-loading-button label="Submit" [isDisabled]="!signedTx" [isLoading]="isLoading"
+                        (clicked)="submit()">
+                    </app-loading-button>
                 </div>
             </form>
         </mat-card-content>

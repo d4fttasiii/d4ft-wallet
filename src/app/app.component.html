@@ -6,7 +6,7 @@
 </mat-toolbar>
 
 <mat-sidenav-container>
-    <mat-sidenav #sidenav="matSidenav" class="mat-elevation-z8">
+    <mat-sidenav #sidenav="matSidenav" class="mat-elevation-z8" mode="side">
         <app-menu [items]="menuItems" (navigated)="sidenav.toggle()"></app-menu>
     </mat-sidenav>
     <mat-sidenav-content>

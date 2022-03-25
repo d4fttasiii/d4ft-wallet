@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
 
 import { AllBlockchains, Blockchains } from '../../core/models/blockchains';
 import { Transaction } from '../../core/models/transaction';
@@ -31,10 +30,10 @@ export class TxBuilderComponent implements OnInit {
     this.client.buildRawTx(this.tx.from, this.tx.from, this.tx.amount)
       .then(rawTx => this.rawTx = rawTx)
       .catch(error => console.error(error))
-      .finally(() => this.isLoading = false);
+      .finally(() => setTimeout(() => this.isLoading = false, 1000));
   }
 
-  setSelectedBlockchain(blockchain: Blockchains){
+  setSelectedBlockchain(blockchain: Blockchains) {
     this.selectedBlockchain = blockchain;
     this.client = this.clientFactory.getClient(this.selectedBlockchain);
   }

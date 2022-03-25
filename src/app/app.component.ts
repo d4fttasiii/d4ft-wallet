@@ -36,11 +36,6 @@ export class AppComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.menuItems = [
       {
-        icon: 'fa-wallet',
-        label: 'Wallet',
-        route: '',
-      },
-      {
         icon: 'fa-trowel-bricks',
         label: 'Tx Builder',
         route: 'tx-builder',
@@ -55,11 +50,15 @@ export class AppComponent implements AfterViewInit, OnInit {
         label: 'Tx Submit',
         route: 'tx-submit',
       },
+       {
+        icon: 'fa-wallet',
+        label: 'Wallet',
+        route: '',
+      },
     ];
   }
 
   ngAfterViewInit(): void {
-    this.sidenav.mode = 'over';
     this.sidenav.close();
   }
 }

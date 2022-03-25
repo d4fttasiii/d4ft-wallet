@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
 
 import { AllBlockchains, Blockchains } from '../../core/models/blockchains';
 import { ClientFactoryService } from '../../core/services';
@@ -28,12 +27,12 @@ export class TxSubmitComponent implements OnInit {
     this.isLoading = true;
     this.client.submitSignedTx(this.signedTx)
       .then(txId => this.txId = txId)
-      .catch(error => this.errorMessage = error)
-      .finally(() => this.isLoading = false);
+      .catch(error => console.error(error))
+      .finally(() => setTimeout(() => this.isLoading = false, 1000));
   }
 
-  setBlockchainClient(event: MatSelectChange) {
-    this.client = this.clientFactory.getClient(event.value as Blockchains);
+  setBlockchainClient(blockchain: Blockchains) {
+    this.client = this.clientFactory.getClient(blockchain);
   }
 
 }

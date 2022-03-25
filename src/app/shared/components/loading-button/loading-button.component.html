@@ -1,1 +1,4 @@
-<p>loading-button works!</p>
+<button mat-raised-button class="loading-btn" (click)="click()" [disabled]="isDisabled" color="primary">
+    <span *ngIf="!isLoading">{{ label }}</span>
+    <span *ngIf="isLoading"><i class="fa-solid fa-spinner fa-spin"></i></span>
+</button>
