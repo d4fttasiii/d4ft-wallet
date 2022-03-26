@@ -5,6 +5,10 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./wallet/wallet.module').then((m) => m.WalletModule),
+  },
+  {
+    path: 'config',
+    loadChildren: () => import('./config/config.module').then((m) => m.ConfigModule),
   }
 ];
 

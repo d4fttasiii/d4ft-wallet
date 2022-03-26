@@ -50,11 +50,16 @@ export class AppComponent implements AfterViewInit, OnInit {
         label: 'Tx Submit',
         route: 'tx-submit',
       },
-       {
+      {
         icon: 'fa-wallet',
         label: 'Wallet',
         route: '',
       },
+      {
+        icon: 'fa-cog',
+        label: 'Config',
+        route: 'config',
+      }
     ];
   }
 

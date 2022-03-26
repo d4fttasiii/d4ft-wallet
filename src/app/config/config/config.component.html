@@ -1,0 +1,74 @@
+<div class="content-card">
+    <mat-card>
+        <mat-card-title>Config</mat-card-title>
+        <mat-card-subtitle>Change application configuration, node connection settings, chain ids, ...etc.
+        </mat-card-subtitle>
+        <mat-card-content>
+            <div>
+                <form class="animate__animated animate__fadeIn" *ngIf="config">
+                    <mat-accordion>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_xlm"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Stellar
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Node url</mat-label>
+                                <input matInput type="url" name="xlm-url" required
+                                    placeholder="https://horizon.stellar.org" [(ngModel)]="config.stellar.url" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Network phrase</mat-label>
+                                <input matInput type="text" name="xlm-np" required
+                                    [(ngModel)]="config.stellar.networkPhrase" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_eth"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Ethereum
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Node url</mat-label>
+                                <input matInput type="url" name="eth-url" required placeholder="http://localhost:7545"
+                                    [(ngModel)]="config.ethereum.url" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Chain id</mat-label>
+                                <input matInput type="number" name="eth-chainId" required
+                                    [(ngModel)]="config.ethereum.chainId" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </form>
+            </div>
+            <div class="mg-t3 ta-r">
+                <app-loading-button label="Save" [isLoading]="isLoading" (clicked)="save()">
+                </app-loading-button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    <!-- <mat-card class="animate__animated animate__fadeIn result-card" *ngIf="rawTx">
+        <div class="result">
+            <div class="header">
+                <div>
+                    <strong>Raw transaction</strong>
+                </div>
+                <div>
+                    <button type="button" mat-icon-button [appCopyClipboard]="rawTx">
+                        <mat-icon fontSet="fa" fontIcon="fa-copy"></mat-icon>
+                    </button>
+                </div>
+            </div>
+            <em>{{ rawTx }}</em>
+        </div>
+    </mat-card> -->
+</div>
