@@ -39,6 +39,8 @@ export class SVGLibraryService {
         switch (blockchain) {
             case Blockchains.Stellar:
                 return 'blockchain_xlm';
+            case Blockchains.Ethereum:
+                return 'blockchain_eth';
         }
     }
 }

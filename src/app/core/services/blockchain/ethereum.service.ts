@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
+import { ConfigService } from '../config/config.service';
 
 import { IBlockchainClient } from './blockchain-client';
 
@@ -8,20 +9,20 @@ import { IBlockchainClient } from './blockchain-client';
 })
 export class EthereumService implements IBlockchainClient {
 
-  constructor() { }
+  constructor(private config: ConfigService) { }
 
   async buildRawTx(from: string, to: string, amount: number): Promise<string> {
     const web3 = this.getClient();
-    const nonce = (await web3.eth.getTransactionCount(from)) + 1;
+    const nonce = await web3.eth.getTransactionCount(from);
+    const cfg = this.config.getEthereumConfig();
     const tx = {
       from: from,
       to: to,
-      value: amount,
+      value: web3.utils.toWei(amount.toString(), 'ether'),
       gasPrice: await web3.eth.getGasPrice(),
-      gas: 1000,
+      gas: 21000,
       nonce: nonce,
-      chain: 'ropsten',
-      chainId: 1,
+      chainId: cfg.chainId,
     };
 
     return JSON.stringify(tx);
@@ -58,6 +59,7 @@ export class EthereumService implements IBlockchainClient {
   }
 
   private getClient(): Web3 {
-    return new Web3('http://localhost:8454');
+    const cfg = this.config.getEthereumConfig();
+    return new Web3(new Web3.providers.HttpProvider(cfg.url));
   }
 }

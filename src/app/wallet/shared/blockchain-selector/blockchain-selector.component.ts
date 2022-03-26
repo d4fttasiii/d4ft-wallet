@@ -21,6 +21,7 @@ export class BlockchainSelectorComponent implements OnInit {
   ngOnInit(): void {
     this.supportedBlockchains = [
       Blockchains.Stellar,
+      Blockchains.Ethereum,
     ];
   }
 
