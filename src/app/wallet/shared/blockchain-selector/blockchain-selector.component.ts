@@ -22,6 +22,8 @@ export class BlockchainSelectorComponent implements OnInit {
     this.supportedBlockchains = [
       Blockchains.Stellar,
       Blockchains.Ethereum,
+      Blockchains.Binance,
+      Blockchains.Polygon,
     ];
   }
 

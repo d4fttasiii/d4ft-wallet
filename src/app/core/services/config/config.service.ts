@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { Config, EthereumConfig } from '../../models/config';
+import { Blockchains } from '../../models/blockchains';
+import { Config } from '../../models/config';
 import { ElectronService } from '../electron/electron.service';
 
 const KEY = "D4FT_CFG";
@@ -12,11 +13,21 @@ export class ConfigService {
 
   constructor(private electron: ElectronService) { }
 
-  getEthereumConfig(): EthereumConfig {
-    return this.get().ethereum;
+  get(blockchain: Blockchains) {
+    const cfg = this.getAll();
+    switch (blockchain) {
+      case Blockchains.Stellar:
+        return cfg.stellar;
+      case Blockchains.Ethereum:
+        return cfg.ethereum;
+      case Blockchains.Polygon:
+        return cfg.polygon;
+      case Blockchains.Binance:
+        return cfg.binance;
+    }
   }
 
-  get(): Config {
+  getAll(): Config {
     const localCfg = this.getFromLocalStorage();
     if (localCfg) {
       return localCfg;
@@ -81,7 +92,15 @@ export class ConfigService {
       stellar: {
         url: 'https://horizon-testnet.stellar.org/',
         networkPhrase: 'Test SDF Network ; September 2015'
-      }
+      },
+      polygon: {
+        chainId: 1337,
+        url: 'HTTP://127.0.0.1:7545',
+      },
+      binance: {
+        chainId: 1337,
+        url: 'HTTP://127.0.0.1:7545',
+      },
     };
   }
 }

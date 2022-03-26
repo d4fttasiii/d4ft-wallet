@@ -41,6 +41,10 @@ export class SVGLibraryService {
                 return 'blockchain_xlm';
             case Blockchains.Ethereum:
                 return 'blockchain_eth';
+            case Blockchains.Binance:
+                return 'blockchain_bnb';
+            case Blockchains.Polygon:
+                return 'blockchain_matic';
         }
     }
 }

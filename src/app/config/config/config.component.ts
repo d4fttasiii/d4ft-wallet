@@ -21,8 +21,8 @@ export class ConfigComponent implements OnInit {
   }
 
   loadConfig() {
-    this.config = this.configService.get();
-    this.originalConfig = this.configService.get();
+    this.config = this.configService.getAll();
+    this.originalConfig = this.configService.getAll();
   }
 
   save() {

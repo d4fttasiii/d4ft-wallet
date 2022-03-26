@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { ConfigService } from '../config/config.service';
 
+import { Blockchains } from '../../models/blockchains';
+import { EthereumConfig } from '../../models/config';
+import { ConfigService } from '../config/config.service';
 import { IBlockchainClient } from './blockchain-client';
 
 @Injectable({
@@ -9,12 +11,12 @@ import { IBlockchainClient } from './blockchain-client';
 })
 export class EthereumService implements IBlockchainClient {
 
-  constructor(private config: ConfigService) { }
+  constructor(protected config: ConfigService) { }
 
   async buildRawTx(from: string, to: string, amount: number): Promise<string> {
     const web3 = this.getClient();
     const nonce = await web3.eth.getTransactionCount(from);
-    const cfg = this.config.getEthereumConfig();
+    const cfg = this.getConfig();
     const tx = {
       from: from,
       to: to,
@@ -37,7 +39,7 @@ export class EthereumService implements IBlockchainClient {
   }
 
   async submitSignedTx(rawTx: string): Promise<string> {
-    const web3  = this.getClient();
+    const web3 = this.getClient();
     const response = await web3.eth.sendSignedTransaction(rawTx);
 
     return response.transactionHash;
@@ -58,8 +60,12 @@ export class EthereumService implements IBlockchainClient {
     return parseFloat(eth);
   }
 
-  private getClient(): Web3 {
-    const cfg = this.config.getEthereumConfig();
+  protected getClient(): Web3 {
+    const cfg = this.getConfig();
     return new Web3(new Web3.providers.HttpProvider(cfg.url));
+  }
+
+  protected getConfig(): EthereumConfig {
+    return this.config.get(Blockchains.Ethereum) as EthereumConfig;
   }
 }
