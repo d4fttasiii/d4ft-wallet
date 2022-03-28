@@ -11,6 +11,7 @@ import { TxSubmitComponent } from './tx-submit/tx-submit.component';
 import { WalletRoutingModule } from './wallet-routing.module';
 import { WalletComponent } from './wallet/wallet.component';
 import { BlockchainSelectorComponent } from './shared/blockchain-selector/blockchain-selector.component';
+import { ModeSelectorComponent } from './mode-selector/mode-selector.component';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { BlockchainSelectorComponent } from './shared/blockchain-selector/blockc
     AddressBarComponent,
     AmountBarComponent,
     BlockchainSelectorComponent,
+    ModeSelectorComponent,
   ],
   imports: [
     CommonModule,

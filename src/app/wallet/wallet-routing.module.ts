@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ModeSelectorComponent } from './mode-selector/mode-selector.component';
 import { TxBuilderComponent } from './tx-builder/tx-builder.component';
 import { TxSignerComponent } from './tx-signer/tx-signer.component';
 import { TxSubmitComponent } from './tx-submit/tx-submit.component';
@@ -8,7 +9,7 @@ import { WalletComponent } from './wallet/wallet.component';
 const routes: Routes = [
   {
     path: '',
-    component: WalletComponent,
+    component: ModeSelectorComponent,
   },
   {
     path: 'tx-builder',
@@ -21,8 +22,11 @@ const routes: Routes = [
   {
     path: 'tx-submit',
     component: TxSubmitComponent,
+  },
+  {
+    path: 'wallet',
+    component: WalletComponent,
   }
-
 ];
 
 @NgModule({

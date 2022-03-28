@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 
 import { Blockchains } from '../../models/blockchains';
 import { Config } from '../../models/config';
+import { Mode } from '../../models/mode';
 import { ElectronService } from '../electron/electron.service';
 
 const KEY = "D4FT_CFG";
+const MODE = "D4FT_MODE";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +14,23 @@ const KEY = "D4FT_CFG";
 export class ConfigService {
 
   constructor(private electron: ElectronService) { }
+
+  getMode(): Mode {
+    const modeJson = localStorage.getItem(MODE);
+    if (modeJson) {
+      const mode = JSON.parse(modeJson);
+      return mode.mode as Mode;
+    }
+    return null;
+  }
+
+  setOfflineMode() {
+    localStorage.setItem(MODE, JSON.stringify({ mode: Mode.Offline }));
+  }
+
+  setOnlineMode() {
+    localStorage.setItem(MODE, JSON.stringify({ mode: Mode.Online }));
+  }
 
   get(blockchain: Blockchains) {
     const cfg = this.getAll();

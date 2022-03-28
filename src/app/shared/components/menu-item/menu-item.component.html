@@ -1,12 +1,6 @@
 <div class="menu-item">
-    <button mat-raised-button color="primary" (click)="navigateTo(item.route)">
-      <mat-icon
-        class="mg-r2"
-        *ngIf="item.icon"
-        fontSet="fa"
-        [fontIcon]="item.icon"
-      ></mat-icon>
-      <span>{{ item.label }}</span>
-    </button>
-  </div>
-  
+  <button mat-raised-button color="primary" [disabled]="item.isDisabled && item.isDisabled()" (click)="navigateTo(item.route)">
+    <mat-icon class="mg-r2" *ngIf="item.icon" fontSet="fa" [fontIcon]="item.icon"></mat-icon>
+    <span>{{ item.label }}</span>
+  </button>
+</div>

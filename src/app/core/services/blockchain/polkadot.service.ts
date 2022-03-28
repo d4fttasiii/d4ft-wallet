@@ -19,8 +19,7 @@ export class PolkadotService  {
 
   // signRawTx(rawTx: string, pk: string): string {
   //   const kr = new Keyring({ type: 'sr25519' });
-  //   kr.addFromSeed(hexToU8a(pk));
-    
+  //   kr.addFromSeed(hexToU8a(pk));    
   // }
 
   // async submitSignedTx(rawTx: string): Promise<string> {
