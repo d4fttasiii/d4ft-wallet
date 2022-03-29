@@ -6,6 +6,7 @@ import { IBlockchainClient } from './blockchain-client';
 import { EthereumService } from './ethereum.service';
 import { PolygonService } from './polygon.service';
 import { StellarService } from './stellar.service';
+import { TerraService } from './terra.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class ClientFactoryService {
     private stellar: StellarService,
     private ethereum: EthereumService,
     private binance: BinanceService,
-    private polygon: PolygonService) { }
+    private polygon: PolygonService,
+    private terra: TerraService) { }
 
   getClient(blockchain: Blockchains): IBlockchainClient {
     switch (blockchain) {
@@ -31,6 +33,9 @@ export class ClientFactoryService {
 
       case Blockchains.Binance:
         return this.binance;
+
+      case Blockchains.Terra:
+        return this.terra;
     }
   }
 }

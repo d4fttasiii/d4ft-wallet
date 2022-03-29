@@ -45,6 +45,8 @@ export class SVGLibraryService {
                 return 'blockchain_bnb';
             case Blockchains.Polygon:
                 return 'blockchain_matic';
+            case Blockchains.Terra:
+                return 'blockchain_luna';
         }
     }
 }

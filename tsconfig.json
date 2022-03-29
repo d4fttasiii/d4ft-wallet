@@ -10,6 +10,7 @@
     "experimentalDecorators": true,
     "allowJs": true,
     "target": "es5",
+    "esModuleInterop": true,
     "typeRoots": [
       "node_modules/@types"
     ],
