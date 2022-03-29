@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LCDClient, SimplePublicKey, MsgSend, RawKey, Tx, TxBody } from '@terra-money/terra.js';
 import { from } from 'rxjs';
+import { Transaction } from '../../models/transaction';
 import { IBlockchainClient } from './blockchain-client';
 
 class TxInternal {
@@ -16,21 +17,21 @@ export class TerraService implements IBlockchainClient {
 
   constructor() { }
 
-  async buildRawTx(from: string, to: string, amount: number): Promise<string> {
-    const ulunaAmount = amount * 1000000;
-    const msg = new MsgSend(
-      from,
-      to,
-      { uluna: ulunaAmount },
-    );
-    const tx = TxBody.fromData({
-      messages: [msg.toData()],
-      memo: '',
-      timeout_height: '100',
-    });
+  async buildRawTx(tx: Transaction): Promise<string> {
+    const ulunaAmount = tx.amount * 1000000;
+    // const msg = new MsgSend(
+    //   tx.from,
+    //   tx.to,
+    //   { uluna: ulunaAmount },
+    // );
+    // const tx = TxBody.fromData({
+    //   messages: [msg.toData()],
+    //   memo: '',
+    //   timeout_height: '100',
+    // });
 
     return JSON.stringify({
-      from, to, ulunaAmount
+      from: tx.from, to: tx.to, ulunaAmount
     });
   }
 
@@ -67,6 +68,10 @@ export class TerraService implements IBlockchainClient {
     const balances = await client.bank.balance(address);
 
     return balances[1].total;
+  }
+  
+  getMinFeeOrGas(): number {
+    return 1;
   }
 
   private getClient(): LCDClient {

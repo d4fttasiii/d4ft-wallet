@@ -18,6 +18,7 @@ export class TxBuilderComponent implements OnInit {
   tx: Transaction;
   rawTx: string
   isLoading = false;
+  minFeeOrGas = 0;
 
   constructor(private clientFactory: ClientFactoryService) { }
 
@@ -27,7 +28,7 @@ export class TxBuilderComponent implements OnInit {
 
   build() {
     this.isLoading = true;
-    this.client.buildRawTx(this.tx.from, this.tx.from, this.tx.amount)
+    this.client.buildRawTx(this.tx)
       .then(rawTx => this.rawTx = rawTx)
       .catch(error => console.error(error))
       .finally(() => setTimeout(() => this.isLoading = false, 1000));
@@ -36,6 +37,8 @@ export class TxBuilderComponent implements OnInit {
   setSelectedBlockchain(blockchain: Blockchains) {
     this.selectedBlockchain = blockchain;
     this.client = this.clientFactory.getClient(this.selectedBlockchain);
+    this.tx.feeOrGas = this.client.getMinFeeOrGas();
+    this.minFeeOrGas = this.client.getMinFeeOrGas();
   }
 
   setFrom(address: string) {

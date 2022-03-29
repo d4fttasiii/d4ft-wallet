@@ -13,15 +13,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { WebviewDirective, CopyClipboardDirective } from './directives/';
-import { MenuComponent } from './components/menu/menu.component';
-import { MenuItemComponent } from './components/menu-item/menu-item.component';
 import { LoadingButtonComponent } from './components/loading-button/loading-button.component';
+import { MenuItemComponent } from './components/menu-item/menu-item.component';
+import { MenuComponent } from './components/menu/menu.component';
+import { CopyClipboardDirective, WebviewDirective } from './directives/';
 
 const MAT_MODULES = [
   MatIconModule,
@@ -40,6 +41,7 @@ const MAT_MODULES = [
   MatSnackBarModule,
   MatGridListModule,
   MatCheckboxModule,
+  MatSlideToggleModule,
 ];
 
 @NgModule({

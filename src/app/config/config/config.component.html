@@ -47,6 +47,46 @@
                                     [(ngModel)]="config.ethereum.chainId" />
                             </mat-form-field>
                         </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_bnb"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Binance Smart Chain
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Node url</mat-label>
+                                <input matInput type="url" name="bnb-url" required placeholder="http://localhost:7545"
+                                    [(ngModel)]="config.binance.url" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Chain id</mat-label>
+                                <input matInput type="number" name="bnb-chainId" required
+                                    [(ngModel)]="config.binance.chainId" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_matic"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Polygon
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Node url</mat-label>
+                                <input matInput type="url" name="matic-url" required placeholder="http://localhost:7545"
+                                    [(ngModel)]="config.polygon.url" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Chain id</mat-label>
+                                <input matInput type="number" name="matic-chainId" required
+                                    [(ngModel)]="config.polygon.chainId" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
                     </mat-accordion>
                 </form>
             </div>

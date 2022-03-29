@@ -3,6 +3,7 @@ import Web3 from 'web3';
 
 import { Blockchains } from '../../models/blockchains';
 import { EthereumConfig } from '../../models/config';
+import { Transaction } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
 import { IBlockchainClient } from './blockchain-client';
 
@@ -13,21 +14,21 @@ export class EthereumService implements IBlockchainClient {
 
   constructor(protected config: ConfigService) { }
 
-  async buildRawTx(from: string, to: string, amount: number): Promise<string> {
+  async buildRawTx(tx: Transaction): Promise<string> {
     const web3 = this.getClient();
-    const nonce = await web3.eth.getTransactionCount(from);
+    const nonce = await web3.eth.getTransactionCount(tx.from);
     const cfg = this.getConfig();
-    const tx = {
-      from: from,
-      to: to,
-      value: web3.utils.toWei(amount.toString(), 'ether'),
+    const ethTx = {
+      from: tx.from,
+      to: tx.to,
+      value: web3.utils.toWei(tx.amount.toString(), 'ether'),
       gasPrice: await web3.eth.getGasPrice(),
-      gas: 21000,
+      gas: tx.feeOrGas,
       nonce: nonce,
       chainId: cfg.chainId,
     };
 
-    return JSON.stringify(tx);
+    return JSON.stringify(ethTx);
   }
 
   async signRawTx(rawTx: string, pk: string): Promise<string> {
@@ -58,6 +59,10 @@ export class EthereumService implements IBlockchainClient {
     const eth = web3.utils.fromWei(balance);
 
     return parseFloat(eth);
+  }
+
+  getMinFeeOrGas(): number {
+    return 21000;
   }
 
   protected getClient(): Web3 {

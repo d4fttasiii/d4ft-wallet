@@ -42,7 +42,7 @@ export class AppComponent implements AfterViewInit, OnInit {
       {
         icon: 'fa-trowel-bricks',
         label: 'Tx Builder',
-        route: '',
+        route: 'tx-builder',
         isDisabled: () => {
           const m = this.configService.getMode();
           return m && m === Mode.Offline;

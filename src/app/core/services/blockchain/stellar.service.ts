@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as StellarSdk from 'stellar-sdk/dist/stellar-sdk.min.js';
+import { Transaction } from '../../models/transaction';
 
 import { IBlockchainClient } from './blockchain-client';
 
@@ -9,19 +10,20 @@ declare const StellarSdk: any;
   providedIn: 'root',
 })
 export class StellarService implements IBlockchainClient {
+
   constructor() { }
 
-  async buildRawTx(from: string, to: string, amount: number): Promise<string> {
+  async buildRawTx(tx: Transaction): Promise<string> {
     const srv = this.getServer();
-    const fromAccount = await srv.loadAccount(from);
-    const toAccount = StellarSdk.Keypair.fromPublicKey(to);
-    const txBuilder = new StellarSdk.TransactionBuilder(fromAccount, { fee: 1000 });
-    const accountExists = await this.accountExists(to);
+    const fromAccount = await srv.loadAccount(tx.from);
+    const toAccount = StellarSdk.Keypair.fromPublicKey(tx.to);
+    const txBuilder = new StellarSdk.TransactionBuilder(fromAccount, { fee: tx.feeOrGas });
+    const accountExists = await this.accountExists(tx.to);
 
     if (accountExists) {
       txBuilder.addOperation(
         StellarSdk.Operation.payment({
-          amount: amount.toString(),
+          amount: tx.amount.toString(),
           asset: StellarSdk.Asset.native(),
           source: fromAccount.accountId(),
           destination: toAccount.publicKey(),
@@ -31,10 +33,14 @@ export class StellarService implements IBlockchainClient {
       txBuilder.addOperation(
         StellarSdk.Operation.createAccount({
           destination: toAccount.publicKey(),
-          startingBalance: amount.toString(),
+          startingBalance: tx.amount.toString(),
           source: fromAccount.accountId(),
         })
       );
+    }
+
+    if (tx.memo) {
+      txBuilder.addMemo(new StellarSdk.Memo('text', tx.memo));
     }
 
     return txBuilder
@@ -77,6 +83,10 @@ export class StellarService implements IBlockchainClient {
     } catch {
       return 0;
     }
+  }
+
+  getMinFeeOrGas(): number {
+    return 1000;
   }
 
   private async accountExists(address: string): Promise<boolean> {
