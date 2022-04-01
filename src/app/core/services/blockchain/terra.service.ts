@@ -45,7 +45,6 @@ export class TerraService implements IBlockchainClient {
     const key = new RawKey(Buffer.from(pk, 'hex'));
     const client = this.getClient();
     const wallet = client.wallet(key);
-client.
     const tx = await wallet.createTx({
       msgs: [new MsgSend(
         txInternal.from,
