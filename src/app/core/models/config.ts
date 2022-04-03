@@ -1,3 +1,4 @@
+import { Cluster } from "@solana/web3.js";
 
 export interface Config {
     ethereum: EthereumConfig;
@@ -6,6 +7,7 @@ export interface Config {
     binance: EthereumConfig;
     avalanche: EthereumConfig;
     harmony: EthereumConfig;
+    solana: SolanaConfig;
 }
 
 export class EthereumConfig {
@@ -16,4 +18,8 @@ export class EthereumConfig {
 export class StellarConfig {
     url: string;
     networkPhrase: string;
+}
+
+export class SolanaConfig {
+    cluster: Cluster;
 }

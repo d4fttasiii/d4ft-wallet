@@ -47,6 +47,8 @@ export class ConfigService {
         return cfg.avalanche;        
       case Blockchains.Harmony:
         return cfg.harmony;
+      case Blockchains.Solana: 
+        return cfg.solana;
     }
   }
 
@@ -132,6 +134,9 @@ export class ConfigService {
         chainId: 1337,
         url: 'HTTP://127.0.0.1:7545',
       },
+      solana: {
+        cluster: 'devnet',
+      }
     };
   }
 }

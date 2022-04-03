@@ -27,6 +27,7 @@ export class BlockchainSelectorComponent implements OnInit {
       Blockchains.Avalanche,
       Blockchains.Harmony,
       Blockchains.Terra,
+      Blockchains.Solana,
     ];
   }
 

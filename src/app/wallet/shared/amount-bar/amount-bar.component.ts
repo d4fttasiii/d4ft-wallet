@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 
 import { Blockchains } from '../../../core/models/blockchains';
 import { ClientFactoryService } from '../../../core/services';
@@ -18,6 +18,7 @@ export class AmountBarComponent implements OnChanges {
   amountFormControl = new FormControl('', [Validators.required]);
   balance: number;
   isLoading: boolean;
+  maxValidator: ValidatorFn;
 
   constructor(private clientFactory: ClientFactoryService) { }
 
@@ -34,7 +35,11 @@ export class AmountBarComponent implements OnChanges {
     client.getBalance(this.address)
       .then(amount => {
         this.balance = amount;
-        this.amountFormControl.addValidators(Validators.max(amount));
+        if (this.maxValidator) {
+          this.amountFormControl.removeValidators(this.maxValidator);
+        }
+        this.maxValidator = Validators.max(amount);
+        this.amountFormControl.addValidators(this.maxValidator);
       })
       .finally(() => setTimeout(() => this.isLoading = false, 1000));
   }

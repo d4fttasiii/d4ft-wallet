@@ -1,7 +1,7 @@
 <mat-form-field class="mg-b2 full-width" appearance="fill">
     <mat-label>Amount</mat-label>
-    <input matInput name="amount" type="number" [disabled]="isLoading" #amount [formControl]="amountFormControl"
-        required (keyup)="onAmountChange(amount.value)">
+    <input matInput name="amount" type="number" [disabled]="isLoading || !address" #amount
+        [formControl]="amountFormControl" required (keyup)="onAmountChange(amount.value)" />
     <mat-error *ngIf="amountFormControl.hasError('required')">
         Amount is required!
     </mat-error>

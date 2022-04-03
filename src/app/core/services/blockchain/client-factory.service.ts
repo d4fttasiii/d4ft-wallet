@@ -7,6 +7,7 @@ import { IBlockchainClient } from './blockchain-client';
 import { EthereumService } from './ethereum.service';
 import { HarmonyService } from './harmony.service';
 import { PolygonService } from './polygon.service';
+import { SolanaService } from './solana.service';
 import { StellarService } from './stellar.service';
 import { TerraService } from './terra.service';
 
@@ -22,7 +23,8 @@ export class ClientFactoryService {
     private polygon: PolygonService,
     private avalanche: AvalancheService,
     private harmony: HarmonyService,
-    private terra: TerraService) { }
+    private terra: TerraService,
+    private solana: SolanaService) { }
 
   getClient(blockchain: Blockchains): IBlockchainClient {
     switch (blockchain) {
@@ -46,6 +48,9 @@ export class ClientFactoryService {
 
       case Blockchains.Terra:
         return this.terra;
+
+      case Blockchains.Solana:
+        return this.solana;
     }
   }
 }

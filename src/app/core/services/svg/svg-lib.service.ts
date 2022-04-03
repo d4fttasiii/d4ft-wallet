@@ -51,6 +51,8 @@ export class SVGLibraryService {
                 return 'blockchain_one';    
             case Blockchains.Terra:
                 return 'blockchain_luna';
+            case Blockchains.Solana:
+                return 'blockchain_sol';
         }
     }
 }
