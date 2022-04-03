@@ -16,11 +16,11 @@ export class EthereumService implements IBlockchainClient {
 
   async buildRawTx(tx: Transaction): Promise<string> {
     const web3 = this.getClient();
-    const nonce = await web3.eth.getTransactionCount(tx.from);
+    const nonce = await web3.eth.getTransactionCount(this.addressToPublicKey(tx.from));
     const cfg = this.getConfig();
     const ethTx = {
-      from: tx.from,
-      to: tx.to,
+      from: this.addressToPublicKey(tx.from),
+      to: this.addressToPublicKey(tx.to),
       value: web3.utils.toWei(tx.amount.toString(), 'ether'),
       gasPrice: await web3.eth.getGasPrice(),
       gas: tx.feeOrGas,
@@ -47,15 +47,13 @@ export class EthereumService implements IBlockchainClient {
   }
 
   async isAddressValid(address: string): Promise<boolean> {
-    const web3 = this.getClient();
-    const isAddress = web3.utils.isAddress(address);
-
+    const isAddress = this.validateAddress(address);
     return await Promise.resolve(isAddress);
   }
 
   async getBalance(address: string): Promise<number> {
     const web3 = this.getClient();
-    const balance = await web3.eth.getBalance(address);
+    const balance = await web3.eth.getBalance(this.addressToPublicKey(address));
     const eth = web3.utils.fromWei(balance);
 
     return parseFloat(eth);
@@ -63,6 +61,15 @@ export class EthereumService implements IBlockchainClient {
 
   getMinFeeOrGas(): number {
     return 21000;
+  }
+
+  protected addressToPublicKey(address: string): string {
+    return address;
+  }
+
+  protected validateAddress(address: string): boolean {
+    const web3 = this.getClient();
+    return web3.utils.isAddress(address);
   }
 
   protected getClient(): Web3 {

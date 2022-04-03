@@ -3,4 +3,5 @@ export class MenuItem {
     icon?: string;
     route: string;
     isDisabled?: () => boolean;
+    showDividerBelow?: boolean;
 }

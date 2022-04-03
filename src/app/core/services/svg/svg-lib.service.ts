@@ -15,7 +15,7 @@ export class SVGLibraryService {
     svgIcons: Array<Icons> = [
         {
             category: 'blockchain',
-            icons: ['ada', 'algo', 'atom', 'bnb', 'btc', 'dot', 'eth', 'ksm', 'ltc', 'luna', 'matic', 'sol', 'xlm'],
+            icons: ['ada', 'algo', 'atom', 'avax', 'bnb', 'btc', 'dot', 'eth', 'ksm', 'ltc', 'luna', 'matic', 'one', 'sol', 'xlm'],
         },
     ];
 
@@ -45,6 +45,10 @@ export class SVGLibraryService {
                 return 'blockchain_bnb';
             case Blockchains.Polygon:
                 return 'blockchain_matic';
+            case Blockchains.Avalanche:
+                return 'blockchain_avax';
+            case Blockchains.Harmony:
+                return 'blockchain_one';    
             case Blockchains.Terra:
                 return 'blockchain_luna';
         }

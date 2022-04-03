@@ -4,6 +4,8 @@ export interface Config {
     stellar: StellarConfig;
     polygon: EthereumConfig;
     binance: EthereumConfig;
+    avalanche: EthereumConfig;
+    harmony: EthereumConfig;
 }
 
 export class EthereumConfig {

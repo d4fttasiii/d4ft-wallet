@@ -42,7 +42,11 @@ export class ConfigService {
       case Blockchains.Polygon:
         return cfg.polygon;
       case Blockchains.Binance:
-        return cfg.binance;
+        return cfg.binance;        
+      case Blockchains.Avalanche:
+        return cfg.avalanche;        
+      case Blockchains.Harmony:
+        return cfg.harmony;
     }
   }
 
@@ -117,6 +121,14 @@ export class ConfigService {
         url: 'HTTP://127.0.0.1:7545',
       },
       binance: {
+        chainId: 1337,
+        url: 'HTTP://127.0.0.1:7545',
+      },
+      avalanche: {
+        chainId: 1337,
+        url: 'HTTP://127.0.0.1:7545',
+      },
+      harmony: {
         chainId: 1337,
         url: 'HTTP://127.0.0.1:7545',
       },

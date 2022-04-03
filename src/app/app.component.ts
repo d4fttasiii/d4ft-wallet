@@ -40,6 +40,12 @@ export class AppComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.menuItems = [
       {
+        icon: 'fa-wallet',
+        label: 'Wallet',
+        route: 'wallet',
+        isDisabled: () => true,
+      },
+      {
         icon: 'fa-trowel-bricks',
         label: 'Tx Builder',
         route: 'tx-builder',
@@ -64,16 +70,11 @@ export class AppComponent implements AfterViewInit, OnInit {
         },
       },
       {
-        icon: 'fa-wallet',
-        label: 'Wallet',
-        route: 'wallet',
-        isDisabled: () => true,
-      },
-      {
         icon: 'fa-cog',
         label: 'Config',
         route: 'config',
         isDisabled: () => false,
+        showDividerBelow: true,
       }
     ];
 

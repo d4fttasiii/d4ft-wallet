@@ -57,6 +57,7 @@
     "@angular/platform-browser-dynamic": "13.2.4",
     "@angular/router": "13.2.4",
     "@fortawesome/fontawesome-free": "6.1.1",
+    "@harmony-js/crypto": "0.1.56",
     "@polkadot/api": "7.13.1",
     "@substrate/txwrapper-polkadot": "1.5.7",
     "@terra-money/terra.js": "3.0.9",

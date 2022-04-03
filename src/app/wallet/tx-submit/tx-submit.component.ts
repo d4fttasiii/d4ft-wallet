@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AllBlockchains, Blockchains } from '../../core/models/blockchains';
+import { Blockchains } from '../../core/models/blockchains';
 import { ClientFactoryService } from '../../core/services';
 import { IBlockchainClient } from '../../core/services/blockchain/blockchain-client';
 
@@ -12,7 +12,6 @@ import { IBlockchainClient } from '../../core/services/blockchain/blockchain-cli
 export class TxSubmitComponent implements OnInit {
   client: IBlockchainClient;
   signedTx: string;
-  supportedBlockchains = AllBlockchains;
   Blockchains = Blockchains;
   txId: string;
   isLoading = false;
