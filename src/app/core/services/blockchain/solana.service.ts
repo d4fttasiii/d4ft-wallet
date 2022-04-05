@@ -75,16 +75,6 @@ export class SolanaService implements IBlockchainClient {
     return web3.LAMPORTS_PER_SOL * 0.00005;
   }
 
-  private async accountExists(address: string): Promise<boolean> {
-    try {
-      const client = this.getClient();
-      await client.getAccountInfo(new web3.PublicKey(address));
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
   private getClient(): web3.Connection {
     const cfg = this.config.get(Blockchains.Solana) as SolanaConfig;
 

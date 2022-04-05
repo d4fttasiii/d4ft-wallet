@@ -8,6 +8,7 @@ export interface Config {
     avalanche: EthereumConfig;
     harmony: EthereumConfig;
     solana: SolanaConfig;
+    terra: TerraConfig;
 }
 
 export class EthereumConfig {
@@ -22,4 +23,9 @@ export class StellarConfig {
 
 export class SolanaConfig {
     cluster: Cluster;
+}
+
+export class TerraConfig {
+    url: string;
+    chainId: string;
 }

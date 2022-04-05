@@ -10,6 +10,7 @@ import { ConfigService } from '../../core/services';
 })
 export class ConfigComponent implements OnInit {
 
+  solClusters = ['devnet', 'testnet', 'mainnet-beta'];
   originalConfig: Config;
   config: Config;
   isLoading = false;

@@ -87,6 +87,84 @@
                                     [(ngModel)]="config.polygon.chainId" />
                             </mat-form-field>
                         </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_avax"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Avalanche C-Chain
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Node url</mat-label>
+                                <input matInput type="url" name="avax-url" required placeholder="http://localhost:7545"
+                                    [(ngModel)]="config.avalanche.url" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Chain id</mat-label>
+                                <input matInput type="number" name="avax-chainId" required
+                                    [(ngModel)]="config.avalanche.chainId" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_one"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Harmony
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Node url</mat-label>
+                                <input matInput type="url" name="one-url" required placeholder="http://localhost:7545"
+                                    [(ngModel)]="config.harmony.url" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Chain id</mat-label>
+                                <input matInput type="number" name="one-chainId" required
+                                    [(ngModel)]="config.harmony.chainId" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_sol"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Solana
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Cluster</mat-label>
+                                <mat-select name="sol-cluster" required [(ngModel)]="config.solana.cluster">
+                                    <mat-option *ngFor="let cluster of solClusters" [value]="cluster">
+                                        {{ cluster }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_luna"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Terra
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Node url</mat-label>
+                                <input matInput type="url" name="luna-url" required
+                                    placeholder="https://bombay-fcd.terra.dev" [(ngModel)]="config.terra.url" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Chain id</mat-label>
+                                <input matInput type="text" name="luna-chainId" required
+                                    [(ngModel)]="config.terra.chainId" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
                     </mat-accordion>
                 </form>
             </div>
@@ -96,19 +174,4 @@
             </div>
         </mat-card-content>
     </mat-card>
-    <!-- <mat-card class="animate__animated animate__fadeIn result-card" *ngIf="rawTx">
-        <div class="result">
-            <div class="header">
-                <div>
-                    <strong>Raw transaction</strong>
-                </div>
-                <div>
-                    <button type="button" mat-icon-button [appCopyClipboard]="rawTx">
-                        <mat-icon fontSet="fa" fontIcon="fa-copy"></mat-icon>
-                    </button>
-                </div>
-            </div>
-            <em>{{ rawTx }}</em>
-        </div>
-    </mat-card> -->
 </div>

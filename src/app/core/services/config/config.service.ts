@@ -42,13 +42,15 @@ export class ConfigService {
       case Blockchains.Polygon:
         return cfg.polygon;
       case Blockchains.Binance:
-        return cfg.binance;        
+        return cfg.binance;
       case Blockchains.Avalanche:
-        return cfg.avalanche;        
+        return cfg.avalanche;
       case Blockchains.Harmony:
         return cfg.harmony;
-      case Blockchains.Solana: 
+      case Blockchains.Solana:
         return cfg.solana;
+      case Blockchains.Terra:
+        return cfg.terra;
     }
   }
 
@@ -136,6 +138,10 @@ export class ConfigService {
       },
       solana: {
         cluster: 'devnet',
+      },
+      terra: {
+        url: 'https://bombay-fcd.terra.dev',
+        chainId: 'bombay-12',
       }
     };
   }
