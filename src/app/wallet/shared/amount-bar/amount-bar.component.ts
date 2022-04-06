@@ -45,8 +45,8 @@ export class AmountBarComponent implements OnChanges {
   }
 
 
-  onAmountChange(newAmount: number) {
-    this.amountChanged.emit(newAmount);
+  onAmountChange(newAmount: string) {
+    this.amountChanged.emit(parseInt(newAmount, 10));
   }
 
 }
