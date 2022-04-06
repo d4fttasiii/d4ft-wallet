@@ -7,7 +7,7 @@ Crypto currency wallet allowing offline transaction signing for cold wallet user
 
 <img width="950" alt="1_build" src="https://user-images.githubusercontent.com/24613746/161949917-53deeedd-7f1c-417b-8962-15d25515028b.png">
 
-## Sign pre-built transaction pre-built offline safely
+## Sign pre-built transaction offline safely
 
 <img width="951" alt="2_sign_offline" src="https://user-images.githubusercontent.com/24613746/161950014-a7959a19-a398-434a-937b-cb54dc384825.png">
 
