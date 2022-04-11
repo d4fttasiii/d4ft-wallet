@@ -12,6 +12,9 @@ import { WalletRoutingModule } from './wallet-routing.module';
 import { WalletComponent } from './wallet/wallet.component';
 import { BlockchainSelectorComponent } from './shared/blockchain-selector/blockchain-selector.component';
 import { ModeSelectorComponent } from './mode-selector/mode-selector.component';
+import { EthTxFormComponent } from './shared/eth-tx-form/eth-tx-form.component';
+import { TerraTxFormComponent } from './shared/terra-tx-form/terra-tx-form.component';
+import { DefaultTxFormComponent } from './shared/default-tx-form/default-tx-form.component';
 
 
 @NgModule({
@@ -24,6 +27,9 @@ import { ModeSelectorComponent } from './mode-selector/mode-selector.component';
     AmountBarComponent,
     BlockchainSelectorComponent,
     ModeSelectorComponent,
+    EthTxFormComponent,
+    TerraTxFormComponent,
+    DefaultTxFormComponent,
   ],
   imports: [
     CommonModule,

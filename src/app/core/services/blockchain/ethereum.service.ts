@@ -63,6 +63,19 @@ export class EthereumService implements IBlockchainClient {
     return 21000;
   }
 
+  hasSmartContracts(): boolean {
+    return true;
+  }
+
+  protected async getContractBalance(address: string, contractAddress: string): Promise<number> {
+    const web3 = this.getClient();
+    const contract = this.getContract(web3, contractAddress);
+    const balance = await contract.methods.balanceOf(address);
+    const eth = web3.utils.fromWei(balance);
+
+    return parseFloat(eth);
+  }
+
   protected addressToPublicKey(address: string): string {
     return address;
   }
@@ -80,4 +93,51 @@ export class EthereumService implements IBlockchainClient {
   protected getConfig(): EthereumConfig {
     return this.config.get(Blockchains.Ethereum) as EthereumConfig;
   }
+
+  protected getContract(web3: Web3, contractAddress: string) {
+    const contract = new web3.eth.Contract([{
+      type: 'function',
+      constant: false,
+      inputs: [
+        {
+          name: "_to",
+          type: "address",
+        },
+        {
+          name: "_value",
+          type: "uint256",
+        },
+      ],
+      name: "transfer",
+      outputs: [
+        {
+          name: "",
+          type: "bool",
+        },
+      ],
+      payable: false,
+      stateMutability: "nonpayable",
+    }, {
+      constant: true,
+      inputs: [
+        {
+          name: "_owner",
+          type: "address",
+        },
+      ],
+      name: "balanceOf",
+      outputs: [
+        {
+          name: "balance",
+          type: "uint256",
+        },
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function",
+    }], contractAddress);
+
+    return contract;
+  }
 }
+

@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 
-import { Blockchains } from '../../../core/models/blockchains';
-import { ClientFactoryService } from '../../../core/services';
+import { IBlockchainClient } from '../../../core/services/blockchain/blockchain-client';
 
 @Component({
   selector: 'app-amount-bar',
@@ -12,7 +11,7 @@ import { ClientFactoryService } from '../../../core/services';
 export class AmountBarComponent implements OnChanges {
 
   @Input() address: string;
-  @Input() blockchain: Blockchains;
+  @Input() client: IBlockchainClient;
   @Output() amountChanged = new EventEmitter<number>();
 
   amountFormControl = new FormControl('', [Validators.required]);
@@ -20,7 +19,7 @@ export class AmountBarComponent implements OnChanges {
   isLoading: boolean;
   maxValidator: ValidatorFn;
 
-  constructor(private clientFactory: ClientFactoryService) { }
+  constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.loadBalance();
@@ -31,8 +30,7 @@ export class AmountBarComponent implements OnChanges {
       return;
     }
     this.isLoading = true;
-    const client = this.clientFactory.getClient(this.blockchain);
-    client.getBalance(this.address)
+    this.client.getBalance(this.address)
       .then(amount => {
         this.balance = amount;
         if (this.maxValidator) {

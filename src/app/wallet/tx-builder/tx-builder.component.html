@@ -6,33 +6,12 @@
             <form>
                 <app-blockchain-selector (blockchainSelected)="setSelectedBlockchain($event)">
                 </app-blockchain-selector>
-                <div class="animate__animated animate__fadeIn" *ngIf="client">
-                    <app-address-bar label="Transferring from" [blockchain]="selectedBlockchain"
-                        (addressChanged)="setFrom($event)"></app-address-bar>
-                    <app-amount-bar [blockchain]="selectedBlockchain" [address]="tx.from"
-                        (amountChanged)="setAmount($event)">
-                    </app-amount-bar>
-                    <app-address-bar label="Transferring to" [blockchain]="selectedBlockchain"
-                        (addressChanged)="setTo($event)">
-                    </app-address-bar>
-                    <mat-form-field class="full-width mg-b2" appearance="fill">
-                        <mat-label>Gas/Fee</mat-label>
-                        <input type="number" matInput name="feeOrGas" required [min]="minFeeOrGas"
-                            [(ngModel)]="tx.feeOrGas" />
-                        <mat-hint align="start">Gas or fee in the smallest unit on given blockchain (wei, satoshi,
-                            ...etc)</mat-hint>
-                    </mat-form-field>
-                    <mat-form-field class="full-width mg-b2" appearance="fill">
-                        <mat-label>Memo</mat-label>
-                        <input type="text" matInput #memo name="memo" maxlength="50" [(ngModel)]="tx.memo"
-                            placeholder="Memo for exchange">
-                        <mat-hint align="end">{{memo.value.length}} / 50</mat-hint>
-                    </mat-form-field>
-                </div>
-                <div class="ta-r">
-                    <app-loading-button label="Build" [isDisabled]="tx.isInvalid()" [isLoading]="isLoading"
-                        (clicked)="build()">
-                    </app-loading-button>
+                <div *ngIf="client" [ngSwitch]="selectedBlockchain">
+                    <app-eth-tx-form *ngSwitchCase="Blockchains.Ethereum" [client]="client"
+                        (rawTxBuilt)="setRawTx($event)">
+                    </app-eth-tx-form>
+                    <app-default-tx-form *ngSwitchDefault [client]="client" (rawTxBuilt)="setRawTx($event)">
+                    </app-default-tx-form>
                 </div>
             </form>
         </mat-card-content>
@@ -44,7 +23,7 @@
                     <strong>Raw transaction</strong>
                 </div>
                 <div>
-                    <button type="button" mat-icon-button [appCopyClipboard]="rawTx">
+                    <button type="button" mat-icon-button color="accent" [appCopyClipboard]="rawTx">
                         <mat-icon fontSet="fa" fontIcon="fa-copy"></mat-icon>
                     </button>
                 </div>

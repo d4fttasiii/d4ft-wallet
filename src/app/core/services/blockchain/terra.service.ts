@@ -123,6 +123,10 @@ export class TerraService implements IBlockchainClient {
     return 150000;
   }
 
+  hasSmartContracts(): boolean {
+    return true;
+  }
+
   private getClient(): LCDClient {
     const config = this.configService.get(Blockchains.Terra) as TerraConfig;
     const terra = new LCDClient({

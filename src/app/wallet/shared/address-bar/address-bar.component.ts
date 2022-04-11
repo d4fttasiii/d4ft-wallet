@@ -2,8 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, Subject } from 'rxjs';
 
-import { Blockchains } from '../../../core/models/blockchains';
-import { ClientFactoryService } from '../../../core/services';
+import { IBlockchainClient } from '../../../core/services/blockchain/blockchain-client';
 
 @Component({
   selector: 'app-address-bar',
@@ -13,7 +12,7 @@ import { ClientFactoryService } from '../../../core/services';
 export class AddressBarComponent implements OnInit {
 
   @Input() label: string;
-  @Input() blockchain: Blockchains;
+  @Input() client: IBlockchainClient;
   @Output() addressChanged = new EventEmitter<string>();
 
   addressFormControl = new FormControl('', [Validators.required]);
@@ -23,7 +22,7 @@ export class AddressBarComponent implements OnInit {
   isValid = false;
   isLoading = false;
 
-  constructor(private clientFactory: ClientFactoryService) { }
+  constructor() { }
 
   ngOnInit(): void {
     this.subject.pipe(debounceTime(1000)).subscribe(value => {
@@ -41,8 +40,7 @@ export class AddressBarComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    const client = this.clientFactory.getClient(this.blockchain);
-    client.isAddressValid(this.address)
+    this.client.isAddressValid(this.address)
       .then((valid) => {
         this.isValid = valid;
         if (!this.isValid) {

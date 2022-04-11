@@ -1,0 +1,25 @@
+<mat-tab-group backgroundColor="accent">
+    <mat-tab label="Native">
+        <app-default-tx-form [client]="client" (rawTxBuilt)="rawTxReceived($event)">
+        </app-default-tx-form>
+    </mat-tab>
+    <mat-tab label="ERC-20">
+        <app-address-bar label="Contract address" [client]="client" (addressChanged)="setContract($event)">
+        </app-address-bar>
+        <div class="animate__animated animete__fadeIn" *ngIf="contractTx && contractTx.contractAddress">
+            <app-address-bar label="Transferring from" [client]="client" (addressChanged)="setFrom($event)">
+            </app-address-bar>
+            <app-amount-bar [client]="client" [address]="contractTx.from" (amountChanged)="setAmount($event)">
+            </app-amount-bar>
+            <app-address-bar label="Transferring to" [client]="client" (addressChanged)="setTo($event)">
+            </app-address-bar>
+            <mat-form-field class="full-width mg-b2" appearance="fill">
+                <mat-label>Gas</mat-label>
+                <input type="number" matInput name="feeOrGas" required [min]="minFeeOrGas"
+                    [(ngModel)]="contractTx.feeOrGas" />
+                <mat-hint align="start">Gas or fee in the smallest unit on given blockchain (wei, satoshi,
+                    ...etc)</mat-hint>
+            </mat-form-field>
+        </div>
+    </mat-tab>
+</mat-tab-group>

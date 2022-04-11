@@ -7,4 +7,5 @@ export interface IBlockchainClient {
     isAddressValid(address: string): Promise<boolean>;
     getBalance(address: string): Promise<number>;
     getMinFeeOrGas(): number;
+    hasSmartContracts(): boolean;
 }

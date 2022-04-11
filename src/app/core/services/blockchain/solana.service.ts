@@ -74,6 +74,10 @@ export class SolanaService implements IBlockchainClient {
   getMinFeeOrGas(): number {
     return web3.LAMPORTS_PER_SOL * 0.00005;
   }
+  
+  hasSmartContracts(): boolean {
+    return false;
+  }
 
   private getClient(): web3.Connection {
     const cfg = this.config.get(Blockchains.Solana) as SolanaConfig;

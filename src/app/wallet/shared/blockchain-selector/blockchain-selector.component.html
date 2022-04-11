@@ -7,4 +7,7 @@
             <span>{{ option.name }}</span>
         </mat-option>
     </mat-autocomplete>
+    <button mat-icon-button matPrefix (click)="reset()" [disabled]="resetDisabled">
+        <mat-icon fontSet="fa" fontIcon="fa-xmark"></mat-icon>
+    </button>
 </mat-form-field>

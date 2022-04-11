@@ -32,6 +32,7 @@ export class BlockchainSelectorComponent implements OnInit {
     { blockchain: Blockchains.Terra, name: 'Terra' },
     { blockchain: Blockchains.Solana, name: 'Solana' },
   ];
+  resetDisabled = false;
 
   constructor(private svgLib: SVGLibraryService) { }
 
@@ -40,6 +41,10 @@ export class BlockchainSelectorComponent implements OnInit {
       startWith(''),
       map(value => this._filter(value)),
     );
+  }
+
+  reset() {
+    this.myControl.setValue('');
   }
 
   getIcon(blockchain: Blockchains): string {
@@ -54,6 +59,7 @@ export class BlockchainSelectorComponent implements OnInit {
 
   private _filter(value: string): Option[] {
     const filterValue = value.toLowerCase();
+    this.resetDisabled = filterValue.length === 0;
 
     return this.options.filter(option => option.name.toLowerCase().includes(filterValue));
   }

@@ -88,6 +88,10 @@ export class StellarService implements IBlockchainClient {
   getMinFeeOrGas(): number {
     return 1000;
   }
+  
+  hasSmartContracts(): boolean {
+    return false;
+  }
 
   private async accountExists(address: string): Promise<boolean> {
     try {
