@@ -63,7 +63,7 @@ export class SolanaService implements IBlockchainClient {
     }
   }
 
-  async getBalance(address: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<number> {
     const client = this.getClient();
     const pubk = new web3.PublicKey(address);
     const balance = await client.getBalance(pubk);

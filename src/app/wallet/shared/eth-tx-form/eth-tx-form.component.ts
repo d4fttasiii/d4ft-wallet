@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
-import { Erc20Transaction } from '../../../core/models/transaction';
+import { EthTransaction, EthTxMode } from '../../../core/models/transaction';
 import { EthereumService } from '../../../core/services/blockchain/ethereum.service';
 
 @Component({
@@ -8,17 +8,23 @@ import { EthereumService } from '../../../core/services/blockchain/ethereum.serv
   templateUrl: './eth-tx-form.component.html',
   styleUrls: ['./eth-tx-form.component.scss']
 })
-export class EthTxFormComponent implements OnInit {
+export class EthTxFormComponent implements OnChanges {
 
   @Input() client: EthereumService;
   @Output() rawTxBuilt = new EventEmitter<string>();
 
-  contractTx: Erc20Transaction;
+  EthTxMode = EthTxMode;
+
+  ethTx: EthTransaction;
+  isLoading: boolean;
+  minFeeOrGas = 0;
 
   constructor() { }
 
-  ngOnInit(): void {
-    this.contractTx = new Erc20Transaction();
+  ngOnChanges(changes: SimpleChanges): void {
+    this.ethTx = new EthTransaction();
+    this.ethTx.feeOrGas = this.client.getMinFeeOrGas();
+    this.ethTx.txMode = EthTxMode.Native;
   }
 
   rawTxReceived(rawTx: string) {
@@ -26,18 +32,29 @@ export class EthTxFormComponent implements OnInit {
   }
 
   setContract(contractAddress: string) {
-    this.contractTx.contractAddress = contractAddress;
+    this.ethTx.contractAddress = contractAddress;
   }
 
   setFrom(address: string) {
-    this.contractTx.from = address;
+    this.ethTx.from = address;
   }
 
   setTo(address: string) {
-    this.contractTx.to = address;
+    this.ethTx.to = address;
   }
 
   setAmount(amount: number) {
-    this.contractTx.amount = amount;
+    this.ethTx.amount = amount;
+  }
+
+  build() {
+    this.isLoading = true;
+    const q = this.ethTx.txMode === EthTxMode.Native ?
+      this.client.buildRawTx(this.ethTx) :
+      this.client.buildRawErc20Tx(this.ethTx);
+
+    q.then(rawTx => this.rawTxBuilt.emit(rawTx))
+      .catch(error => console.error(error))
+      .finally(() => setTimeout(() => this.isLoading = false, 1000));
   }
 }

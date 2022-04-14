@@ -75,7 +75,7 @@ export class StellarService implements IBlockchainClient {
     }
   }
 
-  async getBalance(address: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<number> {
     try {
       const srv = this.getServer();
       const account = await srv.loadAccount(address);

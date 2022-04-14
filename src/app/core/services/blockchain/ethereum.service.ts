@@ -3,7 +3,7 @@ import Web3 from 'web3';
 
 import { Blockchains } from '../../models/blockchains';
 import { EthereumConfig } from '../../models/config';
-import { Transaction } from '../../models/transaction';
+import { EthTransaction, Transaction } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
 import { IBlockchainClient } from './blockchain-client';
 
@@ -22,6 +22,27 @@ export class EthereumService implements IBlockchainClient {
       from: this.addressToPublicKey(tx.from),
       to: this.addressToPublicKey(tx.to),
       value: web3.utils.toWei(tx.amount.toString(), 'ether'),
+      gasPrice: await web3.eth.getGasPrice(),
+      gas: tx.feeOrGas,
+      nonce: nonce,
+      chainId: cfg.chainId,
+    };
+
+    return JSON.stringify(ethTx);
+  }
+
+  async buildRawErc20Tx(tx: EthTransaction): Promise<string> {
+    const from = this.addressToPublicKey(tx.from);
+    const to = this.addressToPublicKey(tx.to);
+    const web3 = this.getClient();
+    const contract = this.getContractTransfer(web3, tx.contractAddress);
+    const nonce = await web3.eth.getTransactionCount(from);
+    const cfg = this.getConfig();
+    const data = contract.methods.transfer(to, web3.utils.toWei(tx.amount.toString(), 'ether')).encodeABI();
+    const ethTx = {
+      from: from,
+      to: tx.contractAddress,
+      data: data,
       gasPrice: await web3.eth.getGasPrice(),
       gas: tx.feeOrGas,
       nonce: nonce,
@@ -51,8 +72,16 @@ export class EthereumService implements IBlockchainClient {
     return await Promise.resolve(isAddress);
   }
 
-  async getBalance(address: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<number> {
     const web3 = this.getClient();
+
+    if (contractAddress) {
+      const contract = this.getContractBalance(web3, contractAddress);
+      const result = await contract.methods.balanceOf(address).call();
+      const eth = web3.utils.fromWei(result);
+      return parseFloat(eth);
+    }
+
     const balance = await web3.eth.getBalance(this.addressToPublicKey(address));
     const eth = web3.utils.fromWei(balance);
 
@@ -61,19 +90,6 @@ export class EthereumService implements IBlockchainClient {
 
   getMinFeeOrGas(): number {
     return 21000;
-  }
-
-  hasSmartContracts(): boolean {
-    return true;
-  }
-
-  protected async getContractBalance(address: string, contractAddress: string): Promise<number> {
-    const web3 = this.getClient();
-    const contract = this.getContract(web3, contractAddress);
-    const balance = await contract.methods.balanceOf(address);
-    const eth = web3.utils.fromWei(balance);
-
-    return parseFloat(eth);
   }
 
   protected addressToPublicKey(address: string): string {
@@ -94,48 +110,46 @@ export class EthereumService implements IBlockchainClient {
     return this.config.get(Blockchains.Ethereum) as EthereumConfig;
   }
 
-  protected getContract(web3: Web3, contractAddress: string) {
+  protected getContractBalance(web3: Web3, contractAddress: string) {
     const contract = new web3.eth.Contract([{
-      type: 'function',
-      constant: false,
-      inputs: [
-        {
-          name: "_to",
-          type: "address",
-        },
-        {
-          name: "_value",
-          type: "uint256",
-        },
-      ],
-      name: "transfer",
-      outputs: [
-        {
-          name: "",
-          type: "bool",
-        },
-      ],
-      payable: false,
-      stateMutability: "nonpayable",
-    }, {
       constant: true,
-      inputs: [
-        {
-          name: "_owner",
-          type: "address",
-        },
+      inputs: [{
+        name: "_owner",
+        type: "address",
+      },
       ],
       name: "balanceOf",
-      outputs: [
-        {
-          name: "balance",
-          type: "uint256",
-        },
+      outputs: [{
+        name: "balance",
+        type: "uint256",
+      },
       ],
-      payable: false,
-      stateMutability: "view",
       type: "function",
     }], contractAddress);
+
+    return contract;
+  }
+
+  protected getContractTransfer(web3: Web3, contractAddress: string) {
+    const contract = new web3.eth.Contract([{
+      constant: false,
+      inputs: [{
+        name: "_to",
+        type: "address",
+      },
+      {
+        name: "_value",
+        type: "uint256",
+      },
+      ],
+      name: "transfer",
+      outputs: [{
+        name: "",
+        type: "bool",
+      },
+      ],
+      type: 'function',
+    },], contractAddress);
 
     return contract;
   }

@@ -107,7 +107,7 @@ export class TerraService implements IBlockchainClient {
     }
   }
 
-  async getBalance(address: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<number> {
     const client = this.getClient();
     try {
       const balances = await client.bank.balance(address);

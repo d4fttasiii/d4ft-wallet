@@ -1,25 +1,30 @@
-<mat-tab-group backgroundColor="accent">
-    <mat-tab label="Native">
-        <app-default-tx-form [client]="client" (rawTxBuilt)="rawTxReceived($event)">
-        </app-default-tx-form>
-    </mat-tab>
-    <mat-tab label="ERC-20">
+<div class="animate__animated animate__fadeIn" *ngIf="ethTx">
+    <div class="mg-b4">
+        <mat-radio-group color="primary" [(ngModel)]="ethTx.txMode">
+            <mat-radio-button class="mg-r2" *ngFor="let txMode of [0,1]" [value]="txMode">
+                {{EthTxMode[txMode]}}
+            </mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <div class="animate__animated animate__flipInX" *ngIf="ethTx.txMode === EthTxMode.Erc20">
         <app-address-bar label="Contract address" [client]="client" (addressChanged)="setContract($event)">
         </app-address-bar>
-        <div class="animate__animated animete__fadeIn" *ngIf="contractTx && contractTx.contractAddress">
-            <app-address-bar label="Transferring from" [client]="client" (addressChanged)="setFrom($event)">
-            </app-address-bar>
-            <app-amount-bar [client]="client" [address]="contractTx.from" (amountChanged)="setAmount($event)">
-            </app-amount-bar>
-            <app-address-bar label="Transferring to" [client]="client" (addressChanged)="setTo($event)">
-            </app-address-bar>
-            <mat-form-field class="full-width mg-b2" appearance="fill">
-                <mat-label>Gas</mat-label>
-                <input type="number" matInput name="feeOrGas" required [min]="minFeeOrGas"
-                    [(ngModel)]="contractTx.feeOrGas" />
-                <mat-hint align="start">Gas or fee in the smallest unit on given blockchain (wei, satoshi,
-                    ...etc)</mat-hint>
-            </mat-form-field>
-        </div>
-    </mat-tab>
-</mat-tab-group>
+    </div>
+    <app-address-bar label="Transferring from" [client]="client" (addressChanged)="setFrom($event)">
+    </app-address-bar>
+    <app-amount-bar [client]="client" [address]="ethTx.from" [contractAddress]="ethTx.contractAddress"
+        (amountChanged)="setAmount($event)">
+    </app-amount-bar>
+    <app-address-bar label="Transferring to" [client]="client" (addressChanged)="setTo($event)">
+    </app-address-bar>
+    <mat-form-field class="full-width mg-b2" appearance="fill">
+        <mat-label>Gas</mat-label>
+        <input type="number" matInput name="feeOrGas" required [min]="minFeeOrGas" [(ngModel)]="ethTx.feeOrGas" />
+        <mat-hint align="start">Gas or fee in the smallest unit on given blockchain (wei, satoshi,
+            ...etc)</mat-hint>
+    </mat-form-field>
+</div>
+<div class="ta-r">
+    <app-loading-button label="Build" [isDisabled]="ethTx.isInvalid()" [isLoading]="isLoading" (clicked)="build()">
+    </app-loading-button>
+</div>

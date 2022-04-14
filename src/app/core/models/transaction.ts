@@ -10,10 +10,16 @@ export class Transaction {
     }
 }
 
-export class Erc20Transaction extends Transaction {
+export class EthTransaction extends Transaction {
     contractAddress: string;
+    txMode: EthTxMode;
 
     protected isInvalid(): boolean {
-        return super.isInvalid() || !this.contractAddress;
+        return super.isInvalid() && (!this.contractAddress && this.txMode === EthTxMode.Erc20);
     }
+}
+
+export enum EthTxMode {
+    Native,
+    Erc20,
 }

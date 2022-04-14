@@ -11,6 +11,7 @@ import { IBlockchainClient } from '../../../core/services/blockchain/blockchain-
 export class AmountBarComponent implements OnChanges {
 
   @Input() address: string;
+  @Input() contractAddress?: string;
   @Input() client: IBlockchainClient;
   @Output() amountChanged = new EventEmitter<number>();
 
@@ -30,7 +31,7 @@ export class AmountBarComponent implements OnChanges {
       return;
     }
     this.isLoading = true;
-    this.client.getBalance(this.address)
+    this.client.getBalance(this.address, this.contractAddress)
       .then(amount => {
         this.balance = amount;
         if (this.maxValidator) {
