@@ -150,10 +150,12 @@ export class ConfigService {
       bitcoin: {
         url: '',
         blockcypherUrl: 'https://api.blockcypher.com/v1/btc/main',
+        isMainnet: false,
       },
       litecoin: {
         url: '',
         blockcypherUrl: 'https://api.blockcypher.com/v1/ltc/main',
+        isMainnet: false,
       },
     };
   }

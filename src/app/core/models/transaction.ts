@@ -10,3 +10,14 @@ export class Transaction {
     }
 }
 
+export class BitcoinTransaction extends Transaction {
+    utxos: Utxo[];
+}
+
+export class Utxo {
+    txId: string;
+    address: string;
+    outputIndex: number;
+    script: string;
+    value: number;
+}

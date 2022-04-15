@@ -15,6 +15,8 @@ import { ModeSelectorComponent } from './mode-selector/mode-selector.component';
 import { EthTxFormComponent } from './shared/eth-tx-form/eth-tx-form.component';
 import { TerraTxFormComponent } from './shared/terra-tx-form/terra-tx-form.component';
 import { DefaultTxFormComponent } from './shared/default-tx-form/default-tx-form.component';
+import { BtcTxFormComponent } from './shared/btc-tx-form/btc-tx-form.component';
+import { UtxoSelectorComponent } from './shared/utxo-selector/utxo-selector.component';
 
 
 @NgModule({
@@ -30,6 +32,8 @@ import { DefaultTxFormComponent } from './shared/default-tx-form/default-tx-form
     EthTxFormComponent,
     TerraTxFormComponent,
     DefaultTxFormComponent,
+    BtcTxFormComponent,
+    UtxoSelectorComponent,
   ],
   imports: [
     CommonModule,
