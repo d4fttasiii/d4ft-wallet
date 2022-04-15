@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
-import { EthTransaction, EthTxMode } from '../../../core/models/transaction';
+import { EthTxMode } from "../../../core/models/eth-tx-mode";
+import { EthTransaction } from "../../../core/models/eth-transaction";
 import { EthereumService } from '../../../core/services/blockchain/ethereum.service';
 
 @Component({

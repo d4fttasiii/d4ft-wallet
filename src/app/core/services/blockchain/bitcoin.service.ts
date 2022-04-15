@@ -1,13 +1,12 @@
+import { HttpClient, HttpHeaders  } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import * as bitcore from 'bitcore-lib';
 
-import { Transaction } from '../../models/transaction';
-import { IBlockchainClient } from './blockchain-client';
-
-import { address as Address } from 'bitcoinjs-lib';
 import { Blockchains } from '../../models/blockchains';
 import { BitcoinConfig } from '../../models/config';
+import { Transaction } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
-import { HttpClient } from '@angular/common/http';
+import { IBlockchainClient } from './blockchain-client';
 
 @Injectable({
   providedIn: 'root'
@@ -22,17 +21,26 @@ export class BitcoinService implements IBlockchainClient {
     throw new Error('Method not implemented.');
   }
 
-  signRawTx(rawTx: string, pk: string): Promise<string> {
-    throw new Error('Method not implemented.');
+  async signRawTx(rawTx: string, pk: string): Promise<string> {
+    const tx = new bitcore.Transaction(rawTx);
+    const key = new bitcore.PrivateKey(pk);
+    tx.sign(key);
+    
+    return await Promise.resolve(tx.serialize());
   }
 
-  submitSignedTx(rawTx: string): Promise<string> {
-    throw new Error('Method not implemented.');
+  async submitSignedTx(rawTx: string): Promise<string> {
+    const cfg = this.getConfig();
+    const payload = `{"jsonrpc": "1.0", "id": "curltest", "method": "sendrawtransaction", "params": ["${rawTx}"]}`;
+    const options = { headers: new HttpHeaders().set('Content-Type', 'text/plain') };
+    const result = await this.httpClient.post(cfg.url, payload, options).toPromise();
+
+    return result.toString();
   }
 
   async isAddressValid(address: string): Promise<boolean> {
     try {
-      Address.fromBech32(address); 
+      new bitcore.Address(address)
       return await Promise.resolve(true);
     } catch {
       return await Promise.resolve(false);;
@@ -40,9 +48,7 @@ export class BitcoinService implements IBlockchainClient {
   }
 
   async getBalance(address: string, contractAddress?: string): Promise<number> {
-    const cfg = this.getConfig();
-    const url = `${cfg.blockcypherUrl}/addrs/${address}?unspentOnly=true`;
-    const result = await this.httpClient.get(url).toPromise();
+    var result = await this.getAddress(address);
     const satoshi = parseInt(result['final_balance'], 10);
 
     return satoshi / this.convertionRate;
@@ -52,10 +58,12 @@ export class BitcoinService implements IBlockchainClient {
     return 0;
   }
 
-  // protected getClient(): Web3 {
-  //   const cfg = this.getConfig();
-  //   return new Web3(new Web3.providers.HttpProvider(cfg.url));
-  // }
+  protected async getAddress(address: string) {
+    const cfg = this.getConfig();
+    const url = `${cfg.blockcypherUrl}/addrs/${address}?unspentOnly=true`;
+    const result = await this.httpClient.get(url).toPromise();
+    return result;
+  }
 
   protected getConfig(): BitcoinConfig {
     return this.config.get(Blockchains.Bitcoin) as BitcoinConfig;

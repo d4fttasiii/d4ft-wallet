@@ -3,7 +3,8 @@ import Web3 from 'web3';
 
 import { Blockchains } from '../../models/blockchains';
 import { EthereumConfig } from '../../models/config';
-import { EthTransaction, Transaction } from '../../models/transaction';
+import { Transaction } from '../../models/transaction';
+import { EthTransaction } from "../../models/eth-transaction";
 import { ConfigService } from '../config/config.service';
 import { IBlockchainClient } from './blockchain-client';
 
