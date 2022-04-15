@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
-import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../environments/environment';
@@ -22,7 +21,6 @@ export class AppComponent implements AfterViewInit, OnInit {
     private electronService: ElectronService,
     private translate: TranslateService,
     private configService: ConfigService,
-    private router: Router,
   ) {
     this.translate.setDefaultLang('en');
     console.log('APP_CONFIG', APP_CONFIG);
@@ -77,14 +75,6 @@ export class AppComponent implements AfterViewInit, OnInit {
         showDividerBelow: true,
       }
     ];
-
-    const mode = this.configService.getMode();
-    if (mode && mode === Mode.Offline) {
-      this.router.navigate(['tx-signer']);
-    }
-    else if (mode && mode === Mode.Online) {
-      this.router.navigate(['tx-builder']);
-    }
   }
 
   ngAfterViewInit(): void {

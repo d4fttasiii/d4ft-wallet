@@ -78,8 +78,7 @@ export class EthereumService implements IBlockchainClient {
     if (contractAddress) {
       const contract = this.getContractBalance(web3, contractAddress);
       const result = await contract.methods.balanceOf(address).call();
-      const eth = web3.utils.fromWei(result);
-      return parseFloat(eth);
+      return parseFloat(result);
     }
 
     const balance = await web3.eth.getBalance(this.addressToPublicKey(address));

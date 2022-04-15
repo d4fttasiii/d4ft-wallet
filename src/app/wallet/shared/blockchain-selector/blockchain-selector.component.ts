@@ -31,6 +31,8 @@ export class BlockchainSelectorComponent implements OnInit {
     { blockchain: Blockchains.Harmony, name: 'Harmony' },
     { blockchain: Blockchains.Terra, name: 'Terra' },
     { blockchain: Blockchains.Solana, name: 'Solana' },
+    { blockchain: Blockchains.Bitcoin, name: 'Bitcoin' },
+    { blockchain: Blockchains.Litecoin, name: 'Litecoin' },
   ];
   resetDisabled = false;
 
@@ -61,6 +63,8 @@ export class BlockchainSelectorComponent implements OnInit {
     const filterValue = value.toLowerCase();
     this.resetDisabled = filterValue.length === 0;
 
-    return this.options.filter(option => option.name.toLowerCase().includes(filterValue));
+    return this.options
+      .filter(option => option.name.toLowerCase().includes(filterValue))
+      .sort((a, b) => a.name > b.name ? -1 : 1);
   }
 }

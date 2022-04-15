@@ -20,8 +20,7 @@
     <mat-form-field class="full-width mg-b2" appearance="fill">
         <mat-label>Gas</mat-label>
         <input type="number" matInput name="feeOrGas" required [min]="minFeeOrGas" [(ngModel)]="ethTx.feeOrGas" />
-        <mat-hint align="start">Gas or fee in the smallest unit on given blockchain (wei, satoshi,
-            ...etc)</mat-hint>
+        <mat-hint align="start">Gas limit in wei.</mat-hint>
     </mat-form-field>
 </div>
 <div class="ta-r">

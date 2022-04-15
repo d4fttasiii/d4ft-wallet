@@ -9,6 +9,8 @@ export interface Config {
     harmony: EthereumConfig;
     solana: SolanaConfig;
     terra: TerraConfig;
+    bitcoin: BitcoinConfig;
+    litecoin: BitcoinConfig;
 }
 
 export class EthereumConfig {
@@ -28,4 +30,9 @@ export class SolanaConfig {
 export class TerraConfig {
     url: string;
     chainId: string;
+}
+
+export class BitcoinConfig {
+    url: string;
+    blockcypherUrl: string;
 }

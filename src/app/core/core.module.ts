@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { SVGLibraryService } from './services';
@@ -15,7 +16,8 @@ function initializeCore(svgLibService: SVGLibraryService) {
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
+    HttpClientModule,
   ],
   providers: [{
     provide: APP_INITIALIZER,

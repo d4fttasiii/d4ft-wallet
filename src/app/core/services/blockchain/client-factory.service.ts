@@ -3,9 +3,11 @@ import { Injectable } from '@angular/core';
 import { Blockchains } from '../../models/blockchains';
 import { AvalancheService } from './avalanche.service';
 import { BinanceService } from './binance.service';
+import { BitcoinService } from './bitcoin.service';
 import { IBlockchainClient } from './blockchain-client';
 import { EthereumService } from './ethereum.service';
 import { HarmonyService } from './harmony.service';
+import { LitecoinService } from './litecoin.service';
 import { PolygonService } from './polygon.service';
 import { SolanaService } from './solana.service';
 import { StellarService } from './stellar.service';
@@ -24,7 +26,9 @@ export class ClientFactoryService {
     private avalanche: AvalancheService,
     private harmony: HarmonyService,
     private terra: TerraService,
-    private solana: SolanaService) { }
+    private solana: SolanaService,
+    private bitcoin: BitcoinService,
+    private litecoin: LitecoinService) { }
 
   getClient(blockchain: Blockchains): IBlockchainClient {
     switch (blockchain) {
@@ -46,11 +50,17 @@ export class ClientFactoryService {
       case Blockchains.Harmony:
         return this.harmony;
 
+      case Blockchains.Solana:
+        return this.solana;
+
       case Blockchains.Terra:
         return this.terra;
 
-      case Blockchains.Solana:
-        return this.solana;
+      case Blockchains.Bitcoin:
+        return this.bitcoin;
+
+      case Blockchains.Litecoin:
+        return this.litecoin;
     }
   }
 }

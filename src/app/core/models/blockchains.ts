@@ -7,4 +7,6 @@ export enum Blockchains {
   Harmony = 6,
   Terra = 7,
   Solana = 8,
+  Bitcoin = 9,
+  Litecoin = 10,
 }

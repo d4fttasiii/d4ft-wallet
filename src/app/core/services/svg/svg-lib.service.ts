@@ -48,11 +48,15 @@ export class SVGLibraryService {
             case Blockchains.Avalanche:
                 return 'blockchain_avax';
             case Blockchains.Harmony:
-                return 'blockchain_one';    
+                return 'blockchain_one';
             case Blockchains.Terra:
                 return 'blockchain_luna';
             case Blockchains.Solana:
                 return 'blockchain_sol';
+            case Blockchains.Bitcoin:
+                return 'blockchain_btc';
+            case Blockchains.Litecoin:
+                return 'blockchain_ltc';
         }
     }
 }

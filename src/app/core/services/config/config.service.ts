@@ -51,6 +51,10 @@ export class ConfigService {
         return cfg.solana;
       case Blockchains.Terra:
         return cfg.terra;
+      case Blockchains.Bitcoin:
+        return cfg.bitcoin;
+      case Blockchains.Litecoin:
+        return cfg.litecoin;
     }
   }
 
@@ -142,7 +146,15 @@ export class ConfigService {
       terra: {
         url: 'https://bombay-fcd.terra.dev',
         chainId: 'bombay-12',
-      }
+      },
+      bitcoin: {
+        url: '',
+        blockcypherUrl: 'https://api.blockcypher.com/v1/btc/main',
+      },
+      litecoin: {
+        url: '',
+        blockcypherUrl: 'https://api.blockcypher.com/v1/ltc/main',
+      },
     };
   }
 }

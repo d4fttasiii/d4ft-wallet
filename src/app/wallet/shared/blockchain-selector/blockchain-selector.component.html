@@ -3,7 +3,7 @@
     <input type="text" placeholder="Select blockchain" matInput [formControl]="myControl" [matAutocomplete]="auto">
     <mat-autocomplete name="blockchain" #auto="matAutocomplete" (optionSelected)="setBlockchain($event)">
         <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name">
-            <mat-icon class="mg-r1" [svgIcon]="getIcon(option.blockchain)"></mat-icon>
+            <mat-icon class="mg-r2" [svgIcon]="getIcon(option.blockchain)"></mat-icon>
             <span>{{ option.name }}</span>
         </mat-option>
     </mat-autocomplete>
