@@ -1,5 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import ECPairFactory from 'ecpair';
+import * as ecc from 'tiny-secp256k1';
+import { Psbt, address as Address } from 'bitcoinjs-lib';
 
 import { Blockchains } from '../../models/blockchains';
 import { BitcoinConfig } from '../../models/config';
@@ -35,36 +38,43 @@ class TxOut {
 })
 export class BitcoinService implements IBlockchainClient {
 
-  bitcore = require('bitcore-lib');
+  private conversionRate = 100000000;
 
   constructor(protected config: ConfigService, protected httpClient: HttpClient) { }
 
   async buildRawTx(tx: Transaction): Promise<string> {
     const btx = tx as BitcoinTransaction;
-    const btcTx = new this.bitcore.Transaction()
-      .from(btx.utxos.map(u => {
-        return new this.bitcore.Transaction.UnspentOutput({
-          script: new this.bitcore.Script(u.script),
-          address: u.address,
-          outputIndex: u.outputIndex,
-          txId: u.txId,
-          satoshis: u.value,
-        });
-      }))
-      .to(btx.to, this.bitcore.Unit.fromBTC(btx.amount).toSatoshis())
-      .change(btx.from)
-      .fee(btx.feeOrGas);
+    const btcTx = new Psbt();
+    btx.utxos.forEach(u => {
+      btcTx.addInput({
+        hash: u.txId,
+        index: u.outputIndex,
+        witnessUtxo: {
+          value: u.value,
+          script: Buffer.from(u.script, 'hex'),
+        },
+      });
+    });
+    btcTx.addOutput({
+      address: btx.to,
+      value: (btx.amount * this.conversionRate),
+    });
+    btcTx.addOutput({
+      address: btx.to,
+      value: btx.utxos.map(u => u.value).reduce((u1, u2) => u1 + u2) - (btx.amount * this.conversionRate) - btx.feeOrGas,
+    });
 
-    return btcTx.serialize();
+    return btcTx.toHex();
   }
 
   async signRawTx(rawTx: string, pk: string): Promise<string> {
-    const cfg = this.getConfig();
-    const tx = new this.bitcore.Transaction(rawTx);
-    const key = new this.bitcore.PrivateKey(pk, cfg.isMainnet ? this.bitcore.Networks.mainnet : this.bitcore.Networks.testnet);
-    tx.sign(key);
+    const ECPair = ECPairFactory(ecc);
+    const key = ECPair.fromPrivateKey(Buffer.from(pk));
+    const tx = Psbt.fromHex(rawTx);
+    await tx.signAllInputsAsync(key);
+    tx.finalizeAllInputs();
 
-    return await Promise.resolve(tx.serialize());
+    return tx.toHex();
   }
 
   async submitSignedTx(rawTx: string): Promise<string> {
@@ -78,7 +88,7 @@ export class BitcoinService implements IBlockchainClient {
 
   async isAddressValid(address: string): Promise<boolean> {
     try {
-      new this.bitcore.Address(address)
+      Address.fromBech32(address)
       return await Promise.resolve(true);
     } catch {
       return await Promise.resolve(false);;
@@ -108,7 +118,7 @@ export class BitcoinService implements IBlockchainClient {
   async getBalance(address: string, contractAddress?: string): Promise<number> {
     var result = await this.getAccount(address);
 
-    return this.bitcore.Unit.fromSatoshis(result.final_balance).toBTC();
+    return result.final_balance / this.conversionRate;
   }
 
   getMinFeeOrGas(): number {

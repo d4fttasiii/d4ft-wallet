@@ -63,10 +63,12 @@
     "@substrate/txwrapper-polkadot": "2.0.2",
     "@terra-money/terra.js": "3.0.11",
     "animate.css": "4.1.1",
-    "bitcore-lib": "8.25.25",
+    "bitcoinjs-lib": "6.0.1",
     "bs58": "5.0.0",
+    "ecpair": "2.0.1",
     "rxjs": "7.5.0",
     "stellar-sdk": "10.0.1",
+    "tiny-secp256k1": "2.2.1",
     "tslib": "^2.1.0",
     "web3": "1.7.3",
     "zone.js": "~0.11.4"
