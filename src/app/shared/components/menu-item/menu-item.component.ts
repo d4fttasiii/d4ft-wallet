@@ -9,6 +9,7 @@ import { MenuItem } from '../../../core/models/menu-item';
   styleUrls: ['./menu-item.component.scss']
 })
 export class MenuItemComponent {
+
   @Input() item: MenuItem;
   @Output() navigated = new EventEmitter();
 

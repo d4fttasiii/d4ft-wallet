@@ -16,6 +16,7 @@ export class AppComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSidenav)
   sidenav!: MatSidenav;
   menuItems: MenuItem[];
+  isSideNaveOpen = false;
 
   constructor(
     private electronService: ElectronService,
@@ -37,12 +38,12 @@ export class AppComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
     this.menuItems = [
-      {
-        icon: 'fa-wallet',
-        label: 'Wallet',
-        route: 'wallet',
-        isDisabled: () => true,
-      },
+      // {
+      //   icon: 'fa-wallet',
+      //   label: 'Wallet',
+      //   route: 'wallet',
+      //   isDisabled: () => true,
+      // },
       {
         icon: 'fa-trowel-bricks',
         label: 'Tx Builder',
@@ -79,5 +80,9 @@ export class AppComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit(): void {
     this.sidenav.close();
+  }
+
+  sideNavOpened(open: boolean) {
+    this.isSideNaveOpen = open;
   }
 }

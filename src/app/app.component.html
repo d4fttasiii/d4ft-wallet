@@ -1,12 +1,15 @@
 <mat-toolbar class="mat-elevation-z8">
     <button mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon fontSet="fa" fontIcon="fa-bars"></mat-icon>
+        <div class="navTrigger" [class.active]="isSideNaveOpen">
+            <i></i><i></i><i></i>
+        </div>
     </button>
-    <strong class="mg-l2">D4FT Wallet</strong>
+    <strong class="mg-l2">D4FT Wallet</strong>   
 </mat-toolbar>
 
 <mat-sidenav-container>
-    <mat-sidenav #sidenav="matSidenav" class="mat-elevation-z8" mode="side">
+    <mat-sidenav #sidenav="matSidenav" class="mat-elevation-z8" mode="side" (openedChange)="sideNavOpened($event)">
+        <mat-divider></mat-divider>
         <app-menu [items]="menuItems" (navigated)="sidenav.toggle()"></app-menu>
     </mat-sidenav>
     <mat-sidenav-content>

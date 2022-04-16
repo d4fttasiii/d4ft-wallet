@@ -25,6 +25,7 @@ import { LoadingButtonComponent } from './components/loading-button/loading-butt
 import { MenuItemComponent } from './components/menu-item/menu-item.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { CopyClipboardDirective, WebviewDirective } from './directives/';
+import { CybrBtnComponent } from './components/cybr-btn/cybr-btn.component';
 
 const MAT_MODULES = [
   MatIconModule,
@@ -54,7 +55,8 @@ const MAT_MODULES = [
     CopyClipboardDirective,
     MenuComponent,
     MenuItemComponent,
-    LoadingButtonComponent
+    LoadingButtonComponent,
+    CybrBtnComponent,
   ],
   imports: [
     CommonModule,
@@ -71,6 +73,7 @@ const MAT_MODULES = [
     ...MAT_MODULES,
     MenuComponent,
     LoadingButtonComponent,
+    CybrBtnComponent,
   ],
 })
 export class SharedModule { }

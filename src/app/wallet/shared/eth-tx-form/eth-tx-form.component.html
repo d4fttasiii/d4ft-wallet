@@ -1,6 +1,6 @@
 <div class="animate__animated animate__fadeIn" *ngIf="ethTx">
     <div class="mg-b4">
-        <mat-radio-group color="primary" [(ngModel)]="ethTx.txMode">
+        <mat-radio-group color="accent" [(ngModel)]="ethTx.txMode">
             <mat-radio-button class="mg-r2" *ngFor="let txMode of [0,1]" [value]="txMode">
                 {{EthTxMode[txMode]}}
             </mat-radio-button>

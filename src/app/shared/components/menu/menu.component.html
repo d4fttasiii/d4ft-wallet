@@ -1,7 +1,7 @@
 <div class="menu">
     <app-menu-item *ngFor="let item of items" [item]="item" (navigated)="emitNavigated()"></app-menu-item>
     <div class="menu-bottom">
-        <mat-slide-toggle color="warn" [checked]="isOffline()" (toggleChange)="toggleMode()">Offline mode enabled
+        <mat-slide-toggle color="accent" [checked]="isOffline()" (toggleChange)="toggleMode()">Offline mode enabled
         </mat-slide-toggle>
     </div>
 </div>

@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
-import { EthTxMode } from "../../../core/models/eth-tx-mode";
-import { EthTransaction } from "../../../core/models/eth-transaction";
+import { EthTransaction } from '../../../core/models/eth-transaction';
+import { EthTxMode } from '../../../core/models/eth-tx-mode';
+import { IBlockchainClient } from '../../../core/services/blockchain/blockchain-client';
 import { EthereumService } from '../../../core/services/blockchain/ethereum.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { EthereumService } from '../../../core/services/blockchain/ethereum.serv
 })
 export class EthTxFormComponent implements OnChanges {
 
-  @Input() client: EthereumService;
+  @Input() client: IBlockchainClient;
   @Output() rawTxBuilt = new EventEmitter<string>();
 
   EthTxMode = EthTxMode;
@@ -52,7 +53,7 @@ export class EthTxFormComponent implements OnChanges {
     this.isLoading = true;
     const q = this.ethTx.txMode === EthTxMode.Native ?
       this.client.buildRawTx(this.ethTx) :
-      this.client.buildRawErc20Tx(this.ethTx);
+      (this.client as EthereumService).buildRawErc20Tx(this.ethTx);
 
     q.then(rawTx => this.rawTxBuilt.emit(rawTx))
       .catch(error => console.error(error))

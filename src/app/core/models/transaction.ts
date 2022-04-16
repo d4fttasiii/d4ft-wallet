@@ -5,7 +5,7 @@ export class Transaction {
     feeOrGas: number;
     memo?: string;
 
-    protected isInvalid(): boolean {
+    isInvalid(): boolean {
         return !this.from || !this.to || !this.amount || !this.feeOrGas;
     }
 }

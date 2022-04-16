@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { IBlockchainClient } from '../../../core/services/blockchain/blockchain-client';
 
 @Component({
   selector: 'app-btc-tx-form',
@@ -6,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./btc-tx-form.component.scss']
 })
 export class BtcTxFormComponent implements OnInit {
+
+  @Input() client: IBlockchainClient;
+  @Output() rawTxBuilt = new EventEmitter<string>();
 
   constructor() { }
 

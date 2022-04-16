@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import * as bitcore from 'bitcore-lib';
 
 import { Blockchains } from '../../models/blockchains';
 import { BitcoinConfig } from '../../models/config';
@@ -36,21 +35,23 @@ class TxOut {
 })
 export class BitcoinService implements IBlockchainClient {
 
+  bitcore = require('bitcore-lib');
+
   constructor(protected config: ConfigService, protected httpClient: HttpClient) { }
 
   async buildRawTx(tx: Transaction): Promise<string> {
     const btx = tx as BitcoinTransaction;
-    const btcTx = new bitcore.Transaction()
+    const btcTx = new this.bitcore.Transaction()
       .from(btx.utxos.map(u => {
-        return new bitcore.Transaction.UnspentOutput({
-          script: new bitcore.Script(u.script),
+        return new this.bitcore.Transaction.UnspentOutput({
+          script: new this.bitcore.Script(u.script),
           address: u.address,
           outputIndex: u.outputIndex,
           txId: u.txId,
           satoshis: u.value,
         });
       }))
-      .to(btx.to, bitcore.Unit.fromBTC(btx.amount).toSatoshis())
+      .to(btx.to, this.bitcore.Unit.fromBTC(btx.amount).toSatoshis())
       .change(btx.from)
       .fee(btx.feeOrGas);
 
@@ -59,8 +60,8 @@ export class BitcoinService implements IBlockchainClient {
 
   async signRawTx(rawTx: string, pk: string): Promise<string> {
     const cfg = this.getConfig();
-    const tx = new bitcore.Transaction(rawTx);
-    const key = new bitcore.PrivateKey(pk, cfg.isMainnet ? bitcore.Networks.mainnet : bitcore.Networks.testnet);
+    const tx = new this.bitcore.Transaction(rawTx);
+    const key = new this.bitcore.PrivateKey(pk, cfg.isMainnet ? this.bitcore.Networks.mainnet : this.bitcore.Networks.testnet);
     tx.sign(key);
 
     return await Promise.resolve(tx.serialize());
@@ -77,7 +78,7 @@ export class BitcoinService implements IBlockchainClient {
 
   async isAddressValid(address: string): Promise<boolean> {
     try {
-      new bitcore.Address(address)
+      new this.bitcore.Address(address)
       return await Promise.resolve(true);
     } catch {
       return await Promise.resolve(false);;
@@ -107,7 +108,7 @@ export class BitcoinService implements IBlockchainClient {
   async getBalance(address: string, contractAddress?: string): Promise<number> {
     var result = await this.getAccount(address);
 
-    return bitcore.Unit.fromSatoshis(result.final_balance).toBTC();
+    return this.bitcore.Unit.fromSatoshis(result.final_balance).toBTC();
   }
 
   getMinFeeOrGas(): number {

@@ -4,10 +4,8 @@
         <mat-card-subtitle>Please select the in which mode you would like to use the application!</mat-card-subtitle>
         <mat-card-content>
             <div class="full-width ta-c">
-                <button class="mg-2" type="button" mat-raised-button color="warn"
-                    (click)="selectOffline()">Offline</button>
-                <button class="mg-2" type="button" mat-raised-button color="primary"
-                    (click)="selectOnline()">Online</button>
+                <app-cybr-btn class="mg-2" (clicked)="selectOffline()" label="Offline" color="warn"></app-cybr-btn>
+                <app-cybr-btn class="mg-2" (clicked)="selectOnline()" label="Online" color="primary"></app-cybr-btn>
             </div>
         </mat-card-content>
     </mat-card>

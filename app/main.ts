@@ -24,23 +24,6 @@ function createWindow(): BrowserWindow {
     icon: 'dist/assets/icons/favicon.png'
   });
 
-  var splash = new BrowserWindow({ 
-    width: 500, 
-    height: 300, 
-    transparent: true, 
-    frame: false, 
-    alwaysOnTop: true 
-  });
-  
-  splash.loadFile('splash.html');
-  splash.center();
-  setTimeout(function () {
-    splash.close();
-    win.center();
-    win.show();
-  }, 5000);
-
-
   if (serve) {
     win.webContents.openDevTools();
     require('electron-reload')(__dirname, {

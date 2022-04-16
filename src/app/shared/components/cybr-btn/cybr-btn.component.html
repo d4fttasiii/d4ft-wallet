@@ -1,0 +1,10 @@
+<button mat-raised-button [color]="color" [disabled]="isDisabled" [class.full-width]="fullWidth"
+    (click)="click()">
+    <div class="container">
+      <div class="stack" style="--stacks: 3;">
+        <span *ngFor="let i of [0,1,2]" style="--index: {{i}};">
+          <mat-icon class="mg-r2" *ngIf="faIcon" fontSet="fa" [fontIcon]="faIcon"></mat-icon>{{ label }}
+        </span>
+      </div>
+    </div>
+  </button>
