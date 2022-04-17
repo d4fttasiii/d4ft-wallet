@@ -5,7 +5,7 @@
     <mat-error *ngIf="addressFormControl.hasError('required')">
         Address is required!
     </mat-error>
-    <mat-error *ngIf="hasValidated && !isValid">
+    <mat-error *ngIf="address.value && hasValidated && !isValid">
         Address is invalid!
     </mat-error>
     <mat-hint align="start" *ngIf="isLoading">Loading... <i class="fa-solid fa-spinner fa-spin"></i></mat-hint>

@@ -12,11 +12,14 @@ export class Transaction {
 
 export class BitcoinTransaction extends Transaction {
     utxos: Utxo[];
+
+    isInvalid(): boolean {
+        return false; // super.isInvalid() && (this.utxos.length === 0);
+    }
 }
 
 export class Utxo {
     txId: string;
-    address: string;
     outputIndex: number;
     script: string;
     value: number;

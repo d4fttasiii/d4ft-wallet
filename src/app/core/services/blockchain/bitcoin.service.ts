@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { address as Address, payments, Psbt, networks } from 'bitcoinjs-lib';
 import ECPairFactory from 'ecpair';
 import * as ecc from 'tiny-secp256k1';
-import { Psbt, address as Address } from 'bitcoinjs-lib';
 
 import { Blockchains } from '../../models/blockchains';
 import { BitcoinConfig } from '../../models/config';
@@ -13,23 +13,27 @@ import { IBlockchainClient } from './blockchain-client';
 class Account {
   address: string;
   final_balance: number;
-  txrefs: TxRef[]
+  txrefs: TxRef[];
+  unconfirmed_txrefs: TxRef[];
 }
 
 class TxRef {
   tx_hash: string;
   tx_output_n: number;
   value: number;
+  script: string;
 }
 
 class Tx {
   hash: string;
   outputs: TxOut[];
+  hex: string;
 }
 
 class TxOut {
   value: number;
   script: string;
+  script_type: string;
   addresses: string[];
 }
 
@@ -44,24 +48,37 @@ export class BitcoinService implements IBlockchainClient {
 
   async buildRawTx(tx: Transaction): Promise<string> {
     const btx = tx as BitcoinTransaction;
-    const btcTx = new Psbt();
-    btx.utxos.forEach(u => {
-      btcTx.addInput({
-        hash: u.txId,
-        index: u.outputIndex,
-        witnessUtxo: {
-          value: u.value,
-          script: Buffer.from(u.script, 'hex'),
-        },
-      });
-    });
+    const cfg = this.getConfig();
+    const btcTx = new Psbt({ network: cfg.isMainnet ? networks.bitcoin : networks.testnet });
+
+    for (let i = 0; i < btx.utxos.length; i++) {
+      const utxo = btx.utxos[i];
+      const prevTx = await this.getTransaction(utxo.txId);
+      if (prevTx.outputs[utxo.outputIndex].script_type === 'pay-to-pubkey-hash') {
+        btcTx.addInput({
+          hash: utxo.txId,
+          index: utxo.outputIndex,
+          nonWitnessUtxo: Buffer.from(prevTx.hex, 'hex'),
+        });
+      } else {
+        btcTx.addInput({
+          hash: utxo.txId,
+          index: utxo.outputIndex,
+          witnessUtxo: {
+            value: utxo.value,
+            script: Buffer.from(utxo.script, 'hex'),
+          },
+        });
+      }
+    }
     btcTx.addOutput({
       address: btx.to,
       value: (btx.amount * this.conversionRate),
     });
+    const change = btx.utxos.map(u => u.value).reduce((u1, u2) => u1 + u2) - (btx.amount * this.conversionRate) - btx.feeOrGas;
     btcTx.addOutput({
-      address: btx.to,
-      value: btx.utxos.map(u => u.value).reduce((u1, u2) => u1 + u2) - (btx.amount * this.conversionRate) - btx.feeOrGas,
+      address: btx.from,
+      value: change,
     });
 
     return btcTx.toHex();
@@ -69,12 +86,12 @@ export class BitcoinService implements IBlockchainClient {
 
   async signRawTx(rawTx: string, pk: string): Promise<string> {
     const ECPair = ECPairFactory(ecc);
-    const key = ECPair.fromPrivateKey(Buffer.from(pk));
-    const tx = Psbt.fromHex(rawTx);
-    await tx.signAllInputsAsync(key);
-    tx.finalizeAllInputs();
+    const key = ECPair.fromWIF(pk);
+    const pbst = Psbt.fromHex(rawTx);
+    pbst.signAllInputs(key);
+    pbst.finalizeAllInputs();
 
-    return tx.toHex();
+    return pbst.extractTransaction().toHex();
   }
 
   async submitSignedTx(rawTx: string): Promise<string> {
@@ -83,12 +100,13 @@ export class BitcoinService implements IBlockchainClient {
     const options = { headers: new HttpHeaders().set('Content-Type', 'text/plain') };
     const result = await this.httpClient.post(cfg.url, payload, options).toPromise();
 
-    return result.toString();
+    return JSON.stringify(result);
   }
 
   async isAddressValid(address: string): Promise<boolean> {
     try {
-      Address.fromBech32(address)
+      const cfg = this.getConfig();
+      Address.toOutputScript(address, cfg.isMainnet ? networks.bitcoin : networks.testnet);
       return await Promise.resolve(true);
     } catch {
       return await Promise.resolve(false);;
@@ -101,13 +119,22 @@ export class BitcoinService implements IBlockchainClient {
     if (account.txrefs) {
       for (let i = 0; i < account.txrefs.length; i++) {
         const txRef = account.txrefs[i];
-        const tx = await this.getTransaction(txRef.tx_hash);
         utxos.push({
-          address: tx.outputs[txRef.tx_output_n].addresses[0],
           outputIndex: txRef.tx_output_n,
-          script: tx.outputs[txRef.tx_output_n].script,
-          txId: tx.hash,
-          value: tx.outputs[txRef.tx_output_n].value,
+          script: txRef.script,
+          txId: txRef.tx_hash,
+          value: txRef.value,
+        });
+      }
+    }
+    if (account.unconfirmed_txrefs) {
+      for (let i = 0; i < account.unconfirmed_txrefs.length; i++) {
+        const txRef = account.unconfirmed_txrefs[i];
+        utxos.push({
+          outputIndex: txRef.tx_output_n,
+          script: txRef.script,
+          txId: txRef.tx_hash,
+          value: txRef.value,
         });
       }
     }
@@ -127,7 +154,7 @@ export class BitcoinService implements IBlockchainClient {
 
   protected async getAccount(address: string): Promise<Account> {
     const cfg = this.getConfig();
-    const url = `${cfg.blockcypherUrl}/addrs/${address}?unspentOnly=true`;
+    const url = `${cfg.blockcypherUrl}/addrs/${address}?unspentOnly=true&includeScript=true`;
     const result = await this.httpClient.get(url).toPromise();
 
     return result as Account;
@@ -135,7 +162,7 @@ export class BitcoinService implements IBlockchainClient {
 
   protected async getTransaction(txId: string): Promise<Tx> {
     const cfg = this.getConfig();
-    const url = `${cfg.blockcypherUrl}/txs/${txId}`;
+    const url = `${cfg.blockcypherUrl}/txs/${txId}?includeHex=true`;
     const tx = await this.httpClient.get(url).toPromise();
 
     return tx as Tx;

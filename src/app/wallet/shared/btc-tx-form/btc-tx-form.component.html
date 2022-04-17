@@ -1,1 +1,17 @@
-<p>btc-tx-form works!</p>
+<div class="animate__animated animate__fadeIn" *ngIf="client">
+    <app-address-bar label="Transferring from" [client]="client" (addressChanged)="setFrom($event)"></app-address-bar>
+    <app-amount-bar [client]="client" [address]="tx.from" (amountChanged)="setAmount($event)">
+    </app-amount-bar>
+    <app-address-bar label="Transferring to" [client]="client" (addressChanged)="setTo($event)">
+    </app-address-bar>
+    <mat-form-field class="full-width mg-b2" appearance="fill">
+        <mat-label>Transaction fee</mat-label>
+        <input type="number" matInput name="feeOrGas" required [min]="minFeeOrGas" [(ngModel)]="tx.feeOrGas" />
+        <mat-hint align="start">Transaction fee in satoshies.</mat-hint>
+    </mat-form-field>
+    <app-utxo-selector [address]="tx.from" (selectionChanged)="setUtxos($event)" [client]="client"></app-utxo-selector>
+</div>
+<div class="ta-r">
+    <app-loading-button label="Build" [isDisabled]="tx.isInvalid()" [isLoading]="isLoading" (clicked)="build()">
+    </app-loading-button>
+</div>

@@ -10,41 +10,21 @@
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
-                                    <mat-icon svgIcon="blockchain_xlm"></mat-icon>
+                                    <mat-icon svgIcon="blockchain_avax"></mat-icon>
                                 </mat-panel-title>
                                 <mat-panel-description>
-                                    Stellar
+                                    Avalanche C-Chain
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Node url</mat-label>
-                                <input matInput type="url" name="xlm-url" required
-                                    placeholder="https://horizon.stellar.org" [(ngModel)]="config.stellar.url" />
-                            </mat-form-field>
-                            <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Network phrase</mat-label>
-                                <input matInput type="text" name="xlm-np" required
-                                    [(ngModel)]="config.stellar.networkPhrase" />
-                            </mat-form-field>
-                        </mat-expansion-panel>
-                        <mat-expansion-panel>
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    <mat-icon svgIcon="blockchain_eth"></mat-icon>
-                                </mat-panel-title>
-                                <mat-panel-description>
-                                    Ethereum
-                                </mat-panel-description>
-                            </mat-expansion-panel-header>
-                            <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Node url</mat-label>
-                                <input matInput type="url" name="eth-url" required placeholder="http://localhost:7545"
-                                    [(ngModel)]="config.ethereum.url" />
+                                <input matInput type="url" name="avax-url" required placeholder="http://localhost:7545"
+                                    [(ngModel)]="config.avalanche.url" />
                             </mat-form-field>
                             <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Chain id</mat-label>
-                                <input matInput type="number" name="eth-chainId" required
-                                    [(ngModel)]="config.ethereum.chainId" />
+                                <input matInput type="number" name="avax-chainId" required
+                                    [(ngModel)]="config.avalanche.chainId" />
                             </mat-form-field>
                         </mat-expansion-panel>
                         <mat-expansion-panel>
@@ -70,41 +50,46 @@
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
-                                    <mat-icon svgIcon="blockchain_matic"></mat-icon>
+                                    <mat-icon svgIcon="blockchain_btc"></mat-icon>
                                 </mat-panel-title>
                                 <mat-panel-description>
-                                    Polygon
+                                    Bitcoin
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Node url</mat-label>
-                                <input matInput type="url" name="matic-url" required placeholder="http://localhost:7545"
-                                    [(ngModel)]="config.polygon.url" />
+                                <input matInput type="url" name="btc-url" required placeholder="http://localhost:7545"
+                                    [(ngModel)]="config.bitcoin.url" />
                             </mat-form-field>
                             <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Chain id</mat-label>
-                                <input matInput type="number" name="matic-chainId" required
-                                    [(ngModel)]="config.polygon.chainId" />
+                                <mat-label>Blockcypher Url</mat-label>
+                                <input matInput type="url" name="btc-blockcypherUrl" required
+                                    [(ngModel)]="config.bitcoin.blockcypherUrl" />
                             </mat-form-field>
+                            <div class="full-width">
+                                <mat-checkbox name="btc-isMainnet" [(ngModel)]="config.bitcoin.isMainnet">
+                                    Is Mainnet
+                                </mat-checkbox>
+                            </div>
                         </mat-expansion-panel>
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
-                                    <mat-icon svgIcon="blockchain_avax"></mat-icon>
+                                    <mat-icon svgIcon="blockchain_eth"></mat-icon>
                                 </mat-panel-title>
                                 <mat-panel-description>
-                                    Avalanche C-Chain
+                                    Ethereum
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Node url</mat-label>
-                                <input matInput type="url" name="avax-url" required placeholder="http://localhost:7545"
-                                    [(ngModel)]="config.avalanche.url" />
+                                <input matInput type="url" name="eth-url" required placeholder="http://localhost:7545"
+                                    [(ngModel)]="config.ethereum.url" />
                             </mat-form-field>
                             <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Chain id</mat-label>
-                                <input matInput type="number" name="avax-chainId" required
-                                    [(ngModel)]="config.avalanche.chainId" />
+                                <input matInput type="number" name="eth-chainId" required
+                                    [(ngModel)]="config.ethereum.chainId" />
                             </mat-form-field>
                         </mat-expansion-panel>
                         <mat-expansion-panel>
@@ -130,6 +115,51 @@
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_ltc"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Litecoin
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Node url</mat-label>
+                                <input matInput type="url" name="ltc-url" required placeholder="http://localhost:7545"
+                                    [(ngModel)]="config.litecoin.url" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Blockcypher Url</mat-label>
+                                <input matInput type="url" name="ltc-blockcypherUrl" required
+                                    [(ngModel)]="config.litecoin.blockcypherUrl" />
+                            </mat-form-field>
+                            <div class="full-width">
+                                <mat-checkbox name="ltc-isMainnet" [(ngModel)]="config.litecoin.isMainnet">
+                                    Is Mainnet
+                                </mat-checkbox>
+                            </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_matic"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Polygon
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Node url</mat-label>
+                                <input matInput type="url" name="matic-url" required placeholder="http://localhost:7545"
+                                    [(ngModel)]="config.polygon.url" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Chain id</mat-label>
+                                <input matInput type="number" name="matic-chainId" required
+                                    [(ngModel)]="config.polygon.chainId" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
                                     <mat-icon svgIcon="blockchain_sol"></mat-icon>
                                 </mat-panel-title>
                                 <mat-panel-description>
@@ -143,6 +173,26 @@
                                         {{ cluster }}
                                     </mat-option>
                                 </mat-select>
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_xlm"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Stellar
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Node url</mat-label>
+                                <input matInput type="url" name="xlm-url" required
+                                    placeholder="https://horizon.stellar.org" [(ngModel)]="config.stellar.url" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Network phrase</mat-label>
+                                <input matInput type="text" name="xlm-np" required
+                                    [(ngModel)]="config.stellar.networkPhrase" />
                             </mat-form-field>
                         </mat-expansion-panel>
                         <mat-expansion-panel>
