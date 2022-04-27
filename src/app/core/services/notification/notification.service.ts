@@ -20,7 +20,7 @@ export class NotificationService {
     this.snackBar.open(message, action || 'OK', {
       horizontalPosition: 'right',
       verticalPosition: 'bottom',
-
+      panelClass: 'snackbar-error',
     });
   }
 

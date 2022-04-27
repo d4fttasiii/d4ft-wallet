@@ -4,6 +4,7 @@ import { fromBech32, HarmonyAddress } from '@harmony-js/crypto';
 import { Blockchains } from '../../models/blockchains';
 import { EthereumConfig } from '../../models/config';
 import { ConfigService } from '../config/config.service';
+import { NotificationService } from '../notification/notification.service';
 import { EthereumService } from './ethereum.service';
 
 @Injectable({
@@ -11,8 +12,8 @@ import { EthereumService } from './ethereum.service';
 })
 export class HarmonyService extends EthereumService {
 
-  constructor(protected config: ConfigService) {
-    super(config);
+  constructor(protected config: ConfigService, protected notification: NotificationService) {
+    super(config, notification);
   }
   
   protected override addressToPublicKey(address: string): string {

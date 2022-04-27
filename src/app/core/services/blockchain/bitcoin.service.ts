@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { address as Address, payments, Psbt, networks } from 'bitcoinjs-lib';
 import ECPairFactory from 'ecpair';
 import * as ecc from 'tiny-secp256k1';
-
 import { Blockchains } from '../../models/blockchains';
+
 import { BitcoinConfig } from '../../models/config';
 import { BitcoinTransaction, Transaction, Utxo } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
-import { IBlockchainClient } from './blockchain-client';
+import { NotificationService } from '../notification/notification.service';
+import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
 
 class Account {
   address: string;
@@ -40,67 +41,76 @@ class TxOut {
 @Injectable({
   providedIn: 'root'
 })
-export class BitcoinService implements IBlockchainClient {
+export class BitcoinService extends BaseBlockchainClient implements IBlockchainClient {
 
   private conversionRate = 100000000;
 
-  constructor(protected config: ConfigService, protected httpClient: HttpClient) { }
+  constructor(protected config: ConfigService, protected httpClient: HttpClient, protected notification: NotificationService) {
+    super(notification);
+  }
 
   async buildRawTx(tx: Transaction): Promise<string> {
-    const btx = tx as BitcoinTransaction;
-    const cfg = this.getConfig();
-    const btcTx = new Psbt({ network: cfg.isMainnet ? networks.bitcoin : networks.testnet });
+    return await this.tryExecuteAsync(async () => {
+      const btx = tx as BitcoinTransaction;
+      const cfg = this.getConfig();
+      const btcTx = new Psbt({ network: cfg.isMainnet ? networks.bitcoin : networks.testnet });
 
-    for (let i = 0; i < btx.utxos.length; i++) {
-      const utxo = btx.utxos[i];
-      const prevTx = await this.getTransaction(utxo.txId);
-      if (prevTx.outputs[utxo.outputIndex].script_type === 'pay-to-pubkey-hash') {
-        btcTx.addInput({
-          hash: utxo.txId,
-          index: utxo.outputIndex,
-          nonWitnessUtxo: Buffer.from(prevTx.hex, 'hex'),
-        });
-      } else {
-        btcTx.addInput({
-          hash: utxo.txId,
-          index: utxo.outputIndex,
-          witnessUtxo: {
-            value: utxo.value,
-            script: Buffer.from(utxo.script, 'hex'),
-          },
-        });
+      for (let i = 0; i < btx.utxos.length; i++) {
+        const utxo = btx.utxos[i];
+        const prevTx = await this.getTransaction(utxo.txId);
+        if (prevTx.outputs[utxo.outputIndex].script_type === 'pay-to-pubkey-hash') {
+          btcTx.addInput({
+            hash: utxo.txId,
+            index: utxo.outputIndex,
+            nonWitnessUtxo: Buffer.from(prevTx.hex, 'hex'),
+          });
+        } else {
+          btcTx.addInput({
+            hash: utxo.txId,
+            index: utxo.outputIndex,
+            witnessUtxo: {
+              value: utxo.value,
+              script: Buffer.from(utxo.script, 'hex'),
+            },
+          });
+        }
       }
-    }
-    btcTx.addOutput({
-      address: btx.to,
-      value: (btx.amount * this.conversionRate),
+      const toTransfer = Math.floor((btx.amount * this.conversionRate));
+      const utxoSum = btx.utxos.map(u => u.value).reduce((u1, u2) => u1 + u2);
+      const change = utxoSum - toTransfer - btx.feeOrGas;
+      btcTx.addOutput({
+        address: btx.to,
+        value: toTransfer,
+      });
+      btcTx.addOutput({
+        address: btx.from,
+        value: change,
+      });
+      return btcTx.toHex();
     });
-    const change = btx.utxos.map(u => u.value).reduce((u1, u2) => u1 + u2) - (btx.amount * this.conversionRate) - btx.feeOrGas;
-    btcTx.addOutput({
-      address: btx.from,
-      value: change,
-    });
-
-    return btcTx.toHex();
   }
 
   async signRawTx(rawTx: string, pk: string): Promise<string> {
-    const ECPair = ECPairFactory(ecc);
-    const key = ECPair.fromWIF(pk);
-    const pbst = Psbt.fromHex(rawTx);
-    pbst.signAllInputs(key);
-    pbst.finalizeAllInputs();
+    return this.tryExecute(() => {
+      const ECPair = ECPairFactory(ecc);
+      const key = ECPair.fromWIF(pk);
+      const pbst = Psbt.fromHex(rawTx);
+      pbst.signAllInputs(key);
+      pbst.finalizeAllInputs();
 
-    return pbst.extractTransaction().toHex();
+      return pbst.extractTransaction().toHex();
+    });
   }
 
   async submitSignedTx(rawTx: string): Promise<string> {
-    const cfg = this.getConfig();
-    const payload = `{"jsonrpc": "1.0", "id": "curltest", "method": "sendrawtransaction", "params": ["${rawTx}"]}`;
-    const options = { headers: new HttpHeaders().set('Content-Type', 'text/plain') };
-    const result = await this.httpClient.post(cfg.url, payload, options).toPromise();
+    return await this.tryExecuteAsync(async () => {
+      const cfg = this.getConfig();
+      const payload = `{"jsonrpc": "1.0", "id": "curltest", "method": "sendrawtransaction", "params": ["${rawTx}"]}`;
+      const options = { headers: new HttpHeaders().set('Content-Type', 'text/plain') };
+      const result = await this.httpClient.post(cfg.url, payload, options).toPromise();
 
-    return JSON.stringify(result);
+      return JSON.stringify(result);
+    });
   }
 
   async isAddressValid(address: string): Promise<boolean> {
@@ -114,38 +124,41 @@ export class BitcoinService implements IBlockchainClient {
   }
 
   async getUtxos(address: string): Promise<Utxo[]> {
-    const account = await this.getAccount(address);
-    const utxos: Utxo[] = [];
-    if (account.txrefs) {
-      for (let i = 0; i < account.txrefs.length; i++) {
-        const txRef = account.txrefs[i];
-        utxos.push({
-          outputIndex: txRef.tx_output_n,
-          script: txRef.script,
-          txId: txRef.tx_hash,
-          value: txRef.value,
-        });
+    return await this.tryExecuteAsync(async () => {
+      const account = await this.getAccount(address);
+      const utxos: Utxo[] = [];
+      if (account.txrefs) {
+        for (let i = 0; i < account.txrefs.length; i++) {
+          const txRef = account.txrefs[i];
+          utxos.push({
+            outputIndex: txRef.tx_output_n,
+            script: txRef.script,
+            txId: txRef.tx_hash,
+            value: txRef.value,
+          });
+        }
       }
-    }
-    if (account.unconfirmed_txrefs) {
-      for (let i = 0; i < account.unconfirmed_txrefs.length; i++) {
-        const txRef = account.unconfirmed_txrefs[i];
-        utxos.push({
-          outputIndex: txRef.tx_output_n,
-          script: txRef.script,
-          txId: txRef.tx_hash,
-          value: txRef.value,
-        });
+      if (account.unconfirmed_txrefs) {
+        for (let i = 0; i < account.unconfirmed_txrefs.length; i++) {
+          const txRef = account.unconfirmed_txrefs[i];
+          utxos.push({
+            outputIndex: txRef.tx_output_n,
+            script: txRef.script,
+            txId: txRef.tx_hash,
+            value: txRef.value,
+          });
+        }
       }
-    }
 
-    return utxos;
+      return utxos;
+    });
   }
 
   async getBalance(address: string, contractAddress?: string): Promise<number> {
-    var result = await this.getAccount(address);
-
-    return result.final_balance / this.conversionRate;
+    return await this.tryExecuteAsync(async () => {
+      var result = await this.getAccount(address);
+      return result.final_balance / this.conversionRate;
+    });
   }
 
   getMinFeeOrGas(): number {

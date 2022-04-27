@@ -37,7 +37,7 @@ export class UtxoSelectorComponent implements OnChanges {
   }
 
   isAllSelected(): boolean {
-    return this.dataSource.data.some(u => !u.isSelected);
+    return this.dataSource.data.every(u => u.isSelected);
   }
 
   isAnySelected(): boolean {
@@ -62,7 +62,10 @@ export class UtxoSelectorComponent implements OnChanges {
     this.isLoading = true;
     (this.client as BitcoinService).getUtxos(this.address)
       .then(utxos => {
-        this.dataSource = new MatTableDataSource(utxos as SelectableUtxo[]);
+        this.dataSource = new MatTableDataSource();
+        utxos.forEach(u => {
+          this.dataSource.data.push(u as SelectableUtxo);
+        });
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       })

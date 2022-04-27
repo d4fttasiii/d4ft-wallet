@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Coins, Fee, LCDClient, MsgSend, RawKey, SimplePublicKey, Tx } from '@terra-money/terra.js';
+
 import { Blockchains } from '../../models/blockchains';
 import { TerraConfig } from '../../models/config';
-
 import { Transaction } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
-import { IBlockchainClient } from './blockchain-client';
+import { NotificationService } from '../notification/notification.service';
+import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
 
 class TxInternal {
   from: string;
@@ -27,74 +28,81 @@ class FeeInternal {
 @Injectable({
   providedIn: 'root'
 })
-export class TerraService implements IBlockchainClient {
+export class TerraService extends BaseBlockchainClient implements IBlockchainClient {
 
   private convertionRate = 1000000;
 
-  constructor(private configService: ConfigService) { }
+  constructor(private configService: ConfigService, protected notification: NotificationService) {
+    super(notification);
+  }
 
   async buildRawTx(tx: Transaction): Promise<string> {
-    const ulunaAmount = tx.amount * this.convertionRate;
-    const client = this.getClient();
-    const accountInfo = await client.auth.accountInfo(tx.from);
-    const txInternal = {
-      from: tx.from,
-      to: tx.to,
-      ulunaAmount,
-      memo: tx.memo,
-      gas: tx.feeOrGas,
-      accountNumber: accountInfo.getAccountNumber(),
-      sequenceNumber: accountInfo.getSequenceNumber(),
-      chainId: client.config.chainID,
-    } as TxInternal;
-    const fee = await client.tx.estimateFee([{ sequenceNumber: txInternal.sequenceNumber }], {
-      msgs: [new MsgSend(
-        txInternal.from,
-        txInternal.to,
-        { uluna: txInternal.ulunaAmount },
-      )],
-      feeDenoms: ['uluna'],
-      gasAdjustment: 1.2,
-      gas: txInternal.gas.toString(),
-      memo: tx.memo,
-      fee: new Fee(txInternal.gas, { uluna: 50 })
-    });
-    txInternal.fee = {
-      gasLimit: fee.gas_limit,
-      amount: fee.amount.toString(),
-    };
+    return await this.tryExecuteAsync(async () => {
+      const ulunaAmount = tx.amount * this.convertionRate;
+      const client = this.getClient();
+      const accountInfo = await client.auth.accountInfo(tx.from);
+      const txInternal = {
+        from: tx.from,
+        to: tx.to,
+        ulunaAmount,
+        memo: tx.memo,
+        gas: tx.feeOrGas,
+        accountNumber: accountInfo.getAccountNumber(),
+        sequenceNumber: accountInfo.getSequenceNumber(),
+        chainId: client.config.chainID,
+      } as TxInternal;
+      const fee = await client.tx.estimateFee([{ sequenceNumber: txInternal.sequenceNumber }], {
+        msgs: [new MsgSend(
+          txInternal.from,
+          txInternal.to,
+          { uluna: txInternal.ulunaAmount },
+        )],
+        feeDenoms: ['uluna'],
+        gasAdjustment: 1.2,
+        gas: txInternal.gas.toString(),
+        memo: tx.memo,
+        fee: new Fee(txInternal.gas, { uluna: 50 })
+      });
+      txInternal.fee = {
+        gasLimit: fee.gas_limit,
+        amount: fee.amount.toString(),
+      };
 
-    return JSON.stringify(txInternal);
+      return JSON.stringify(txInternal);
+    });
   }
 
   async signRawTx(rawTx: string, pk: string): Promise<string> {
-    const txInternal = JSON.parse(rawTx) as TxInternal;
-    const key = new RawKey(Buffer.from(pk, 'hex'));
-    const client = this.getClient();
-    const wallet = client.wallet(key);
-    const signedTx = await wallet.createAndSignTx({
-      msgs: [new MsgSend(
-        txInternal.from,
-        txInternal.to,
-        { uluna: txInternal.ulunaAmount },
-      )],
-      memo: txInternal.memo,
-      sequence: txInternal.sequenceNumber,
-      accountNumber: txInternal.accountNumber,
-      signMode: 1,
-      fee: new Fee(txInternal.fee.gasLimit, Coins.fromString(txInternal.fee.amount)),
-    });
+    return await this.tryExecuteAsync(async () => {
+      const txInternal = JSON.parse(rawTx) as TxInternal;
+      const key = new RawKey(Buffer.from(pk, 'hex'));
+      const client = this.getClient();
+      const wallet = client.wallet(key);
+      const signedTx = await wallet.createAndSignTx({
+        msgs: [new MsgSend(
+          txInternal.from,
+          txInternal.to,
+          { uluna: txInternal.ulunaAmount },
+        )],
+        memo: txInternal.memo,
+        sequence: txInternal.sequenceNumber,
+        accountNumber: txInternal.accountNumber,
+        signMode: 1,
+        fee: new Fee(txInternal.fee.gasLimit, Coins.fromString(txInternal.fee.amount)),
+      });
 
-    return Buffer.from(signedTx.toBytes()).toString('hex');
+      return Buffer.from(signedTx.toBytes()).toString('hex');
+    });
   }
 
   async submitSignedTx(rawTx: string): Promise<string> {
-    const terra = this.getClient();
-    const tx = Tx.fromBuffer(Buffer.from(rawTx, 'hex'));
-    const result = await terra.tx.broadcast(tx);
+    return await this.tryExecuteAsync(async () => {
+      const terra = this.getClient();
+      const tx = Tx.fromBuffer(Buffer.from(rawTx, 'hex'));
+      const result = await terra.tx.broadcast(tx);
 
-
-    return result.txhash
+      return JSON.stringify(result);
+    });
   }
 
   async isAddressValid(address: string): Promise<boolean> {
