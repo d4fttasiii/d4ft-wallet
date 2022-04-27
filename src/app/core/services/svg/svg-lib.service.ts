@@ -57,6 +57,8 @@ export class SVGLibraryService {
                 return 'blockchain_btc';
             case Blockchains.Litecoin:
                 return 'blockchain_ltc';
+            case Blockchains.Algorand:
+                return 'blockchain_algo';
         }
     }
 }

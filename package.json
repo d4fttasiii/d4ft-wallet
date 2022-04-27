@@ -62,6 +62,7 @@
     "@solana/web3.js": "1.37.2",
     "@substrate/txwrapper-polkadot": "2.0.2",
     "@terra-money/terra.js": "3.0.11",
+    "algosdk": "1.15.0",
     "animate.css": "4.1.1",
     "bitcoinjs-lib": "6.0.1",
     "bs58": "5.0.0",

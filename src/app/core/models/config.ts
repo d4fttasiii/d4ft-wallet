@@ -11,6 +11,7 @@ export interface Config {
     terra: TerraConfig;
     bitcoin: BitcoinConfig;
     litecoin: BitcoinConfig;
+    algorand: AlgorandConfig;
 }
 
 export class EthereumConfig {
@@ -36,4 +37,11 @@ export class BitcoinConfig {
     url: string;
     blockcypherUrl: string;
     isMainnet: boolean;
+}
+
+export class AlgorandConfig {
+    algodServer: string;
+    algodPort: number;
+    indxrServer: string;
+    indxrPort: number;
 }

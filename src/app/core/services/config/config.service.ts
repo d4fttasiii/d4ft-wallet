@@ -55,6 +55,8 @@ export class ConfigService {
         return cfg.bitcoin;
       case Blockchains.Litecoin:
         return cfg.litecoin;
+      case Blockchains.Algorand:
+        return cfg.algorand;
     }
   }
 
@@ -157,6 +159,12 @@ export class ConfigService {
         blockcypherUrl: 'https://api.blockcypher.com/v1/ltc/main',
         isMainnet: false,
       },
+      algorand: {
+        algodServer: "http://localhost",
+        algodPort: 4001,
+        indxrServer: "http://localhost",
+        indxrPort: 8980,
+      }
     };
   }
 }
