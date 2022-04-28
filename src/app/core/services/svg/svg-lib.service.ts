@@ -59,6 +59,8 @@ export class SVGLibraryService {
                 return 'blockchain_ltc';
             case Blockchains.Algorand:
                 return 'blockchain_algo';
+            case Blockchains.Polkadot:
+                return 'blockchain_dot';
         }
     }
 }

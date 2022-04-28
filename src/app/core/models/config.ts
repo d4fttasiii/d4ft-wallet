@@ -12,6 +12,7 @@ export interface Config {
     bitcoin: BitcoinConfig;
     litecoin: BitcoinConfig;
     algorand: AlgorandConfig;
+    polkadot: PolkadotConfig;
 }
 
 export class EthereumConfig {
@@ -44,4 +45,8 @@ export class AlgorandConfig {
     algodPort: number;
     indxrServer: string;
     indxrPort: number;
+}
+
+export class PolkadotConfig {
+    wsUrl: string;
 }

@@ -10,4 +10,5 @@ export enum Blockchains {
   Bitcoin = 9,
   Litecoin = 10,
   Algorand = 11,
+  Polkadot = 12,
 }

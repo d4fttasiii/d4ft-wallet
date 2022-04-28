@@ -57,6 +57,8 @@ export class ConfigService {
         return cfg.litecoin;
       case Blockchains.Algorand:
         return cfg.algorand;
+      case Blockchains.Polkadot:
+        return cfg.polkadot;
     }
   }
 
@@ -164,6 +166,9 @@ export class ConfigService {
         algodPort: 4001,
         indxrServer: "http://localhost",
         indxrPort: 8980,
+      },
+      polkadot: {
+        wsUrl: 'wss://dot.getblock.io/mainnet/?api_key=8484a249-a86a-4c79-a157-d93923be38f3',
       }
     };
   }

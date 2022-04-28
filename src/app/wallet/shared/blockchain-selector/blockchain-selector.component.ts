@@ -32,8 +32,9 @@ export class BlockchainSelectorComponent implements OnInit {
     { blockchain: Blockchains.Terra, name: 'Terra' },
     { blockchain: Blockchains.Solana, name: 'Solana' },
     { blockchain: Blockchains.Bitcoin, name: 'Bitcoin' },
-    { blockchain: Blockchains.Litecoin, name: 'Litecoin' },    
+    { blockchain: Blockchains.Litecoin, name: 'Litecoin' },
     { blockchain: Blockchains.Algorand, name: 'Algorand' },
+    { blockchain: Blockchains.Polkadot, name: 'Polkadot' },
   ];
   resetDisabled = false;
 

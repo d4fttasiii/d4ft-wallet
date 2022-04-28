@@ -9,6 +9,7 @@ import { IBlockchainClient } from './blockchain-client';
 import { EthereumService } from './ethereum.service';
 import { HarmonyService } from './harmony.service';
 import { LitecoinService } from './litecoin.service';
+import { PolkadotService } from './polkadot.service';
 import { PolygonService } from './polygon.service';
 import { SolanaService } from './solana.service';
 import { StellarService } from './stellar.service';
@@ -30,7 +31,8 @@ export class ClientFactoryService {
     private solana: SolanaService,
     private bitcoin: BitcoinService,
     private litecoin: LitecoinService,
-    private algorand: AlgorandService) { }
+    private algorand: AlgorandService,
+    private polkadot: PolkadotService) { }
 
   getClient(blockchain: Blockchains): IBlockchainClient {
     switch (blockchain) {
@@ -66,6 +68,9 @@ export class ClientFactoryService {
 
       case Blockchains.Algorand:
         return this.algorand;
+
+      case Blockchains.Polkadot:
+        return this.polkadot;
     }
   }
 }
