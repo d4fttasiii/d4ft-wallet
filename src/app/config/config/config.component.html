@@ -30,6 +30,36 @@
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_avax"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Algorand
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Algod Server</mat-label>
+                                <input matInput type="url" name="algo-algodServer" required
+                                    placeholder="http://localhost" [(ngModel)]="config.algorand.algodServer" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Algod Port</mat-label>
+                                <input matInput type="number" name="algo-algodPort" placeholder="4001"
+                                    [(ngModel)]="config.algorand.algodPort" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Indxr Server</mat-label>
+                                <input matInput type="url" name="algo-indxrServer"
+                                    placeholder="http://localhost" [(ngModel)]="config.algorand.indxrServer" />
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Indxr Port</mat-label>
+                                <input matInput type="number" nasme="algo-indxrPort" placeholder="8980"
+                                    [(ngModel)]="config.algorand.indxrPort" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
                                     <mat-icon svgIcon="blockchain_bnb"></mat-icon>
                                 </mat-panel-title>
                                 <mat-panel-description>

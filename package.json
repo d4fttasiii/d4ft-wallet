@@ -1,6 +1,6 @@
 {
   "name": "d4ft-wallet",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Simple desktop wallet implementation to build, sign, submit transactions.",
   "homepage": "https://github.com/petertasner/d4ft-wallet",
   "author": {

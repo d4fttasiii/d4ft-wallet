@@ -42,9 +42,9 @@ export class BitcoinConfig {
 
 export class AlgorandConfig {
     algodServer: string;
-    algodPort: number;
-    indxrServer: string;
-    indxrPort: number;
+    algodPort?: number;
+    indxrServer?: string;
+    indxrPort?: number;
 }
 
 export class PolkadotConfig {

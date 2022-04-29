@@ -13,6 +13,8 @@ const MODE = "D4FT_MODE";
 })
 export class ConfigService {
 
+  private static loaded = false; 
+
   constructor(private electron: ElectronService) { }
 
   getMode(): Mode {
@@ -64,13 +66,14 @@ export class ConfigService {
 
   getAll(): Config {
     const localCfg = this.getFromLocalStorage();
-    if (localCfg) {
+    if (localCfg && ConfigService.loaded) {
       return localCfg;
     }
     const fileCfg = this.getFromFile();
     const cfg = fileCfg || this.getDefault();
     this.updateLocalStorage(cfg);
-
+    ConfigService.loaded = true;
+    
     if (!fileCfg) {
       this.updateFile(cfg);
     }
