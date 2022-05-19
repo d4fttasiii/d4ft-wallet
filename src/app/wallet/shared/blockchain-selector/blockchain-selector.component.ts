@@ -35,6 +35,7 @@ export class BlockchainSelectorComponent implements OnInit {
     { blockchain: Blockchains.Litecoin, name: 'Litecoin' },
     { blockchain: Blockchains.Algorand, name: 'Algorand' },
     { blockchain: Blockchains.Polkadot, name: 'Polkadot' },
+    { blockchain: Blockchains.Cosmos, name: 'Cosmos' },
   ];
   resetDisabled = false;
 

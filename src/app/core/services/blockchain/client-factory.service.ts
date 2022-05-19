@@ -6,6 +6,7 @@ import { AvalancheService } from './avalanche.service';
 import { BinanceService } from './binance.service';
 import { BitcoinService } from './bitcoin.service';
 import { IBlockchainClient } from './blockchain-client';
+import { CosmosService } from './cosmos.service';
 import { EthereumService } from './ethereum.service';
 import { HarmonyService } from './harmony.service';
 import { LitecoinService } from './litecoin.service';
@@ -32,7 +33,8 @@ export class ClientFactoryService {
     private bitcoin: BitcoinService,
     private litecoin: LitecoinService,
     private algorand: AlgorandService,
-    private polkadot: PolkadotService) { }
+    private polkadot: PolkadotService,
+    private cosmos: CosmosService) { }
 
   getClient(blockchain: Blockchains): IBlockchainClient {
     switch (blockchain) {
@@ -71,6 +73,9 @@ export class ClientFactoryService {
 
       case Blockchains.Polkadot:
         return this.polkadot;
+        
+      case Blockchains.Cosmos:
+        return this.cosmos;
     }
   }
 }

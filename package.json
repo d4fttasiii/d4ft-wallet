@@ -56,6 +56,8 @@
     "@angular/platform-browser": "13.2.4",
     "@angular/platform-browser-dynamic": "13.2.4",
     "@angular/router": "13.2.4",
+    "@cosmjs/proto-signing": "0.28.4",
+    "@cosmjs/stargate": "0.28.4",
     "@fortawesome/fontawesome-free": "6.1.1",
     "@harmony-js/crypto": "0.1.56",
     "@polkadot/api": "8.2.1",

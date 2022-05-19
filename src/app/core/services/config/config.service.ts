@@ -13,7 +13,7 @@ const MODE = "D4FT_MODE";
 })
 export class ConfigService {
 
-  private static loaded = false; 
+  private static loaded = false;
 
   constructor(private electron: ElectronService) { }
 
@@ -61,6 +61,8 @@ export class ConfigService {
         return cfg.algorand;
       case Blockchains.Polkadot:
         return cfg.polkadot;
+      case Blockchains.Cosmos:
+        return cfg.cosmos;
     }
   }
 
@@ -73,7 +75,7 @@ export class ConfigService {
     const cfg = fileCfg || this.getDefault();
     this.updateLocalStorage(cfg);
     ConfigService.loaded = true;
-    
+
     if (!fileCfg) {
       this.updateFile(cfg);
     }
@@ -172,6 +174,9 @@ export class ConfigService {
       },
       polkadot: {
         wsUrl: 'wss://dot.getblock.io/mainnet/?api_key=8484a249-a86a-4c79-a157-d93923be38f3',
+      },
+      cosmos: {
+        endpoint: 'https://rpc.atomscan.com/',
       }
     };
   }
