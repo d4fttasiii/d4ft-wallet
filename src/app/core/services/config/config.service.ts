@@ -86,6 +86,7 @@ export class ConfigService {
   update(cfg: Config) {
     this.updateLocalStorage(cfg);
     this.updateFile(cfg);
+    ConfigService.loaded = true;
   }
 
   private updateLocalStorage(cfg: Config) {

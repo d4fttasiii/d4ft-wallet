@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Config } from '../../core/models/config';
-import { ConfigService } from '../../core/services';
+import { ConfigService, NotificationService } from '../../core/services';
 
 @Component({
   selector: 'app-config',
@@ -15,7 +15,7 @@ export class ConfigComponent implements OnInit {
   config: Config;
   isLoading = false;
 
-  constructor(private configService: ConfigService) { }
+  constructor(private configService: ConfigService, private notification: NotificationService) { }
 
   ngOnInit(): void {
     this.loadConfig();
@@ -27,6 +27,12 @@ export class ConfigComponent implements OnInit {
   }
 
   save() {
+    if (JSON.stringify(this.config) === JSON.stringify(this.originalConfig)) {
+      this.notification.success('No changes were made!');
+      return;
+    }
+    
     this.configService.update(this.config);
+    this.notification.success('Saved!');
   }
 }
