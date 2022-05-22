@@ -20,6 +20,8 @@ npm ci
 npm run electron:build
 ```
 
+3. Navigate to the relase/win-upacked folder and run the application.
+
 ## Build transactions
 
 <img width="950" alt="1_build" src="https://user-images.githubusercontent.com/24613746/161949917-53deeedd-7f1c-417b-8962-15d25515028b.png">
