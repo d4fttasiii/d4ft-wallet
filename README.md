@@ -2,6 +2,23 @@
 
 Crypto currency wallet allowing offline transaction signing for cold wallet users, built by using Angular Electon boilerplate (https://github.com/maximegris/angular-electron.git).
 
+## Installation
+
+0. Install node.js
+
+> https://nodejs.org/en/
+
+1. Install dependencies
+
+```
+npm ci
+```
+
+2. Build the application
+
+```
+npm run electron:build
+```
 
 ## Build transactions
 
