@@ -4,24 +4,63 @@ import Web3 from 'web3';
 import { Blockchains } from '../../models/blockchains';
 import { EthereumConfig } from '../../models/config';
 import { Transaction } from '../../models/transaction';
-import { EthTransaction } from "../../models/eth-transaction";
+import { EthTransaction } from '../../models/eth-transaction';
 import { ConfigService } from '../config/config.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
 import { NotificationService } from '../notification/notification.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class EthereumService extends BaseBlockchainClient implements IBlockchainClient {
+import BIP32Factory from 'bip32';
+import * as ecc from 'tiny-secp256k1';
+import * as bip39 from 'bip39';
+import { stringify } from 'querystring';
+import { Keypair } from '../../models/keypair';
+const bip32 = BIP32Factory(ecc);
 
-  constructor(protected config: ConfigService, protected notification: NotificationService) {
+@Injectable({
+  providedIn: 'root',
+})
+export class EthereumService
+  extends BaseBlockchainClient
+  implements IBlockchainClient
+{
+  derivationkeypath = "m/84'/60'/0'/0/0";
+
+  constructor(
+    protected config: ConfigService,
+    protected notification: NotificationService
+  ) {
     super(notification);
+  }
+
+  async generatePrivateKeyFromMnemonic(
+    mnemonic: string,
+    keypath: string
+  ): Promise<Keypair> {
+    return await this.tryExecuteAsync(async () => {
+      if (bip39.validateMnemonic(mnemonic)) {
+        const seed = await bip39.mnemonicToSeed(mnemonic);
+        const root = bip32.fromSeed(seed);
+        const keyPair = root.derivePath(
+          keypath ? keypath : this.derivationkeypath
+        );
+        const pk = keyPair.privateKey.toString('hex');
+        const account = this.getClient().eth.accounts.privateKeyToAccount(pk);
+        return {
+          privateKey: account.privateKey,
+          publicAddress: account.address,
+        };
+      } else {
+        throw new Error('Invalid mnemonic keypharse');
+      }
+    });
   }
 
   async buildRawTx(tx: Transaction): Promise<string> {
     return await this.tryExecuteAsync(async () => {
       const web3 = this.getClient();
-      const nonce = await web3.eth.getTransactionCount(this.addressToPublicKey(tx.from));
+      const nonce = await web3.eth.getTransactionCount(
+        this.addressToPublicKey(tx.from)
+      );
       const cfg = this.getConfig();
       const ethTx = {
         from: this.addressToPublicKey(tx.from),
@@ -45,7 +84,9 @@ export class EthereumService extends BaseBlockchainClient implements IBlockchain
       const contract = this.getContractTransfer(web3, tx.contractAddress);
       const nonce = await web3.eth.getTransactionCount(from);
       const cfg = this.getConfig();
-      const data = contract.methods.transfer(to, web3.utils.toWei(tx.amount.toString(), 'ether')).encodeABI();
+      const data = contract.methods
+        .transfer(to, web3.utils.toWei(tx.amount.toString(), 'ether'))
+        .encodeABI();
       const ethTx = {
         from: from,
         to: tx.contractAddress,
@@ -94,7 +135,9 @@ export class EthereumService extends BaseBlockchainClient implements IBlockchain
         return parseFloat(result);
       }
 
-      const balance = await web3.eth.getBalance(this.addressToPublicKey(address));
+      const balance = await web3.eth.getBalance(
+        this.addressToPublicKey(address)
+      );
       const eth = web3.utils.fromWei(balance);
 
       return parseFloat(eth);
@@ -124,47 +167,60 @@ export class EthereumService extends BaseBlockchainClient implements IBlockchain
   }
 
   protected getContractBalance(web3: Web3, contractAddress: string) {
-    const contract = new web3.eth.Contract([{
-      constant: true,
-      inputs: [{
-        name: "_owner",
-        type: "address",
-      },
+    const contract = new web3.eth.Contract(
+      [
+        {
+          constant: true,
+          inputs: [
+            {
+              name: '_owner',
+              type: 'address',
+            },
+          ],
+          name: 'balanceOf',
+          outputs: [
+            {
+              name: 'balance',
+              type: 'uint256',
+            },
+          ],
+          type: 'function',
+        },
       ],
-      name: "balanceOf",
-      outputs: [{
-        name: "balance",
-        type: "uint256",
-      },
-      ],
-      type: "function",
-    }], contractAddress);
+      contractAddress
+    );
 
     return contract;
   }
 
   protected getContractTransfer(web3: Web3, contractAddress: string) {
-    const contract = new web3.eth.Contract([{
-      constant: false,
-      inputs: [{
-        name: "_to",
-        type: "address",
-      },
-      {
-        name: "_value",
-        type: "uint256",
-      },
+    const contract = new web3.eth.Contract(
+      [
+        {
+          constant: false,
+          inputs: [
+            {
+              name: '_to',
+              type: 'address',
+            },
+            {
+              name: '_value',
+              type: 'uint256',
+            },
+          ],
+          name: 'transfer',
+          outputs: [
+            {
+              name: '',
+              type: 'bool',
+            },
+          ],
+          type: 'function',
+        },
       ],
-      name: "transfer",
-      outputs: [{
-        name: "",
-        type: "bool",
-      },
-      ],
-      type: 'function',
-    },], contractAddress);
+      contractAddress
+    );
 
     return contract;
   }
 }
-

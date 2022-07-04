@@ -6,11 +6,15 @@ import { NotificationService } from '../notification/notification.service';
 import { BitcoinService } from './bitcoin.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LitecoinService extends BitcoinService {
-
-  constructor(protected configService: ConfigService, protected httpClient: HttpClient, protected notification: NotificationService) {
+  derivationkeypath: string = "m/84'/2'/0'/0/0";
+  constructor(
+    protected configService: ConfigService,
+    protected httpClient: HttpClient,
+    protected notification: NotificationService
+  ) {
     super(configService, httpClient, notification);
   }
 }

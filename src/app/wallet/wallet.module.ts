@@ -17,6 +17,7 @@ import { TerraTxFormComponent } from './shared/terra-tx-form/terra-tx-form.compo
 import { DefaultTxFormComponent } from './shared/default-tx-form/default-tx-form.component';
 import { BtcTxFormComponent } from './shared/btc-tx-form/btc-tx-form.component';
 import { UtxoSelectorComponent } from './shared/utxo-selector/utxo-selector.component';
+import { MnemonicToPrivateKeyComponent } from './shared/mnemonic-priv-gen/mnemonic-priv-gen.component';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { UtxoSelectorComponent } from './shared/utxo-selector/utxo-selector.comp
     DefaultTxFormComponent,
     BtcTxFormComponent,
     UtxoSelectorComponent,
+    MnemonicToPrivateKeyComponent
   ],
   imports: [
     CommonModule,

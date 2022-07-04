@@ -6,6 +6,7 @@ import * as ecc from 'tiny-secp256k1';
 import { Blockchains } from '../../models/blockchains';
 
 import { BitcoinConfig } from '../../models/config';
+import { Keypair } from '../../models/keypair';
 import { BitcoinTransaction, Transaction, Utxo } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
@@ -43,10 +44,16 @@ class TxOut {
 })
 export class BitcoinService extends BaseBlockchainClient implements IBlockchainClient {
 
+  derivationkeypath: string = "m/84'/0'/0'/0/0";
   private conversionRate = 100000000;
 
   constructor(protected config: ConfigService, protected httpClient: HttpClient, protected notification: NotificationService) {
     super(notification);
+  }
+  async generatePrivateKeyFromMnemonic( mnemonic: string, keypath: string): Promise<Keypair> {
+    return await this.tryExecuteAsync(async () => {
+      throw new Error('Method not implemented.');
+    });
   }
 
   async buildRawTx(tx: Transaction): Promise<string> {

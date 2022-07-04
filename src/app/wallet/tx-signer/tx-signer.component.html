@@ -1,41 +1,60 @@
 <div class="content-card">
-    <mat-card>
-        <mat-card-title>Tx Signer</mat-card-title>
-        <mat-card-subtitle>Sign a previously built raw transaction locally.</mat-card-subtitle>
-        <mat-card-content>
-            <form>
-                <app-blockchain-selector (blockchainSelected)="setSelectedBlockchain($event)">
-                </app-blockchain-selector>
-                <div class="animate__animated animate__fadeIn" *ngIf="client">
-                    <mat-form-field class="full-width" appearance="fill">
-                        <mat-label>Transaction raw</mat-label>
-                        <textarea matInput rows="4" name="unsignedTx" [(ngModel)]="unsignedTx"></textarea>
-                    </mat-form-field>
-                    <mat-form-field class="full-width" appearance="fill">
-                        <mat-label>Private key</mat-label>
-                        <input matInput name="pk" type="text" [(ngModel)]="pk">
-                    </mat-form-field>
-                </div>
-                <div class="ta-r">
-                    <app-loading-button label="Sign" [isDisabled]="!(unsignedTx && pk)" (clicked)="sign()">
-                    </app-loading-button>
-                </div>
-            </form>
-        </mat-card-content>
-    </mat-card>
-    <mat-card class="animate__animated animate__fadeIn result-card" *ngIf="signedTx">
-        <div class="result">
-            <div class="header">
-                <div>
-                    <strong>Signed transaction</strong>
-                </div>
-                <div>
-                    <button type="button" mat-icon-button [appCopyClipboard]="signedTx">
-                        <mat-icon fontSet="fa" fontIcon="fa-copy"></mat-icon>
-                    </button>
-                </div>
-            </div>
-            <em>{{ signedTx }}</em>
+  <mat-card>
+    <mat-card-title>Tx Signer</mat-card-title>
+    <mat-card-subtitle
+      >Sign a previously built raw transaction locally.</mat-card-subtitle
+    >
+    <mat-card-content>
+      <form>
+        <app-blockchain-selector
+          (blockchainSelected)="setSelectedBlockchain($event)"
+        >
+        </app-blockchain-selector>
+        <div class="animate__animated animate__fadeIn" *ngIf="client">
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Transaction raw</mat-label>
+            <textarea
+              matInput
+              rows="4"
+              name="unsignedTx"
+              [(ngModel)]="unsignedTx"
+            ></textarea>
+          </mat-form-field>
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Private key</mat-label>
+            <input matInput name="pk" type="text" [(ngModel)]="pk" />
+          </mat-form-field>
         </div>
-    </mat-card>
+        <div class="ta-r">
+          <app-loading-button
+            label="Sign"
+            [isDisabled]="
+              !(unsignedTx && (pk || mnemonic) && !(pk && mnemonic))
+            "
+            (clicked)="sign()"
+          >
+          </app-loading-button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  <mat-card
+    class="animate__animated animate__fadeIn result-card"
+    *ngIf="signedTx"
+  >
+    <div class="result">
+      <div class="header">
+        <div>
+          <strong>Signed transaction</strong>
+        </div>
+        <div>
+          <button type="button" mat-icon-button [appCopyClipboard]="signedTx">
+            <mat-icon fontSet="fa" fontIcon="fa-copy"></mat-icon>
+          </button>
+        </div>
+      </div>
+      <em>{{ signedTx }}</em>
+    </div>
+  </mat-card>
 </div>
+<app-mnemonic-priv-gen></app-mnemonic-priv-gen>

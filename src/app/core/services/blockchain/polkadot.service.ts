@@ -4,6 +4,7 @@ import { hexToU8a, isHex } from '@polkadot/util';
 
 import { Blockchains } from '../../models/blockchains';
 import { PolkadotConfig } from '../../models/config';
+import { Keypair } from '../../models/keypair';
 import { Transaction } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
@@ -13,9 +14,14 @@ import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
   providedIn: 'root',
 })
 export class PolkadotService extends BaseBlockchainClient implements IBlockchainClient {
-
+  derivationkeypath: string; //this chain not using the derivation keypath to generate keypair.
   constructor(private config: ConfigService, protected notification: NotificationService) {
     super(notification);
+  }
+  async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
+    return await this.tryExecuteAsync(async () => {
+      throw new Error('Method not implemented.');
+    });
   }
 
   buildRawTx(tx: Transaction): Promise<string> {

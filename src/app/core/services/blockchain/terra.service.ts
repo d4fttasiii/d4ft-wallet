@@ -3,6 +3,7 @@ import { Coins, Fee, LCDClient, MsgSend, RawKey, SimplePublicKey, Tx } from '@te
 
 import { Blockchains } from '../../models/blockchains';
 import { TerraConfig } from '../../models/config';
+import { Keypair } from '../../models/keypair';
 import { Transaction } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
@@ -29,11 +30,16 @@ class FeeInternal {
   providedIn: 'root'
 })
 export class TerraService extends BaseBlockchainClient implements IBlockchainClient {
-
+derivationkeypath: string= "m/84'/330'/0'/0/0";
   private convertionRate = 1000000;
 
   constructor(private configService: ConfigService, protected notification: NotificationService) {
     super(notification);
+  }
+  async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
+    return await this.tryExecuteAsync(async () => {
+      throw new Error('Method not implemented.');
+    });
   }
 
   async buildRawTx(tx: Transaction): Promise<string> {

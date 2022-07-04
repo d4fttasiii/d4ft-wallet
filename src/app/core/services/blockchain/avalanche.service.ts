@@ -14,6 +14,18 @@ export class AvalancheService extends EthereumService {
     super(config, notification);
   }
 
+  derivationkeypath = "m/44'/60'/0'/0/0";
+
+  override async signRawTx(rawTx: string, pk: string): Promise<string> {
+    // return await super.signRawTx(rawTx, privatekey);
+    return await  this.tryExecuteAsync(async () => {
+      const web3 = this.getClient();
+      const txObject = JSON.parse(rawTx);      
+      const signedTx = await web3.eth.accounts.signTransaction(txObject, pk);
+      return signedTx.rawTransaction;
+    });
+  }
+
   protected override getConfig(): EthereumConfig {
     return this.config.get(Blockchains.Avalanche) as EthereumConfig;
   }

@@ -8,6 +8,7 @@ import { Transaction } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
+import { Keypair } from '../../models/keypair';
 
 class TxInternal {
   from: string;
@@ -31,8 +32,15 @@ class FeeInternal {
 })
 export class CosmosService extends BaseBlockchainClient implements IBlockchainClient {
 
+  derivationkeypath: string = "m/84'/118'/0'/0/0";
+
   constructor(private configService: ConfigService, protected notification: NotificationService) {
     super(notification);
+  }
+  async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
+    return await this.tryExecuteAsync(async () => {
+      throw new Error('Method not implemented.');
+    });
   }
 
   buildRawTx(tx: Transaction): Promise<string> {

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as StellarSdk from 'stellar-sdk/dist/stellar-sdk.min.js';
+import { Keypair } from '../../models/keypair';
 
 import { Transaction } from '../../models/transaction';
 import { NotificationService } from '../notification/notification.service';
@@ -11,9 +12,14 @@ declare const StellarSdk: any;
   providedIn: 'root',
 })
 export class StellarService extends BaseBlockchainClient implements IBlockchainClient {
-
+  derivationkeypath: string;
   constructor(protected notification: NotificationService) {
     super(notification);
+  }
+  async generatePrivateKeyFromMnemonic( mnemonic: string, keypath: string): Promise<Keypair> {
+    return await this.tryExecuteAsync(async () => {
+      throw new Error('Method not implemented.');
+    });
   }
 
   async buildRawTx(tx: Transaction): Promise<string> {
