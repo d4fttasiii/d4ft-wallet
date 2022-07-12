@@ -12,11 +12,12 @@ declare const StellarSdk: any;
   providedIn: 'root',
 })
 export class StellarService extends BaseBlockchainClient implements IBlockchainClient {
+  decimals: number = 7;
   derivationkeypath: string;
   constructor(protected notification: NotificationService) {
     super(notification);
   }
-  async generatePrivateKeyFromMnemonic( mnemonic: string, keypath: string): Promise<Keypair> {
+  async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
       throw new Error('Method not implemented.');
     });

@@ -14,6 +14,7 @@ import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
   providedIn: 'root',
 })
 export class PolkadotService extends BaseBlockchainClient implements IBlockchainClient {
+  decimals: number = 10;
   derivationkeypath: string; //this chain not using the derivation keypath to generate keypair.
   constructor(private config: ConfigService, protected notification: NotificationService) {
     super(notification);

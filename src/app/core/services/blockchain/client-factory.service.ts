@@ -73,7 +73,7 @@ export class ClientFactoryService {
 
       case Blockchains.Polkadot:
         return this.polkadot;
-        
+
       case Blockchains.Cosmos:
         return this.cosmos;
     }

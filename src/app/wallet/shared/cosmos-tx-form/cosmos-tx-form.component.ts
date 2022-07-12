@@ -1,26 +1,30 @@
 import { AfterViewChecked, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
-import { Transaction } from '../../../core/models/transaction';
+import { CosmosTransaction, Transaction } from '../../../core/models/transaction';
 import { IBlockchainClient } from '../../../core/services/blockchain/blockchain-client';
+import { CosmosService } from '../../../core/services/blockchain/cosmos.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
-  selector: 'app-default-tx-form',
-  templateUrl: './default-tx-form.component.html',
-  styleUrls: ['./default-tx-form.component.scss']
+  selector: 'app-cosmos-tx-form',
+  templateUrl: './cosmos-tx-form.component.html',
+  styleUrls: ['./cosmos-tx-form.component.scss']
 })
-export class DefaultTxFormComponent implements OnChanges {
+export class CosmosTxFormComponent implements OnChanges {
 
   @Input() client: IBlockchainClient;
   @Output() rawTxBuilt = new EventEmitter<string>();
-  tx: Transaction;
+  tx: CosmosTransaction;
   isLoading: boolean;
-  minFeeOrGas = 0;
+  minGas = 200000;
+  minFee = 0;
 
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.tx = new Transaction();
-    this.tx.feeOrGas = this.client.getMinFeeOrGas();
+    this.tx = new CosmosTransaction();
+    this.tx.gas = (this.client as CosmosService).getMaxGas();
+    this.tx.fee = (this.client as CosmosService).getDefaultFee();
   }
 
   build() {
@@ -39,8 +43,12 @@ export class DefaultTxFormComponent implements OnChanges {
     this.tx.to = address;
   }
 
-  setAmount(amount: number) {
-    this.tx.amount = amount;
+  setAmount(amount: BigNumber) {
+    this.tx.amount = new BigNumber(amount);
+  }
+
+  setFee(fee: number) {
+    this.tx.fee = fee;
   }
 
 }
