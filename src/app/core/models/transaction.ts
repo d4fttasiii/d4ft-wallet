@@ -1,4 +1,8 @@
-export class Transaction {
+import BigNumber from 'bignumber.js';
+export interface ITransaction {
+    isInvalid(): boolean
+}
+export class Transaction implements ITransaction {
     from: string;
     to: string;
     amount: number;
@@ -7,6 +11,23 @@ export class Transaction {
 
     isInvalid(): boolean {
         return !this.from || !this.to || !this.amount || !this.feeOrGas;
+    }
+}
+
+
+
+export class CosmosTransaction implements ITransaction {
+    feeOrGas: number;
+    from: string;
+    to: string;
+    amount: BigNumber;
+    gas: number;
+    fee: number;
+    memo?: string;
+    lofasz: BigInt
+    isInvalid(): boolean {
+        const ret = !this.from || !this.to || !this.amount || !this.gas || !(this.fee >= 0);
+        return ret;
     }
 }
 

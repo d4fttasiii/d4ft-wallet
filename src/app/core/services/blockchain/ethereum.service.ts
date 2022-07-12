@@ -19,10 +19,8 @@ const bip32 = BIP32Factory(ecc);
 @Injectable({
   providedIn: 'root',
 })
-export class EthereumService
-  extends BaseBlockchainClient
-  implements IBlockchainClient
-{
+export class EthereumService extends BaseBlockchainClient implements IBlockchainClient {
+  decimals: number = 18;
   derivationkeypath = "m/84'/60'/0'/0/0";
 
   constructor(

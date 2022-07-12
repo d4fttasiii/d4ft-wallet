@@ -14,6 +14,7 @@ import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
   providedIn: 'root'
 })
 export class SolanaService extends BaseBlockchainClient implements IBlockchainClient {
+  decimals: number = 9;
   derivationkeypath: string;
   constructor(private config: ConfigService, protected notification: NotificationService) {
     super(notification);

@@ -13,13 +13,14 @@ import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
   providedIn: 'root'
 })
 export class AlgorandService extends BaseBlockchainClient implements IBlockchainClient {
+  decimals: number = 6;
+  derivationkeypath: string = "m/44'/283'/0'/0/0";
 
   constructor(protected config: ConfigService, protected notification: NotificationService) {
     super(notification);
   }
-  derivationkeypath: string = "m/44'/283'/0'/0/0";
 
-  async generatePrivateKeyFromMnemonic( mnemonic: string, keypath: string) :  Promise<Keypair>{
+  async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
       throw new Error('Method not implemented.');
     });

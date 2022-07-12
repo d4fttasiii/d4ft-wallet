@@ -4,27 +4,31 @@ import { Transaction } from '../../models/transaction';
 import { NotificationService } from '../notification/notification.service';
 
 export interface IBlockchainClient {
-  buildRawTx(tx: Transaction): Promise<string>;
+  buildRawTx(tx: any): Promise<string>;
   signRawTx(rawTx: string, pk: string): Promise<string>;
-  generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string) : Promise<Keypair>;
+  generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair>;
   submitSignedTx(rawTx: string): Promise<string>;
   isAddressValid(address: string): Promise<boolean>;
   getBalance(address: string, contractAddress?: string): Promise<number>;
   getMinFeeOrGas(): number;
-  getDerivationPath():string;
+  getDerivationPath(): string;
+  getDecimalNumbers(): number;
 }
 
 export abstract class BaseBlockchainClient {
-  abstract derivationkeypath :string;
+  abstract derivationkeypath: string;
+  abstract decimals: number;
 
-  constructor(protected notification: NotificationService) {    
+  constructor(protected notification: NotificationService) {
   }
 
-  getDerivationPath():string{
+  getDerivationPath(): string {
     return this.derivationkeypath;
   }
 
-
+  getDecimalNumbers(): number {
+    return this.decimals;
+  }
 
   tryExecute<TResponse>(funcFn: () => TResponse): TResponse {
     try {

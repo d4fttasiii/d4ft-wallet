@@ -30,7 +30,8 @@ class FeeInternal {
   providedIn: 'root'
 })
 export class TerraService extends BaseBlockchainClient implements IBlockchainClient {
-derivationkeypath: string= "m/84'/330'/0'/0/0";
+  decimals: number = 6;
+  derivationkeypath: string = "m/84'/330'/0'/0/0";
   private convertionRate = 1000000;
 
   constructor(private configService: ConfigService, protected notification: NotificationService) {

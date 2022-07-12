@@ -43,6 +43,7 @@ class TxOut {
   providedIn: 'root'
 })
 export class BitcoinService extends BaseBlockchainClient implements IBlockchainClient {
+  decimals: number = 8;
 
   derivationkeypath: string = "m/84'/0'/0'/0/0";
   private conversionRate = 100000000;
@@ -50,7 +51,7 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
   constructor(protected config: ConfigService, protected httpClient: HttpClient, protected notification: NotificationService) {
     super(notification);
   }
-  async generatePrivateKeyFromMnemonic( mnemonic: string, keypath: string): Promise<Keypair> {
+  async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
       throw new Error('Method not implemented.');
     });
