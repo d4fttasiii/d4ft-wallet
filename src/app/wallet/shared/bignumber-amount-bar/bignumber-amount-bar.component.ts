@@ -46,18 +46,13 @@ export class BigNumberAmountBarComponent implements OnChanges {
           this.amountFormControl.removeValidators(this.maxValidator);
         }
         this.maxValidator = Validators.max(amount);
-
-
         if (this.floatValidator) {
           console.log("removed");
           this.amountFormControl.removeValidators(this.floatValidator)
         }
         this.floatValidator = ((nbr) => {
           const val = new BigNumber(nbr.value);
-          console.log(val.toString());
-          console.log(this.poweredDecimals.multipliedBy(val).toString());
           const isint = val.multipliedBy(this.poweredDecimals).isInteger();
-          console.log(isint);
           if (!val.isNaN() && !this.poweredDecimals.isNaN() && isint) {
             return null;
           }

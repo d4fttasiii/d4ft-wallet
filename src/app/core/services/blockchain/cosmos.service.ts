@@ -22,7 +22,6 @@ import { DirectSecp256k1HdWalletOptions } from '@cosmjs/proto-signing';
 import { SignDoc, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { Coin } from 'cosmjs-types/cosmos/base/v1beta1/coin';
 import { Any } from 'cosmjs-types/google/protobuf/any';
-import { number } from 'bitcoinjs-lib/src/script';
 import BigNumber from 'bignumber.js';
 
 class UnsignedTxInternal {
@@ -87,17 +86,11 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
   decimals: number = 6;
   derivationkeypath: string = "m/84'/118'/0'/0/0";
 
-  constructor(
-    private configService: ConfigService,
-    protected notification: NotificationService
-  ) {
+  constructor(private configService: ConfigService, protected notification: NotificationService) {
     super(notification);
   }
 
-  async generatePrivateKeyFromMnemonic(
-    mnemonic: string,
-    keypath: string
-  ): Promise<Keypair> {
+  async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
       const hdPath = stringToPath(keypath ?? this.derivationkeypath);
       const opts: DirectSecp256k1HdWalletOptions = {
@@ -109,7 +102,6 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
       const privateKey = Slip10.derivePath(Slip10Curve.Secp256k1, seed, hdPath);
       const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, opts);
       const accounts = await wallet.getAccounts();
-      console.log(accounts[0].pubkey);
       return {
         privateKey: toBase64(privateKey.privkey),
         publicAddress: accounts[0].address,
@@ -122,15 +114,11 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
       const client = await this.getOnlineClient();
       const { accountNumber, sequence } = await client.getSequence(tx.from);
       const chainId = await client.getChainId();
-      console.log(tx.amount.toString());
-      console.log(BigNumber.isBigNumber(tx.amount));
-      console.log(tx.amount.multipliedBy(100));
       const uintAmount = tx.amount.multipliedBy(new BigNumber(1000000));
 
       if (!uintAmount.isInteger()) {
         throw Error("The transaction amount is exceeded the max decimals: " + this.decimals)
       }
-      // console.log(BigNumber.isBigNumber(tx.amount));
       const sendMsg: MsgSendEncodeObject = {
         typeUrl: '/cosmos.bank.v1beta1.MsgSend',
         value: {
@@ -139,20 +127,13 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
           toAddress: tx.to,
         },
       };
-      const gasUsed = await client.simulate(tx.from, [sendMsg], tx.memo);
-      console.log("Estimated gas used:" + gasUsed + "\nEstimated fee (gas used * 1.3 * gasprice(0.0025)):" + gasUsed * 1.3 * 0.0025)
-      // EXPLAIN:
-      // no need for simulation bec 0 tx fee is accepted by the nodes.
-      // however the fee.amount.amount should be around: usedGas * correction * gas_price
-      // correction: 1.3 (sometimes the used gas is actually more than the simulated)
-      // gas price: 0.0025 (this should be queried from the chain as it can be in case of terra)
-
+      await this.simulateTransaction(client, tx, sendMsg);
       const txData: UnsignedTxInternal = {
         signerAddress: tx.from,
         messages: [sendMsg],
         fee: {
           amount: [{ denom: 'uatom', amount: tx.fee.toString() }], // this would be the actual fee which is auto-deducted from the sender's account
-          gas: '200000', //this is the max gas limit
+          gas: tx.gas.toString(), //this is the max gas limit
         },
         memo: tx.memo ?? '',
         accountNumber: accountNumber,
@@ -168,7 +149,7 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
       const txData = JSON.parse(rawTx) as UnsignedTxInternal;
       const wallet = await DirectSecp256k1Wallet.fromKey(Buffer.from(pk, 'base64'));
       const account = (await wallet.getAccounts())[0];
-      const signDoc = this.createActualTransactionSignDoc(txData, account.pubkey);
+      const signDoc = this.createSignDocument(txData, account.pubkey);
       const { signature, signed } = await wallet.signDirect(txData.signerAddress, signDoc);
 
       const signedTx: TxRaw = TxRaw.fromPartial({
@@ -184,11 +165,9 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
   async submitSignedTx(rawTx: string): Promise<string> {
     return await this.tryExecuteAsync(async () => {
       const txRaw = TxRaw.fromJSON(JSON.parse(rawTx));
-      console.log(txRaw);
       const txBytes = TxRaw.encode(txRaw).finish();
       const client = await this.getOnlineClient();
       const result = await client.broadcastTx(txBytes);
-      console.log('Cosmos transaction broadcasted!' + JSON.stringify(result));
       return result.transactionHash;
     });
   }
@@ -197,7 +176,13 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
     try {
       const client = await this.getOnlineClient();
       const account = await client.getAccount(address);
-      return (account) ? true : false;
+
+      if (account) {
+        return true;
+      } else {
+        const getBalance = await this.getBalance(address);
+        return (getBalance >= 0) ? true : false;
+      }
     } catch {
       return false;
     }
@@ -205,10 +190,8 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
 
   async getBalance(address: string, contractAddress?: string): Promise<number> {
     return await this.tryExecuteAsync(async () => {
-      console.log('getting atoms');
       const client = await this.getOnlineClient();
       const atom = await client.getBalance(address, 'uatom');
-      //console.log(atom);
       return parseFloat(atom.amount) / 1000000;
     });
   }
@@ -217,7 +200,17 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
   getMaxGas(): number { return 200000; }
   getDefaultFee(): number { return 0; }
 
-  private createActualTransactionSignDoc(txData: UnsignedTxInternal, pubKey: Uint8Array): SignDoc {
+  private async simulateTransaction(client: StargateSimulatorClient, tx: CosmosTransaction, sendMsg: MsgSendEncodeObject) {
+    try {
+      const gasUsed = await client.simulate(tx.from, [sendMsg], tx.memo);
+      console.log("Estimated gas used:" + gasUsed + "\nEstimated fee (gas used * 1.3 * gasprice(0.0025)):" + gasUsed * 1.3 * 0.0025);
+    }
+    catch {
+      console.log("gas estimation failed.");
+    }
+  }
+
+  private createSignDocument(txData: UnsignedTxInternal, pubKey: Uint8Array): SignDoc {
     // txBodyBytes
     const registry = createDefaultRegistry();
     const txBodyEncodeObject: TxBodyEncodeObject = {
@@ -246,21 +239,5 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
     const config = this.configService.get(Blockchains.Cosmos) as CosmosConfig;
     const client = await StargateSimulatorClient.connect(config.endpoint);
     return client;
-  }
-
-  /** returns an online SigningStargateClient, which is able to query blockchain but not able to sign*/
-  private async getOnlineSignerClient(wallet: OfflineSigner): Promise<SigningStargateClient> {
-    const config = this.configService.get(Blockchains.Cosmos) as CosmosConfig;
-    return await SigningStargateClient.connectWithSigner(
-      config.endpoint,
-      wallet
-    );
-  }
-
-  /** Creates an online SigningStargateClient, for offline signing, it is not able to communicate with the blockchain*/
-  private async getOfflineClient(
-    wallet: OfflineSigner
-  ): Promise<SigningStargateClient> {
-    return await SigningStargateClient.offline(wallet);
   }
 }
