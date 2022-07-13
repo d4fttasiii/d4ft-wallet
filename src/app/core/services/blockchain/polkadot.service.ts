@@ -9,11 +9,13 @@ import { Transaction } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
+import BigNumber from 'bignumber.js';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PolkadotService extends BaseBlockchainClient implements IBlockchainClient {
+  nativeSymbol: string = "DOT";
   decimals: number = 10;
   derivationkeypath: string; //this chain not using the derivation keypath to generate keypair.
   constructor(private config: ConfigService, protected notification: NotificationService) {
@@ -54,12 +56,12 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
     }
   }
 
-  async getBalance(address: string, contractAddress?: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<BigNumber> {
     // const client = await this.getApi();
     // const balances = await client.balances(address);
 
     // return (parseFloat(balances[0].free) / 1e12);
-    return 0;
+    return new BigNumber(0);
   }
 
   getMinFeeOrGas(): number {

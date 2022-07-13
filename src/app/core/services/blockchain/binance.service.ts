@@ -11,9 +11,10 @@ import { EthereumService } from './ethereum.service';
 })
 export class BinanceService extends EthereumService {
 
+  nativeSymbol: string = "BNB";
   constructor(protected config: ConfigService, protected notification: NotificationService) {
     super(config, notification);
-  }  
+  }
 
   protected override getConfig(): EthereumConfig {
     return this.config.get(Blockchains.Binance) as EthereumConfig;

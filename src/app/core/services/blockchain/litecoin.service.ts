@@ -9,6 +9,7 @@ import { BitcoinService } from './bitcoin.service';
   providedIn: 'root',
 })
 export class LitecoinService extends BitcoinService {
+  nativeSymbol: "LTC";
   derivationkeypath: string = "m/84'/2'/0'/0/0";
   constructor(
     protected configService: ConfigService,

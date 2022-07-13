@@ -9,11 +9,13 @@ import { Transaction } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
+import BigNumber from 'bignumber.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SolanaService extends BaseBlockchainClient implements IBlockchainClient {
+  nativeSymbol: string = "SOL";
   decimals: number = 9;
   derivationkeypath: string;
   constructor(private config: ConfigService, protected notification: NotificationService) {
@@ -33,11 +35,15 @@ export class SolanaService extends BaseBlockchainClient implements IBlockchainCl
       const recentBlock = await client.getLatestBlockhash();
 
       const transaction = new web3.Transaction();
+      const lamports = tx.amount.multipliedBy(new BigNumber(web3.LAMPORTS_PER_SOL));
+      if (!lamports.isInteger()) {
+        throw Error("The transaction amount is exceeded the max decimals: " + this.decimals)
+      }
       transaction.add(
         web3.SystemProgram.transfer({
           fromPubkey: from,
           toPubkey: to,
-          lamports: tx.amount * web3.LAMPORTS_PER_SOL,
+          lamports: lamports.toNumber(),
         }),
       );
       transaction.recentBlockhash = recentBlock.blockhash;
@@ -79,13 +85,12 @@ export class SolanaService extends BaseBlockchainClient implements IBlockchainCl
     }
   }
 
-  async getBalance(address: string, contractAddress?: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<BigNumber> {
     return await this.tryExecuteAsync(async () => {
       const client = this.getClient();
       const pubk = new web3.PublicKey(address);
       const balance = await client.getBalance(pubk);
-
-      return balance / web3.LAMPORTS_PER_SOL;
+      return new BigNumber(balance).dividedBy(new BigNumber(web3.LAMPORTS_PER_SOL));
     });
   }
 

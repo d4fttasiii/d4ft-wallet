@@ -13,6 +13,7 @@ export class AddressBarComponent implements OnInit {
 
   @Input() label: string;
   @Input() client: IBlockchainClient;
+  @Input() addressFromParent?: string;
   @Output() addressChanged = new EventEmitter<string>();
 
   addressFormControl = new FormControl('', [Validators.required]);
@@ -37,6 +38,7 @@ export class AddressBarComponent implements OnInit {
 
   loadDetails() {
     if (!this.address) {
+      this.addressChanged.emit(this.address);
       return;
     }
     this.isLoading = true;
@@ -54,5 +56,4 @@ export class AddressBarComponent implements OnInit {
         this.hasValidated = true;
       });
   }
-
 }

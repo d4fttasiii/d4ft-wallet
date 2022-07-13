@@ -1,6 +1,6 @@
 <mat-form-field class="mg-b2 full-width" appearance="fill">
     <mat-label>Amount</mat-label>
-    <input matInput name="amount" type="number" [disabled]="isLoading || !address" #amount
+    <input matInput name="amount" type="BigNumber" [disabled]="isLoading || !address" #amount
         [formControl]="amountFormControl" required (keyup)="onAmountChange(amount.value)" />
     <mat-error *ngIf="amountFormControl.hasError('required')">
         Amount is required!
@@ -12,5 +12,5 @@
         Invalid amount - more than {{ decimals }} decimal numbers
     </mat-error>
     <mat-hint align="start" *ngIf="isLoading">Loading... <i class="fa-solid fa-spinner fa-spin"></i></mat-hint>
-    <mat-hint align="start" *ngIf="!isLoading && balance">Balance is: {{ balance }}</mat-hint>
+    <mat-hint align="start" *ngIf="!isLoading && balance">Balance is: {{ balancestring }} {{symbol}}</mat-hint>
 </mat-form-field>

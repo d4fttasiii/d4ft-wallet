@@ -2,6 +2,7 @@ import { AfterViewChecked, Component, EventEmitter, Input, OnChanges, OnInit, Ou
 
 import { Transaction } from '../../../core/models/transaction';
 import { IBlockchainClient } from '../../../core/services/blockchain/blockchain-client';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-default-tx-form',
@@ -39,7 +40,7 @@ export class DefaultTxFormComponent implements OnChanges {
     this.tx.to = address;
   }
 
-  setAmount(amount: number) {
+  setAmount(amount: BigNumber) {
     this.tx.amount = amount;
   }
 
