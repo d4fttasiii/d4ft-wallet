@@ -10,6 +10,7 @@ import { EthereumService } from './ethereum.service';
   providedIn: 'root'
 })
 export class PolygonService extends EthereumService {
+  nativeSymbol: string = "POLY";
 
   constructor(protected config: ConfigService, protected notification: NotificationService) {
     super(config, notification);

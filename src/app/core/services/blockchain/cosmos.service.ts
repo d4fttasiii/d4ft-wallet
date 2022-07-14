@@ -83,6 +83,7 @@ class StargateSimulatorClient extends StargateClient {
   providedIn: 'root',
 })
 export class CosmosService extends BaseBlockchainClient implements IBlockchainClient {
+  nativeSymbol: string = "ATOM";
   decimals: number = 6;
   derivationkeypath: string = "m/84'/118'/0'/0/0";
 
@@ -181,18 +182,18 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
         return true;
       } else {
         const getBalance = await this.getBalance(address);
-        return (getBalance >= 0) ? true : false;
+        return (getBalance.gte(0)) ? true : false;
       }
     } catch {
       return false;
     }
   }
 
-  async getBalance(address: string, contractAddress?: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<BigNumber> {
     return await this.tryExecuteAsync(async () => {
       const client = await this.getOnlineClient();
       const atom = await client.getBalance(address, 'uatom');
-      return parseFloat(atom.amount) / 1000000;
+      return new BigNumber(atom.amount).dividedBy(1000000);
     });
   }
 

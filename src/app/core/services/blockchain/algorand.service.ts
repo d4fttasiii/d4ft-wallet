@@ -8,11 +8,13 @@ import { Transaction } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
+import BigNumber from 'bignumber.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlgorandService extends BaseBlockchainClient implements IBlockchainClient {
+  nativeSymbol: string = "ALGO";
   decimals: number = 6;
   derivationkeypath: string = "m/44'/283'/0'/0/0";
 
@@ -34,7 +36,7 @@ export class AlgorandService extends BaseBlockchainClient implements IBlockchain
       params.flatFee = true;
 
       const algoTx = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-        amount: algosdk.algosToMicroalgos(tx.amount),
+        amount: algosdk.algosToMicroalgos(tx.amount.toNumber()),
         from: tx.from,
         to: tx.to,
         note: tx.memo ? new TextEncoder().encode(tx.memo) : undefined,
@@ -73,14 +75,14 @@ export class AlgorandService extends BaseBlockchainClient implements IBlockchain
     return await Promise.resolve(algosdk.isValidAddress(address));
   }
 
-  async getBalance(address: string, contractAddress?: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<BigNumber> {
     try {
       const client = this.getAlgodClient();
       const accountInfo = await client.accountInformation(address).do();
-      return algosdk.microalgosToAlgos(accountInfo.amount);
+      return new BigNumber(algosdk.microalgosToAlgos(accountInfo.amount));
     }
     catch {
-      return 0;
+      return new BigNumber(0);
     }
   }
 

@@ -5,7 +5,7 @@ export interface ITransaction {
 export class Transaction implements ITransaction {
     from: string;
     to: string;
-    amount: number;
+    amount: BigNumber;
     feeOrGas: number;
     memo?: string;
 

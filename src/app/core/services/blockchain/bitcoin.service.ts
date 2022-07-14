@@ -12,6 +12,10 @@ import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
 
+import BigNumber from 'bignumber.js';
+import { stringify } from 'querystring';
+
+
 class Account {
   address: string;
   final_balance: number;
@@ -43,10 +47,11 @@ class TxOut {
   providedIn: 'root'
 })
 export class BitcoinService extends BaseBlockchainClient implements IBlockchainClient {
+  nativeSymbol: string = "BTC";
   decimals: number = 8;
 
   derivationkeypath: string = "m/84'/0'/0'/0/0";
-  private conversionRate = 100000000;
+  private conversionRate = new BigNumber(10).pow(this.decimals); //100_000_000
 
   constructor(protected config: ConfigService, protected httpClient: HttpClient, protected notification: NotificationService) {
     super(notification);
@@ -83,7 +88,11 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
           });
         }
       }
-      const toTransfer = Math.floor((btx.amount * this.conversionRate));
+      const bn = btx.amount.multipliedBy(this.conversionRate);
+      if (!bn.isInteger()) {
+        throw Error("The transaction amount is exceeded the max decimals: " + this.decimals)
+      }
+      const toTransfer = bn.toNumber();
       const utxoSum = btx.utxos.map(u => u.value).reduce((u1, u2) => u1 + u2);
       const change = utxoSum - toTransfer - btx.feeOrGas;
       btcTx.addOutput({
@@ -162,10 +171,10 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
     });
   }
 
-  async getBalance(address: string, contractAddress?: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<BigNumber> {
     return await this.tryExecuteAsync(async () => {
       var result = await this.getAccount(address);
-      return result.final_balance / this.conversionRate;
+      return new BigNumber(result.final_balance).dividedBy(this.conversionRate);
     });
   }
 

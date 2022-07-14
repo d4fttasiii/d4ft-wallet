@@ -5,13 +5,14 @@ import { Keypair } from '../../models/keypair';
 import { Transaction } from '../../models/transaction';
 import { NotificationService } from '../notification/notification.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
-
+import BigNumber from 'bignumber.js';
 declare const StellarSdk: any;
 
 @Injectable({
   providedIn: 'root',
 })
 export class StellarService extends BaseBlockchainClient implements IBlockchainClient {
+  nativeSymbol: string = "XLM";
   decimals: number = 7;
   derivationkeypath: string;
   constructor(protected notification: NotificationService) {
@@ -19,7 +20,7 @@ export class StellarService extends BaseBlockchainClient implements IBlockchainC
   }
   async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
-      throw new Error('Method not implemented.');
+      throw new Error('Functionality does not work.');
     });
   }
 
@@ -91,13 +92,13 @@ export class StellarService extends BaseBlockchainClient implements IBlockchainC
     }
   }
 
-  async getBalance(address: string, contractAddress?: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<BigNumber> {
     try {
       const srv = this.getServer();
       const account = await srv.loadAccount(address);
-      return parseFloat(account.balances.find(b => b.asset_type === 'native').balance);
+      return new BigNumber(account.balances.find(b => b.asset_type === 'native').balance);
     } catch {
-      return 0;
+      return new BigNumber(0);
     }
   }
 

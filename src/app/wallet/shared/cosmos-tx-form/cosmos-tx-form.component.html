@@ -1,9 +1,9 @@
 <div class="animate__animated animate__fadeIn" *ngIf="client">
     <app-address-bar label="Transferring from" [client]="client"
         (addressChanged)="setFrom($event)"></app-address-bar>
-    <app-bignumber-amount-bar [client]="client" [address]="tx.from"
+    <app-amount-bar [client]="client" [address]="tx.from"
         (amountChanged)="setAmount($event)">
-    </app-bignumber-amount-bar>
+    </app-amount-bar>
     <app-address-bar label="Transferring to" [client]="client"
         (addressChanged)="setTo($event)">
     </app-address-bar>

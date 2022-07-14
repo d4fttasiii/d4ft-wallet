@@ -19,7 +19,6 @@ import { BtcTxFormComponent } from './shared/btc-tx-form/btc-tx-form.component';
 import { UtxoSelectorComponent } from './shared/utxo-selector/utxo-selector.component';
 import { MnemonicToPrivateKeyComponent } from './shared/mnemonic-priv-gen/mnemonic-priv-gen.component';
 import { CosmosTxFormComponent } from './shared/cosmos-tx-form/cosmos-tx-form.component';
-import { BigNumberAmountBarComponent } from './shared/bignumber-amount-bar/bignumber-amount-bar.component';
 
 
 @NgModule({
@@ -38,8 +37,7 @@ import { BigNumberAmountBarComponent } from './shared/bignumber-amount-bar/bignu
     BtcTxFormComponent,
     UtxoSelectorComponent,
     MnemonicToPrivateKeyComponent,
-    CosmosTxFormComponent,
-    BigNumberAmountBarComponent
+    CosmosTxFormComponent
   ],
   imports: [
     CommonModule,

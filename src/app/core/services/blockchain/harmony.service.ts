@@ -11,11 +11,11 @@ import { EthereumService } from './ethereum.service';
   providedIn: 'root'
 })
 export class HarmonyService extends EthereumService {
-
+  nativeSymbol: string = "ONE"
   constructor(protected config: ConfigService, protected notification: NotificationService) {
     super(config, notification);
   }
-  
+
   protected override addressToPublicKey(address: string): string {
     const pubk = fromBech32(address);
     return pubk;

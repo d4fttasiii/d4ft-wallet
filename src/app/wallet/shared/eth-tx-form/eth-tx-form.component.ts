@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import BigNumber from 'bignumber.js';
 
 import { EthTransaction } from '../../../core/models/eth-transaction';
 import { EthTxMode } from '../../../core/models/eth-tx-mode';
@@ -16,7 +17,6 @@ export class EthTxFormComponent implements OnChanges {
   @Output() rawTxBuilt = new EventEmitter<string>();
 
   EthTxMode = EthTxMode;
-
   ethTx: EthTransaction;
   isLoading: boolean;
   minFeeOrGas = 0;
@@ -33,6 +33,12 @@ export class EthTxFormComponent implements OnChanges {
     this.rawTxBuilt.emit(rawTx);
   }
 
+  removeContractAddressOnChange(any: any) {
+    if (this.ethTx.txMode != any) {
+      this.ethTx.contractAddress = null;
+    }
+  }
+
   setContract(contractAddress: string) {
     this.ethTx.contractAddress = contractAddress;
   }
@@ -45,7 +51,7 @@ export class EthTxFormComponent implements OnChanges {
     this.ethTx.to = address;
   }
 
-  setAmount(amount: number) {
+  setAmount(amount: BigNumber) {
     this.ethTx.amount = amount;
   }
 

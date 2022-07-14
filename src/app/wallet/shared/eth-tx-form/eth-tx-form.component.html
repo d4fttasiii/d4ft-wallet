@@ -1,7 +1,7 @@
 <div class="animate__animated animate__fadeIn" *ngIf="ethTx">
     <div class="mg-b4">
         <mat-radio-group color="accent" [(ngModel)]="ethTx.txMode">
-            <mat-radio-button class="mg-r2" *ngFor="let txMode of [0,1]" [value]="txMode">
+            <mat-radio-button class="mg-r2" *ngFor="let txMode of [0,1]" [value]="txMode" (click)="removeContractAddressOnChange(txMode)">
                 {{EthTxMode[txMode]}}
             </mat-radio-button>
         </mat-radio-group>
@@ -10,7 +10,7 @@
         <app-address-bar label="Contract address" [client]="client" (addressChanged)="setContract($event)">
         </app-address-bar>
     </div>
-    <app-address-bar label="Transferring from" [client]="client" (addressChanged)="setFrom($event)">
+    <app-address-bar label="Transferring from" [client]="client" (addressChanged)="setFrom($event)" >
     </app-address-bar>
     <app-amount-bar [client]="client" [address]="ethTx.from" [contractAddress]="ethTx.contractAddress"
         (amountChanged)="setAmount($event)">
