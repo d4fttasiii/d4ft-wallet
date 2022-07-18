@@ -16,13 +16,20 @@ export interface IBlockchainClient {
   submitSignedTx(rawTx: string): Promise<string>;
   isAddressValid(address: string): Promise<boolean>;
   getBalance(address: string, contractAddress?: string): Promise<BigNumber>;
-  getMinFeeOrGas(): number;
+  /**
+   * Can be use to set default gas/gasprice/fee values on ui and estimate transaction fee using the given transaction
+   * @param tx The transaction object with values to estimate
+   */
+  getFeeOrGasInfo(tx?: any): Promise<any>;
   getDerivationPath(): string;
   getDecimalNumbers(contractAddress?: string): Promise<TokenMetaData>;
 }
 
 export abstract class BaseBlockchainClient {
   abstract derivationkeypath: string;
+  /**
+   * native asset decimal numbers
+   */
   abstract decimals: number;
   abstract nativeSymbol: string;
 

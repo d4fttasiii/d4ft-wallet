@@ -178,9 +178,10 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
     });
   }
 
-  getMinFeeOrGas(): number {
+  async getFeeOrGasInfo(tx?: any): Promise<any> {
     return 5430;
   }
+
 
   protected async getAccount(address: string): Promise<Account> {
     const cfg = this.getConfig();

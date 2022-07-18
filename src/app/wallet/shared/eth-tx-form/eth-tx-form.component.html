@@ -10,17 +10,34 @@
         <app-address-bar label="Contract address" [client]="client" (addressChanged)="setContract($event)">
         </app-address-bar>
     </div>
-    <app-address-bar label="Transferring from" [client]="client" (addressChanged)="setFrom($event)" >
+    
+    <app-address-bar label="Transferring from" [client]="client" (addressChanged)="setFrom($event)">
     </app-address-bar>
+    
     <app-amount-bar [client]="client" [address]="ethTx.from" [contractAddress]="ethTx.contractAddress"
         (amountChanged)="setAmount($event)">
     </app-amount-bar>
+    
     <app-address-bar label="Transferring to" [client]="client" (addressChanged)="setTo($event)">
     </app-address-bar>
+
+    <mat-form-field class="full-width mg-b2" appearance="fill" >
+        <mat-label>Gas (limit)</mat-label>
+        <input type="number" matInput name="feeOrGas" required  [min]="minFeeOrGas" [(ngModel)]="ethTx.feeOrGas" disabled/>        
+    </mat-form-field>
+    
     <mat-form-field class="full-width mg-b2" appearance="fill">
-        <mat-label>Gas</mat-label>
-        <input type="number" matInput name="feeOrGas" required [min]="minFeeOrGas" [(ngModel)]="ethTx.feeOrGas" />
-        <mat-hint align="start">Gas limit in wei.</mat-hint>
+        <mat-label>Gas Price</mat-label>
+        <input type="BigNumber" matInput name="gas_price" [(ngModel)]="gas_price_string" #gasPriceString (keyup)="calculateFee(gasPriceString.value)"/>
+        <mat-hint *ngIf="nativeSymbol" align="start">In {{nativeSymbol}}</mat-hint>
+        <mat-icon matSuffix matTooltip="Adjust to set the fee. Transactions with lower fee can stay in the queue for longer">info</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field class="full-width mg-b2" appearance="fill">
+        <mat-label>Estimated Fee</mat-label>
+        <input type="string" matInput name="estimated_fee" [(ngModel)]="estimated_fee" disabled/>
+        <mat-icon matSuffix matTooltip="The fee will be paid on top of the transaction amount.">info</mat-icon>
+        <mat-hint *ngIf="nativeSymbol" align="start">In {{nativeSymbol}}</mat-hint>
     </mat-form-field>
 </div>
 <div class="ta-r">

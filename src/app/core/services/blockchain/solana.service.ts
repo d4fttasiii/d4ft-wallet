@@ -94,7 +94,7 @@ export class SolanaService extends BaseBlockchainClient implements IBlockchainCl
     });
   }
 
-  getMinFeeOrGas(): number {
+  async getFeeOrGasInfo(tx?: any): Promise<any> {
     return web3.LAMPORTS_PER_SOL * 0.00005;
   }
 

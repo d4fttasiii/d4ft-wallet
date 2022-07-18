@@ -86,8 +86,8 @@ export class AlgorandService extends BaseBlockchainClient implements IBlockchain
     }
   }
 
-  getMinFeeOrGas(): number {
-    return 1000;
+  getFeeOrGasInfo(tx?: any): Promise<any> {
+    return Promise.resolve(1000);
   }
 
   private getAlgodClient() {

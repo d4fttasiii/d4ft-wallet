@@ -64,7 +64,7 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
     return new BigNumber(0);
   }
 
-  getMinFeeOrGas(): number {
+  async getFeeOrGasInfo(tx?: any): Promise<any> {
     return 1000;
   }
 
