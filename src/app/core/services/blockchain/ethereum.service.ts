@@ -19,6 +19,7 @@ const bip32 = BIP32Factory(ecc);
 import BigNumber from 'bignumber.js';
 import { AbiItem } from 'web3-utils';
 import { TokenMetaData } from '../../models/token-meta';
+import { EthGasInfo } from '../../models/eth-gas-info';
 
 @Injectable({
   providedIn: 'root',
@@ -58,10 +59,7 @@ export class EthereumService extends BaseBlockchainClient implements IBlockchain
     });
   }
 
-  async generatePrivateKeyFromMnemonic(
-    mnemonic: string,
-    keypath: string
-  ): Promise<Keypair> {
+  async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
       if (bip39.validateMnemonic(mnemonic)) {
         const seed = await bip39.mnemonicToSeed(mnemonic);
@@ -81,18 +79,30 @@ export class EthereumService extends BaseBlockchainClient implements IBlockchain
     });
   }
 
-  async buildRawTx(tx: Transaction): Promise<string> {
+  /**
+   * Build legacy transaction (pre EIP-1559)
+   * @param tx EthTransaction object with eth specific informations
+   * @returns 
+   */
+  async buildRawTx(tx: EthTransaction): Promise<string> {
     return await this.tryExecuteAsync(async () => {
       const web3 = this.getClient();
-      const nonce = await web3.eth.getTransactionCount(
-        this.addressToPublicKey(tx.from)
-      );
+      let gas = tx.feeOrGas;
+      if (!tx.feeOrGas) {
+        gas = await web3.eth.estimateGas({
+          to: tx.to,
+          from: tx.from,
+          value: web3.utils.toWei(`${tx.amount.toString(10)}`, 'ether'),
+        });
+      }
+      const gasPrice = (tx.gasPrice) ? web3.utils.toWei(tx.gasPrice.toString(10), 'ether') : await web3.eth.getGasPrice();
+      const nonce = await web3.eth.getTransactionCount(this.addressToPublicKey(tx.from));
       const cfg = this.getConfig();
       const ethTx = {
         from: this.addressToPublicKey(tx.from),
         to: this.addressToPublicKey(tx.to),
-        value: web3.utils.toWei(tx.amount.toString(), 'ether'),
-        gasPrice: await web3.eth.getGasPrice(),
+        value: web3.utils.toWei(tx.amount.toString(10), 'ether'),
+        gasPrice: gasPrice,
         gas: tx.feeOrGas,
         nonce: nonce,
         chainId: cfg.chainId,
@@ -102,28 +112,35 @@ export class EthereumService extends BaseBlockchainClient implements IBlockchain
     });
   }
 
+  /**
+   * Build legacy transaction (pre EIP-1559)
+   * @param tx EthTransaction object with eth specific informations
+   * @returns 
+   */
   async buildRawErc20Tx(tx: EthTransaction): Promise<string> {
     return await this.tryExecuteAsync(async () => {
       const from = this.addressToPublicKey(tx.from);
       const to = this.addressToPublicKey(tx.to);
       const web3 = this.getClient();
-      // const contract = this.getContractTransfer(web3, tx.contractAddress);
-      const contract = new web3.eth.Contract(this.abi, tx.contractAddress)
       const nonce = await web3.eth.getTransactionCount(from);
       const cfg = this.getConfig();
+      const contract = new web3.eth.Contract(this.abi, tx.contractAddress)
+      let gasPrice = await web3.eth.getGasPrice();
+      if (tx.gasPrice) {
+        gasPrice = web3.utils.toWei(tx.gasPrice.toString(10), 'ether')
+      }
       const data = contract.methods
-        .transfer(to, web3.utils.toWei(tx.amount.toString(), 'ether'))
+        .transfer(to, web3.utils.toWei(tx.amount.toString(10), 'ether'))
         .encodeABI();
       const ethTx = {
         from: from,
         to: tx.contractAddress,
         data: data,
-        gasPrice: await web3.eth.getGasPrice(),
+        gasPrice: gasPrice,
         gas: tx.feeOrGas,
         nonce: nonce,
         chainId: cfg.chainId,
       };
-
       return JSON.stringify(ethTx);
     });
   }
@@ -133,7 +150,6 @@ export class EthereumService extends BaseBlockchainClient implements IBlockchain
       const web3 = this.getClient();
       const txObject = JSON.parse(rawTx);
       const signedTx = await web3.eth.accounts.signTransaction(txObject, pk);
-
       return signedTx.rawTransaction;
     });
   }
@@ -173,8 +189,29 @@ export class EthereumService extends BaseBlockchainClient implements IBlockchain
     });
   }
 
-  getMinFeeOrGas(): number {
-    return 21000;
+  async getFeeOrGasInfo(tx?: any): Promise<any> {
+    let result: EthGasInfo = new EthGasInfo();
+    if (tx && tx.from && tx.to && tx.amount) {
+      const web3 = this.getClient();
+      const txdata = tx as EthTransaction;
+      result.gas_price = new BigNumber(await web3.eth.getGasPrice());
+      if (txdata.contractAddress) {
+        const from = this.addressToPublicKey(tx.from);
+        const contract = new web3.eth.Contract(this.abi, tx.contractAddress);
+        result.gasLimit = new BigNumber(await contract.methods.transfer(txdata.to, web3.utils.toWei(tx.amount.toString(10), 'ether')).estimateGas({ from }));
+        return result;
+      }
+      result.gasLimit = new BigNumber(await web3.eth.estimateGas({
+        from: txdata.from,
+        to: txdata.to,
+        value: web3.utils.toHex(web3.utils.toWei(txdata.amount.toString(10), 'ether')),
+      }));
+      return result;
+    }
+    else {
+      result.gasLimit = new BigNumber(21055);
+      return result
+    }
   }
 
   protected addressToPublicKey(address: string): string {
@@ -423,79 +460,6 @@ export class EthereumService extends BaseBlockchainClient implements IBlockchain
       "type": "event"
     }
   ];
-
-  // protected getContractBalance(web3: Web3, contractAddress: string) {
-  //   const contract = new web3.eth.Contract(
-  //     [
-  //       {
-  //         constant: true,
-  //         inputs: [
-  //           {
-  //             name: '_owner',
-  //             type: 'address',
-  //           },
-  //         ],
-  //         name: 'balanceOf',
-  //         outputs: [
-  //           {
-  //             name: 'balance',
-  //             type: 'uint256',
-  //           }
-  //         ],
-  //         type: 'function',
-  //       }
-  //     ],
-  //     contractAddress
-  //   );
-
-  //   return contract;
-  // }
-
-  // protected getContractTransfer(web3: Web3, contractAddress: string) {
-  //   const contract = new web3.eth.Contract(
-  //     [
-  //       {
-  //         constant: false,
-  //         inputs: [
-  //           {
-  //             name: '_to',
-  //             type: 'address',
-  //           },
-  //           {
-  //             name: '_value',
-  //             type: 'uint256',
-  //           },
-  //         ],
-  //         name: 'transfer',
-  //         outputs: [
-  //           {
-  //             name: '',
-  //             type: 'bool',
-  //           },
-  //         ],
-  //         type: 'function',
-  //       },
-  //       {
-  //         constant: true,
-  //         inputs: [],
-  //         name: "decimals",
-  //         outputs: [
-  //           {
-  //             name: "",
-  //             type: "uint8"
-  //           }
-  //         ],
-  //         payable: false,
-  //         stateMutability: "view",
-  //         type: "function"
-  //       }
-  //     ],
-  //     contractAddress
-  //   );
-
-  //   return contract;
-  // }
-
   //https://ethereumdev.io/abi-for-erc20-contract-on-ethereum/
 
 

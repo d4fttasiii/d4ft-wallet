@@ -21,7 +21,9 @@ export class DefaultTxFormComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.tx = new Transaction();
-    this.tx.feeOrGas = this.client.getMinFeeOrGas();
+    this.client.getFeeOrGasInfo().then(x => {
+      this.tx.feeOrGas = x;
+    });
   }
 
   build() {

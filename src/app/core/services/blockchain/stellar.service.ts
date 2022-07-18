@@ -102,7 +102,7 @@ export class StellarService extends BaseBlockchainClient implements IBlockchainC
     }
   }
 
-  getMinFeeOrGas(): number {
+  async getFeeOrGasInfo(tx?: any): Promise<any> {
     return 1000;
   }
 

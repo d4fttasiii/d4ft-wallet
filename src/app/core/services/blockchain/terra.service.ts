@@ -142,7 +142,7 @@ export class TerraService extends BaseBlockchainClient implements IBlockchainCli
     }
   }
 
-  getMinFeeOrGas(): number {
+  async getFeeOrGasInfo(tx?: any): Promise<any> {
     return 150000;
   }
 

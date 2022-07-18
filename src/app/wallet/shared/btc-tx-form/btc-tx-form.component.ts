@@ -21,7 +21,7 @@ export class BtcTxFormComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.tx = new BitcoinTransaction();
-    this.tx.feeOrGas = this.client.getMinFeeOrGas();
+    this.client.getFeeOrGasInfo().then(x => this.minFeeOrGas = x);
   }
 
   build() {

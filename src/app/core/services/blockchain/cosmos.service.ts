@@ -197,7 +197,10 @@ export class CosmosService extends BaseBlockchainClient implements IBlockchainCl
     });
   }
 
-  getMinFeeOrGas(): number { return 200000; }
+  getFeeOrGasInfo(tx?: any): Promise<any> {
+    return Promise.resolve(200000);
+  }
+
   getMaxGas(): number { return 200000; }
   getDefaultFee(): number { return 0; }
 
