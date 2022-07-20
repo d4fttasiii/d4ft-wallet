@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 import { address as Address, payments, Psbt, networks } from 'bitcoinjs-lib';
 import ECPairFactory from 'ecpair';
 import * as ecc from 'tiny-secp256k1';
+import * as bip39 from 'bip39';
+import BIP32Factory from 'bip32';
+const bip32 = BIP32Factory(ecc);
 import { Blockchains } from '../../models/blockchains';
 
 import { BitcoinConfig } from '../../models/config';
@@ -14,6 +17,9 @@ import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
 
 import BigNumber from 'bignumber.js';
 import { stringify } from 'querystring';
+import { mnemonicToSeed } from 'bip39';
+import * as bitcoin from 'bitcoinjs-lib';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 
 
 class Account {
@@ -58,7 +64,23 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
   }
   async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
-      throw new Error('Method not implemented.');
+      if (bip39.validateMnemonic(mnemonic)) {
+        ECPairFactory
+        const seed = await bip39.mnemonicToSeed(mnemonic);
+        const root = bip32.fromSeed(seed);
+        const keyPair = root.derivePath(keypath ? keypath : this.derivationkeypath);
+        const strng = keyPair.toBase58()
+        const restored = bip32.fromBase58(strng);
+        const network = this.getConfig().isMainnet ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
+        const address = bitcoin.payments.p2pkh({ pubkey: restored.publicKey, network: network }).address;
+        const privKey = keyPair.toWIF()
+        return {
+          privateKey: privKey,
+          publicAddress: address,
+        };
+      } else {
+        throw new Error('Invalid mnemonic keypharse');
+      }
     });
   }
 
@@ -67,7 +89,7 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
       const btx = tx as BitcoinTransaction;
       const cfg = this.getConfig();
       const btcTx = new Psbt({ network: cfg.isMainnet ? networks.bitcoin : networks.testnet });
-
+      console.log(btcTx);
       for (let i = 0; i < btx.utxos.length; i++) {
         const utxo = btx.utxos[i];
         const prevTx = await this.getTransaction(utxo.txId);
@@ -90,9 +112,10 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
       }
       const bn = btx.amount.multipliedBy(this.conversionRate);
       if (!bn.isInteger()) {
-        throw Error("The transaction amount is exceeded the max decimals: " + this.decimals)
+        throw Error(`The transaction amount is exceeded the max decimals: ${this.decimals}`)
       }
       const toTransfer = bn.toNumber();
+      console.log(toTransfer);
       const utxoSum = btx.utxos.map(u => u.value).reduce((u1, u2) => u1 + u2);
       const change = utxoSum - toTransfer - btx.feeOrGas;
       btcTx.addOutput({
@@ -103,6 +126,8 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
         address: btx.from,
         value: change,
       });
+      console.log(btcTx);
+
       return btcTx.toHex();
     });
   }
@@ -122,11 +147,12 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
   async submitSignedTx(rawTx: string): Promise<string> {
     return await this.tryExecuteAsync(async () => {
       const cfg = this.getConfig();
-      const payload = `{"jsonrpc": "1.0", "id": "curltest", "method": "sendrawtransaction", "params": ["${rawTx}"]}`;
+      const payload = `{"tx":"${rawTx}"}`
       const options = { headers: new HttpHeaders().set('Content-Type', 'text/plain') };
-      const result = await this.httpClient.post(cfg.url, payload, options).toPromise();
-
-      return JSON.stringify(result);
+      const url = `${cfg.blockcypherUrl}/txs/push`;
+      const result = this.httpClient.post(url, payload, options);
+      const thefirst = await firstValueFrom(result) as { tx: { hash: string } };
+      return thefirst.tx.hash;
     });
   }
 
@@ -172,6 +198,7 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
   }
 
   async getBalance(address: string, contractAddress?: string): Promise<BigNumber> {
+
     return await this.tryExecuteAsync(async () => {
       var result = await this.getAccount(address);
       return new BigNumber(result.final_balance).dividedBy(this.conversionRate);

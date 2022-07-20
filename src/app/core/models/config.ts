@@ -36,7 +36,7 @@ export class TerraConfig {
 }
 
 export class BitcoinConfig {
-    url: string;
+    //url: string;
     blockcypherUrl: string;
     isMainnet: boolean;
 }
