@@ -71,36 +71,40 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
         const keyPair = root.derivePath(keypath ? keypath : this.derivationkeypath);
         const strng = keyPair.toBase58()
         const restored = bip32.fromBase58(strng);
-        const network = this.getConfig().isMainnet ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
-        const address = bitcoin.payments.p2pkh({ pubkey: restored.publicKey, network: network }).address;
         const privKey = keyPair.toWIF()
+        const network = this.getNetwork();
+        const address = bitcoin.payments.p2wpkh({ pubkey: restored.publicKey, network: network }).address;
+        const address2 = bitcoin.payments.p2pkh({ pubkey: restored.publicKey, network: network }).address;
         return {
           privateKey: privKey,
           publicAddress: address,
+          alternativeAddress: address2
         };
-      } else {
-        throw new Error('Invalid mnemonic keypharse');
-      }
+      } else { throw new Error('Invalid mnemonic keypharse'); }
     });
+  }
+  protected getNetwork(isMainnet?: boolean) {
+    if (typeof (isMainnet) === "undefined") {
+      isMainnet = this.getConfig().isMainnet
+    }
+    return isMainnet ? networks.bitcoin : networks.testnet
   }
 
   async buildRawTx(tx: Transaction): Promise<string> {
     return await this.tryExecuteAsync(async () => {
       const btx = tx as BitcoinTransaction;
-      const cfg = this.getConfig();
-      const btcTx = new Psbt({ network: cfg.isMainnet ? networks.bitcoin : networks.testnet });
-      console.log(btcTx);
+      const psbt = new Psbt({ network: this.getNetwork() });
       for (let i = 0; i < btx.utxos.length; i++) {
         const utxo = btx.utxos[i];
         const prevTx = await this.getTransaction(utxo.txId);
         if (prevTx.outputs[utxo.outputIndex].script_type === 'pay-to-pubkey-hash') {
-          btcTx.addInput({
+          psbt.addInput({
             hash: utxo.txId,
             index: utxo.outputIndex,
             nonWitnessUtxo: Buffer.from(prevTx.hex, 'hex'),
           });
         } else {
-          btcTx.addInput({
+          psbt.addInput({
             hash: utxo.txId,
             index: utxo.outputIndex,
             witnessUtxo: {
@@ -115,20 +119,18 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
         throw Error(`The transaction amount is exceeded the max decimals: ${this.decimals}`)
       }
       const toTransfer = bn.toNumber();
-      console.log(toTransfer);
       const utxoSum = btx.utxos.map(u => u.value).reduce((u1, u2) => u1 + u2);
       const change = utxoSum - toTransfer - btx.feeOrGas;
-      btcTx.addOutput({
+      psbt.addOutput({
         address: btx.to,
         value: toTransfer,
       });
-      btcTx.addOutput({
+      psbt.addOutput({
         address: btx.from,
         value: change,
       });
-      console.log(btcTx);
 
-      return btcTx.toHex();
+      return psbt.toHex();
     });
   }
 

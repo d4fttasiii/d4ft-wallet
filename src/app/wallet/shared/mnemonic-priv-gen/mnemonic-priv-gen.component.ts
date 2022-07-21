@@ -17,15 +17,20 @@ export class MnemonicToPrivateKeyComponent {
   mnemonic: string;
   keypath: string;
   keypair: Keypair;
+  keypairString: string;
   Blockchains = Blockchains;
 
-  constructor(private clientFactory: ClientFactoryService) {}
+  constructor(private clientFactory: ClientFactoryService) { }
 
   sign() {
-    if(this.mnemonic){
+    if (this.mnemonic) {
       this.client
-      .generatePrivateKeyFromMnemonic(this.mnemonic, this.keypath)
-      .then((result) => (this.keypair = result));
+        .generatePrivateKeyFromMnemonic(this.mnemonic, this.keypath)
+        .then((result) => {
+          this.keypair = result;
+          this.keypairString = JSON.stringify(result, null, 4);
+          console.log(JSON.stringify(result, null, 4))
+        });
     }
   }
 

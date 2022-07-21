@@ -159,11 +159,11 @@ export class ConfigService {
       },
       bitcoin: {
         blockcypherUrl: 'https://api.blockcypher.com/v1/btc/main',
-        isMainnet: false,
+        isMainnet: true,
       },
       litecoin: {
         blockcypherUrl: 'https://api.blockcypher.com/v1/ltc/main',
-        isMainnet: false,
+        isMainnet: true,
       },
       algorand: {
         algodServer: "http://localhost",
