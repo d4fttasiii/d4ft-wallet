@@ -158,14 +158,12 @@ export class ConfigService {
         chainId: 'bombay-12',
       },
       bitcoin: {
-        url: '',
         blockcypherUrl: 'https://api.blockcypher.com/v1/btc/main',
-        isMainnet: false,
+        isMainnet: true,
       },
       litecoin: {
-        url: '',
         blockcypherUrl: 'https://api.blockcypher.com/v1/ltc/main',
-        isMainnet: false,
+        isMainnet: true,
       },
       algorand: {
         algodServer: "http://localhost",

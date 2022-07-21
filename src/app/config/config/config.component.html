@@ -87,14 +87,10 @@
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Node url</mat-label>
-                                <input matInput type="url" name="btc-url" required placeholder="http://localhost:7545"
-                                    [(ngModel)]="config.bitcoin.url" />
-                            </mat-form-field>
-                            <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Blockcypher Url</mat-label>
                                 <input matInput type="url" name="btc-blockcypherUrl" required
                                     [(ngModel)]="config.bitcoin.blockcypherUrl" />
+                                    <mat-icon matSuffix matTooltip="check: https://www.blockcypher.com/dev/#restful-resources">info</mat-icon>
                             </mat-form-field>
                             <div class="full-width">
                                 <mat-checkbox name="btc-isMainnet" [(ngModel)]="config.bitcoin.isMainnet">
@@ -166,11 +162,6 @@
                                     Litecoin
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
-                            <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Node url</mat-label>
-                                <input matInput type="url" name="ltc-url" required placeholder="http://localhost:7545"
-                                    [(ngModel)]="config.litecoin.url" />
-                            </mat-form-field>
                             <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Blockcypher Url</mat-label>
                                 <input matInput type="url" name="ltc-blockcypherUrl" required
