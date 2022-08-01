@@ -1,6 +1,4 @@
-import { StringMapWithRename } from '@angular/compiler/src/compiler_facade_interface';
 import { Keypair } from '../../models/keypair';
-import { Transaction } from '../../models/transaction';
 import { NotificationService } from '../notification/notification.service';
 import BigNumber from 'bignumber.js';
 import { TokenMetaData } from '../../models/token-meta';
@@ -40,6 +38,11 @@ export abstract class BaseBlockchainClient {
     return this.derivationkeypath;
   }
 
+  /**
+   * Returns the native/contract token metadata - (decimals: number, symbol:string)
+   * @param contractAddress 
+   * @returns 
+   */
   async getDecimalNumbers(contractAddress?: string): Promise<TokenMetaData> {
     return {
       decimals: this.decimals,

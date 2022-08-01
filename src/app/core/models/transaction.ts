@@ -24,7 +24,6 @@ export class CosmosTransaction implements ITransaction {
     gas: number;
     fee: number;
     memo?: string;
-    lofasz: BigInt
     isInvalid(): boolean {
         const ret = !this.from || !this.to || !this.amount || !this.gas || !(this.fee >= 0);
         return ret;

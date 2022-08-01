@@ -172,7 +172,7 @@ export class ConfigService {
         indxrPort: 8980,
       },
       polkadot: {
-        wsUrl: 'wss://dot.getblock.io/mainnet/?api_key=8484a249-a86a-4c79-a157-d93923be38f3',
+        wsUrl: 'wss://rpc.polkadot.io',
       },
       cosmos: {
         endpoint: 'https://rpc.atomscan.com/',
