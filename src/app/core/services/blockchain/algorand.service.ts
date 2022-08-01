@@ -9,6 +9,11 @@ import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
 import BigNumber from 'bignumber.js';
+import BIP32Factory from 'bip32';
+import * as ecc from 'tiny-secp256k1';
+import * as bip39 from 'bip39';
+
+const bip32 = BIP32Factory(ecc);
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +29,16 @@ export class AlgorandService extends BaseBlockchainClient implements IBlockchain
 
   async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
-      throw new Error('Method not implemented.');
+      const seed = await bip39.mnemonicToSeed(mnemonic);
+      const root = bip32.fromSeed(seed);
+      const keyPair = root.derivePath(keypath ? keypath : this.derivationkeypath);
+      const algo_mnemonic = algosdk.mnemonicFromSeed(keyPair.privateKey);
+      const sk = algosdk.mnemonicToSecretKey(mnemonic);
+      return {
+        privateKey: algo_mnemonic,
+        publicAddress: sk.addr,
+        actual_privateKey: Buffer.from(sk.sk).toString('hex'),
+      }
     });
   }
 
@@ -51,6 +65,7 @@ export class AlgorandService extends BaseBlockchainClient implements IBlockchain
   async signRawTx(rawTx: string, pk: string): Promise<string> {
     return await this.tryExecuteAsync(async () => {
       const tx = algosdk.decodeUnsignedTransaction(Buffer.from(rawTx, 'hex'));
+
       const secretkey = algosdk.mnemonicToSecretKey(pk);
       const signedTxBytes = tx.signTxn(secretkey.sk);
 
