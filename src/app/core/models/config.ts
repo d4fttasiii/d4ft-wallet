@@ -13,6 +13,7 @@ export interface Config {
     litecoin: BitcoinConfig;
     algorand: AlgorandConfig;
     polkadot: PolkadotConfig;
+    kusama: PolkadotConfig;
     cosmos: CosmosConfig;
 }
 
@@ -50,6 +51,7 @@ export class AlgorandConfig {
 export class PolkadotConfig {
     wsUrl: string;
 }
+
 
 export class CosmosConfig {
     endpoint: string;

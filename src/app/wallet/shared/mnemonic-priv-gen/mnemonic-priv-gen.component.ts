@@ -22,14 +22,13 @@ export class MnemonicToPrivateKeyComponent {
 
   constructor(private clientFactory: ClientFactoryService) { }
 
-  sign() {
+  generate() {
     if (this.mnemonic) {
       this.client
         .generatePrivateKeyFromMnemonic(this.mnemonic, this.keypath)
         .then((result) => {
           this.keypair = result;
           this.keypairString = JSON.stringify(result, null, 4);
-          console.log(JSON.stringify(result, null, 4))
         });
     }
   }

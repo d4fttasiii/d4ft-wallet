@@ -39,7 +39,6 @@ export class AmountBarComponent implements OnChanges {
    * Load decimals and symbol from client, and adjust the decimal-validator
    */
   private loadTokenMetadata() {
-    this.isLoading = true;
     this.client.getDecimalNumbers(this.contractAddress).then(x => {
       this.decimals = x.decimals;
       this.symbol = x.symbol;
@@ -58,7 +57,7 @@ export class AmountBarComponent implements OnChanges {
         return { ["decimalExceed"]: "Decimals exceeded in sending amount!" };
       });
       this.amountFormControl.addValidators(this.decimalValidator);
-    }).finally(() => setTimeout(() => this.isLoading = false, 1000));
+    });
   }
 
   /**
@@ -73,6 +72,7 @@ export class AmountBarComponent implements OnChanges {
       .then(amount => {
         this.balance = amount;
         this.balancestring = amount.toString(10);
+        this.isLoading = false;
         if (this.maxValidator) {
           this.amountFormControl.removeValidators(this.maxValidator);
         }
@@ -85,7 +85,7 @@ export class AmountBarComponent implements OnChanges {
         });
         this.amountFormControl.addValidators(this.maxValidator);
       })
-      .finally(() => setTimeout(() => this.isLoading = false, 1000));
+      .finally(() => setTimeout(() => this.isLoading = false, 10000));
   }
 
   onAmountChange(newAmount: string) {

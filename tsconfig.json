@@ -8,8 +8,9 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "allowJs": true,
-    "target": "es5",
+    "target": "es2017",
     "esModuleInterop": true,
     "typeRoots": [
       "node_modules/@types"
@@ -32,6 +33,6 @@
     "skipTemplateCodegen": false,
     "preserveWhitespaces": true,
     "skipMetadataEmit": false,
-    "disableTypeScriptVersionCheck": true
+    "disableTypeScriptVersionCheck": true,
   }
 }

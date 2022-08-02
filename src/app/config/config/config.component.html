@@ -30,7 +30,7 @@
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
-                                    <mat-icon svgIcon="blockchain_avax"></mat-icon>
+                                    <mat-icon svgIcon="blockchain_algo"></mat-icon>
                                 </mat-panel-title>
                                 <mat-panel-description>
                                     Algorand
@@ -172,6 +172,36 @@
                                     Is Mainnet
                                 </mat-checkbox>
                             </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_dot"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Polkadot
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Ws Url</mat-label>
+                                <input matInput type="url" name="polkadot-url" required placeholder="wss://polkadot.rpc.io"
+                                    [(ngModel)]="config.polkadot.wsUrl" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_ksm"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Kusama
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Ws Url</mat-label>
+                                <input matInput type="url" name="kusama-url" required placeholder="wss://kusama-rpc.polkadot.io"
+                                    [(ngModel)]="config.kusama.wsUrl" />
+                            </mat-form-field>
                         </mat-expansion-panel>
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>
