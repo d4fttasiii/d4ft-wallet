@@ -191,6 +191,21 @@
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_ksm"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Kusama
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Ws Url</mat-label>
+                                <input matInput type="url" name="kusama-url" required placeholder="wss://kusama-rpc.polkadot.io"
+                                    [(ngModel)]="config.kusama.wsUrl" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
                                     <mat-icon svgIcon="blockchain_matic"></mat-icon>
                                 </mat-panel-title>
                                 <mat-panel-description>

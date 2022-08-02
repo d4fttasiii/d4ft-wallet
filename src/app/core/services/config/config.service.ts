@@ -61,6 +61,8 @@ export class ConfigService {
         return cfg.algorand;
       case Blockchains.Polkadot:
         return cfg.polkadot;
+      case Blockchains.Kusama:
+        return cfg.kusama;
       case Blockchains.Cosmos:
         return cfg.cosmos;
     }
@@ -173,6 +175,9 @@ export class ConfigService {
       },
       polkadot: {
         wsUrl: 'wss://rpc.polkadot.io',
+      },
+      kusama: {
+        wsUrl: 'wss://kusama-rpc.polkadot.io',
       },
       cosmos: {
         endpoint: 'https://rpc.atomscan.com/',

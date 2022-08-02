@@ -12,4 +12,5 @@ export enum Blockchains {
   Algorand = 11,
   Polkadot = 12,
   Cosmos = 13,
+  Kusama = 14
 }

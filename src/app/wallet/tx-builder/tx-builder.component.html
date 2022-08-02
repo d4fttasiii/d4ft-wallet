@@ -19,6 +19,8 @@
                     </app-eth-tx-form>
                     <app-dot-tx-form *ngSwitchCase="Blockchains.Polkadot" [client]="client" (rawTxBuilt)="setRawTx($event)">
                     </app-dot-tx-form>
+                    <app-dot-tx-form *ngSwitchCase="Blockchains.Kusama" [client]="client" (rawTxBuilt)="setRawTx($event)">
+                    </app-dot-tx-form>
                     <app-btc-tx-form *ngSwitchCase="Blockchains.Bitcoin" [client]="client" (rawTxBuilt)="setRawTx($event)">
                     </app-btc-tx-form>
                     <app-btc-tx-form *ngSwitchCase="Blockchains.Litecoin" [client]="client" (rawTxBuilt)="setRawTx($event)">

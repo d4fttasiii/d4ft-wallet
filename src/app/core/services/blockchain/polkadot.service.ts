@@ -14,7 +14,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { blake2AsHex, cryptoWaitReady } from '@polkadot/util-crypto';
 type Curves = 'ed25519' | 'sr25519' | 'ecdsa';
 
-class PolkadotSignDto {
+export class PolkadotSignDto {
   from: string;
   signerPayload: string;
   unsignedPayload: string;
@@ -31,16 +31,14 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
   derivationkeypath: string = 'sr25519'; //this chain not using the derivation keypath to generate keypair.
   ss58Format = 0;
   type: Curves = 'sr25519';
+  defaultFee = 100000000;
 
-  constructor(private config: ConfigService, protected notification: NotificationService) {
+  constructor(protected config: ConfigService, protected notification: NotificationService) {
     super(notification);
   }
 
   async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
-      // import from the location the error specifies
-
-      // wait for the promise as per the error message
       await cryptoWaitReady();
       const keyring = new Keyring({ type: keypath as Curves });
       const keypair = keyring.addFromUri(mnemonic);
@@ -51,11 +49,10 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
     });
   }
 
-  async buildRawTx(tx: Transaction): Promise<string> {
-    const config = this.getConfig();
-    const wsProvider = new WsProvider(config.wsUrl);
-    const api = await ApiPromise.create({ provider: wsProvider });
+  //https://github.com/polkadot-js/tools/blob/master/packages/signer-cli/src/cmdSendOffline.ts
 
+  async buildRawTx(tx: Transaction): Promise<string> {
+    const api = await this.getApi();
     let accountInfo = await api.query.system.account(tx.from);
     const amount = tx.amount.multipliedBy(new BigNumber(10).pow(this.decimals));
     const rawTx = api.tx.balances.transfer(tx.to, amount.toString());
@@ -74,10 +71,7 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
     };
 
     const signerPayload = api.createType("SignerPayload", payload);
-
-    const pl = signerPayload.toPayload();
     let originUnsigin = signerPayload.toRaw().data;
-
     let unsigned = (originUnsigin.length > (256 + 1) * 2) ? blake2AsHex(originUnsigin) : originUnsigin;
     return JSON.stringify({
       from: tx.from,
@@ -87,11 +81,13 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
     })
   }
 
-  validatePayload(payload: string): void {
+  protected validatePayload(payload: string): void {
     assert(payload && payload.length > 0, 'Cannot sign empty payload. Please check your input and try again.');
     assert(isHex(payload), 'Payload must be supplied as a hex string. Please check your input and try again.');
   }
+
   //https://github.com/polariseye/polka_statemint_test/blob/main/index.ts
+
 
   async signRawTx(rawTx: string, pk: string): Promise<string> {
     const input = JSON.parse(rawTx) as PolkadotSignDto;
@@ -106,9 +102,7 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
 
   async submitSignedTx(rawTx: string): Promise<string> {
     const input = JSON.parse(rawTx) as PolkadotSignDto;
-    const config = this.getConfig();
-    const wsProvider = new WsProvider(config.wsUrl);
-    const api = await ApiPromise.create({ provider: wsProvider });
+    const api = await this.getApi();
     const tx = api.createType('Extrinsic', input.tx);
     const signerPayload = api.createType("SignerPayload", input.signerPayload);
     const payload = signerPayload.toPayload();
@@ -139,20 +133,19 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
 
   async getFeeOrGasInfo(tx?: any): Promise<any> {
     if (tx) {
-      const config = this.getConfig();
-      const wsProvider = new WsProvider(config.wsUrl);
-      const api = await ApiPromise.create({ provider: wsProvider });
-      const amount = this.toSmallestUnit(tx.amount);
+      const api = await this.getApi();
       const txo = api.tx.balances.transfer(tx.to, this.toSmallestUnit(tx.amount));
       let feeInfo = await txo.paymentInfo(tx.from);
       return feeInfo.partialFee.toString();
     }
-    return 100000000;
+    return this.defaultFee;
   }
-  private toSmallestUnit(amount: BigNumber | string): string {
+
+  protected toSmallestUnit(amount: BigNumber | string): string {
     return new BigNumber(amount).multipliedBy(new BigNumber(10).pow(this.decimals)).toString(10);
   }
-  private async getApi(): Promise<ApiPromise> {
+
+  protected async getApi(): Promise<ApiPromise> {
     const cfg = this.getConfig();
     const wsProvider = new WsProvider(cfg.wsUrl);
     const api = await ApiPromise.create({ provider: wsProvider });
@@ -160,7 +153,7 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
     return api;
   }
 
-  private getConfig(): PolkadotConfig {
+  protected getConfig(): PolkadotConfig {
     return this.config.get(Blockchains.Polkadot) as PolkadotConfig;
   }
 
