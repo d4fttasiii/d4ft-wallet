@@ -23,6 +23,12 @@ export class DefaultTxFormComponent implements OnChanges {
     this.tx = new Transaction();
     this.client.getFeeOrGasInfo().then(x => {
       this.tx.feeOrGas = x;
+      if (x.feeOrGas) {
+        this.tx.feeOrGas = x.feeOrGas;
+      }
+      if (x.minFeeOrGas) {
+        this.minFeeOrGas = x.minFeeOrGas
+      }
     });
   }
 

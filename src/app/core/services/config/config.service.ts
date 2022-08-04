@@ -168,10 +168,8 @@ export class ConfigService {
         isMainnet: true,
       },
       algorand: {
-        algodServer: "http://localhost",
-        algodPort: 4001,
-        indxrServer: "http://localhost",
-        indxrPort: 8980,
+        algodServer: "https://node.algoexplorerapi.io",
+        algodPort: 443
       },
       polkadot: {
         wsUrl: 'wss://rpc.polkadot.io',
