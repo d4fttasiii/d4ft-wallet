@@ -29,15 +29,20 @@ export class AlgorandService extends BaseBlockchainClient implements IBlockchain
 
   async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
+      const words = mnemonic.split(' ');
+
       const seed = await bip39.mnemonicToSeed(mnemonic);
       const root = bip32.fromSeed(seed);
       const keyPair = root.derivePath(keypath ? keypath : this.derivationkeypath);
-      const algo_mnemonic = algosdk.mnemonicFromSeed(keyPair.privateKey);
-      const sk = algosdk.mnemonicToSecretKey(mnemonic);
+      let algo_mnemonic = algosdk.mnemonicFromSeed(keyPair.privateKey);
+      if (words.length == 25) {
+        algo_mnemonic = mnemonic;
+      }
+      let sk = algosdk.mnemonicToSecretKey(algo_mnemonic);
       return {
-        privateKey: algo_mnemonic,
+        privateKey: Buffer.from(sk.sk).toString('hex'),
         publicAddress: sk.addr,
-        actual_privateKey: Buffer.from(sk.sk).toString('hex'),
+        algorandMnemonic: algo_mnemonic,
       }
     });
   }
@@ -64,12 +69,17 @@ export class AlgorandService extends BaseBlockchainClient implements IBlockchain
 
   async signRawTx(rawTx: string, pk: string): Promise<string> {
     return await this.tryExecuteAsync(async () => {
+
       const tx = algosdk.decodeUnsignedTransaction(Buffer.from(rawTx, 'hex'));
-
-      const secretkey = algosdk.mnemonicToSecretKey(pk);
-      const signedTxBytes = tx.signTxn(secretkey.sk);
-
-      return Buffer.from(signedTxBytes).toString('hex');
+      if (pk.split(' ').length === 25) {
+        const sk = algosdk.mnemonicToSecretKey(pk).sk
+        const signedTxBytes = tx.signTxn(sk);
+        return Buffer.from(signedTxBytes).toString('hex');
+      }
+      else {
+        const signedTxBytes = tx.signTxn(Buffer.from(pk, 'hex'));
+        return Buffer.from(signedTxBytes).toString('hex');
+      }
     });
   }
 
@@ -96,28 +106,23 @@ export class AlgorandService extends BaseBlockchainClient implements IBlockchain
       const accountInfo = await client.accountInformation(address).do();
       return new BigNumber(algosdk.microalgosToAlgos(accountInfo.amount));
     }
-    catch {
+    catch (e) {
+      console.log(e);
       return new BigNumber(0);
     }
   }
 
-  getFeeOrGasInfo(tx?: any): Promise<any> {
-    return Promise.resolve(1000);
+  async getFeeOrGasInfo(tx?: any): Promise<any> {
+    return {
+      feeOrGas: 1000,
+      minFeeOrGas: 1000
+    }
   }
 
   private getAlgodClient() {
     const cfg = this.getConfig();
     const algodToken = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-    const client = new algosdk.Algodv2(algodToken, cfg.algodServer, cfg.algodPort);
-
-    return client;
-  }
-
-  private getIndxrClient() {
-    const cfg = this.getConfig();
-    const algodToken = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-    const client = new algosdk.Indexer(algodToken, cfg.indxrServer, cfg.indxrPort)
-
+    const client = new algosdk.Algodv2(algodToken, cfg.algodServer, cfg.algodPort ?? 443);
     return client;
   }
 
