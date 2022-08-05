@@ -16,20 +16,33 @@ export class DefaultTxFormComponent implements OnChanges {
   tx: Transaction;
   isLoading: boolean;
   minFeeOrGas = 0;
+  feeEstimationLoading = false;
+  decimals: number;
+  nativeSymbol: string;
+  poweredDecimals: BigNumber;
 
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.tx = new Transaction();
-    this.client.getFeeOrGasInfo().then(x => {
-      this.tx.feeOrGas = x;
-      if (x.feeOrGas) {
-        this.tx.feeOrGas = x.feeOrGas;
-      }
-      if (x.minFeeOrGas) {
-        this.minFeeOrGas = x.minFeeOrGas
-      }
+    this.client.getDecimalNumbers().then((x) => {
+      this.decimals = x.decimals;
+      this.nativeSymbol = x.symbol;
+      this.poweredDecimals = new BigNumber(10).pow(x.decimals);
+      this.client.getFeeOrGasInfo().then(x => {
+        this.tx.feeOrGas = x;
+        // if (x.feeOrGas) {
+        //   this.tx.feeOrGas = this.toNative(x.feeOrGas);
+        // }
+        // if (x.minFeeOrGas) {
+        //   this.minFeeOrGas = this.toNative(x.minFeeOrGas)
+        // }
+      });
+      // this.client.getFeeOrGasInfo().then(x => {
+      //   this.tx.feeOrGas = this.toNative(new BigNumber(x));
+      // });
     });
+
   }
 
   build() {
@@ -42,14 +55,34 @@ export class DefaultTxFormComponent implements OnChanges {
 
   setFrom(address: string) {
     this.tx.from = address;
+    this.updateGasInfo();
   }
 
   setTo(address: string) {
     this.tx.to = address;
+    this.updateGasInfo();
   }
 
   setAmount(amount: BigNumber) {
     this.tx.amount = amount;
+    this.updateGasInfo();
+  }
+
+  updateGasInfo() {
+    if (this.tx.amount && this.tx.to && this.tx.from) {
+      this.feeEstimationLoading = true;
+      this.client.getFeeOrGasInfo(this.tx).then((x) => {
+        this.tx.feeOrGas = x;
+        this.feeEstimationLoading = false;
+      }).finally(() => setTimeout(() => this.feeEstimationLoading = false, 10000));
+    }
+  }
+
+  toNative(amount: BigNumber): number {
+    if (typeof (amount) === "string") {
+      amount = new BigNumber(amount);
+    }
+    return amount.dividedBy(this.poweredDecimals).toNumber();
   }
 
 }

@@ -10,6 +10,9 @@ import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
 import BigNumber from 'bignumber.js';
+import { derivePath } from "ed25519-hd-key";
+import * as bip39 from "bip39";
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,13 +20,20 @@ import BigNumber from 'bignumber.js';
 export class SolanaService extends BaseBlockchainClient implements IBlockchainClient {
   nativeSymbol: string = "SOL";
   decimals: number = 9;
-  derivationkeypath: string;
+  derivationkeypath: string = "m/44'/501'/0'/0'";
   constructor(private config: ConfigService, protected notification: NotificationService) {
     super(notification);
   }
   async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
-      throw new Error('Method not implemented.');
+      const seed = bip39.mnemonicToSeedSync(mnemonic, ""); // (mnemonic, password)
+      const keypair = web3.Keypair.fromSeed(
+        derivePath(keypath, seed.toString("hex")).key
+      );
+      return {
+        privateKey: bs58.encode(keypair.secretKey),
+        publicAddress: keypair.publicKey.toBase58()
+      }
     });
   }
 
@@ -39,6 +49,7 @@ export class SolanaService extends BaseBlockchainClient implements IBlockchainCl
       if (!lamports.isInteger()) {
         throw Error("The transaction amount is exceeded the max decimals: " + this.decimals)
       }
+
       transaction.add(
         web3.SystemProgram.transfer({
           fromPubkey: from,
@@ -62,7 +73,7 @@ export class SolanaService extends BaseBlockchainClient implements IBlockchainCl
       const tx = web3.Transaction.from(Buffer.from(rawTx, 'hex'));
       tx.sign(keypair);
 
-      return await Promise.resolve(tx.serialize().toString('hex'));
+      return tx.serialize().toString('hex');
     });
   }
 
@@ -95,7 +106,30 @@ export class SolanaService extends BaseBlockchainClient implements IBlockchainCl
   }
 
   async getFeeOrGasInfo(tx?: any): Promise<any> {
-    return web3.LAMPORTS_PER_SOL * 0.00005;
+    if (tx) {
+      const client = this.getClient();
+      const from = new web3.PublicKey(tx.from);
+      const to = new web3.PublicKey(tx.to);
+      const transaction = new web3.Transaction();
+      transaction.add(
+        web3.SystemProgram.transfer({
+          fromPubkey: from,
+          toPubkey: to,
+          lamports: web3.LAMPORTS_PER_SOL * 1,
+        })
+      );
+      const { blockhash } = await client.getLatestBlockhash('finalized');
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = from;
+      const feeForMessage = await client.getFeeForMessage(
+        transaction.compileMessage(),
+        'confirmed'
+      );
+      const feeInLamports = feeForMessage.value;
+      const fee = feeInLamports;
+      return fee;
+    }
+    return web3.LAMPORTS_PER_SOL * 0.000005;
   }
 
   hasSmartContracts(): boolean {
