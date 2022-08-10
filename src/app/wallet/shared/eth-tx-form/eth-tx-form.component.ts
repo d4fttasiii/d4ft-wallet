@@ -103,7 +103,10 @@ export class EthTxFormComponent implements OnChanges {
       this.client.buildRawTx(this.ethTx) :
       (this.client as EthereumService).buildRawErc20Tx(this.ethTx);
 
-    q.then(rawTx => this.rawTxBuilt.emit(rawTx))
+    q.then(rawTx => {
+      this.rawTxBuilt.emit(rawTx)
+      this.isLoading = false;
+    })
       .catch(error => console.error(error))
       .finally(() => setTimeout(() => this.isLoading = false, 1000));
   }

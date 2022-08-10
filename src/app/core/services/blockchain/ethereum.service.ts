@@ -12,10 +12,9 @@ import { NotificationService } from '../notification/notification.service';
 
 import BIP32Factory from 'bip32';
 import * as ecc from 'tiny-secp256k1';
-import * as bip39 from 'bip39';
-import { stringify } from 'querystring';
-import { Keypair } from '../../models/keypair';
 const bip32 = BIP32Factory(ecc);
+import * as bip39 from 'bip39';
+import { Keypair } from '../../models/keypair';
 import BigNumber from 'bignumber.js';
 import { AbiItem } from 'web3-utils';
 import { TokenMetaData } from '../../models/token-meta';

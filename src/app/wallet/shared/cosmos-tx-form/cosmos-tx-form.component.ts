@@ -30,7 +30,10 @@ export class CosmosTxFormComponent implements OnChanges {
   build() {
     this.isLoading = true;
     this.client.buildRawTx(this.tx)
-      .then(rawTx => this.rawTxBuilt.emit(rawTx))
+      .then(rawTx => {
+        this.rawTxBuilt.emit(rawTx)
+        this.isLoading = false;
+      })
       .catch(error => console.error(error))
       .finally(() => setTimeout(() => this.isLoading = false, 5000));
   }
