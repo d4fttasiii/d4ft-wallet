@@ -10,8 +10,22 @@ import { EthereumService } from './ethereum.service';
 })
 export class AvalancheService extends EthereumService {
 
+  nativeSymbol: string = "AVAX";
+  derivationkeypath = "m/44'/60'/0'/0/0";
+
   constructor(protected config: ConfigService, protected notification: NotificationService) {
     super(config, notification);
+  }
+
+
+  override async signRawTx(rawTx: string, pk: string): Promise<string> {
+    // return await super.signRawTx(rawTx, privatekey);
+    return await this.tryExecuteAsync(async () => {
+      const web3 = this.getClient();
+      const txObject = JSON.parse(rawTx);
+      const signedTx = await web3.eth.accounts.signTransaction(txObject, pk);
+      return signedTx.rawTransaction;
+    });
   }
 
   protected override getConfig(): EthereumConfig {

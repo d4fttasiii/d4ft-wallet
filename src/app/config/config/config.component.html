@@ -30,7 +30,7 @@
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
-                                    <mat-icon svgIcon="blockchain_avax"></mat-icon>
+                                    <mat-icon svgIcon="blockchain_algo"></mat-icon>
                                 </mat-panel-title>
                                 <mat-panel-description>
                                     Algorand
@@ -45,16 +45,6 @@
                                 <mat-label>Algod Port</mat-label>
                                 <input matInput type="number" name="algo-algodPort" placeholder="4001"
                                     [(ngModel)]="config.algorand.algodPort" />
-                            </mat-form-field>
-                            <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Indxr Server</mat-label>
-                                <input matInput type="url" name="algo-indxrServer"
-                                    placeholder="http://localhost" [(ngModel)]="config.algorand.indxrServer" />
-                            </mat-form-field>
-                            <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Indxr Port</mat-label>
-                                <input matInput type="number" name="algo-indxrPort" placeholder="8980"
-                                    [(ngModel)]="config.algorand.indxrPort" />
                             </mat-form-field>
                         </mat-expansion-panel>
                         <mat-expansion-panel>
@@ -87,14 +77,10 @@
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Node url</mat-label>
-                                <input matInput type="url" name="btc-url" required placeholder="http://localhost:7545"
-                                    [(ngModel)]="config.bitcoin.url" />
-                            </mat-form-field>
-                            <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Blockcypher Url</mat-label>
                                 <input matInput type="url" name="btc-blockcypherUrl" required
                                     [(ngModel)]="config.bitcoin.blockcypherUrl" />
+                                    <mat-icon matSuffix matTooltip="check: https://www.blockcypher.com/dev/#restful-resources">info</mat-icon>
                             </mat-form-field>
                             <div class="full-width">
                                 <mat-checkbox name="btc-isMainnet" [(ngModel)]="config.bitcoin.isMainnet">
@@ -167,11 +153,6 @@
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Node url</mat-label>
-                                <input matInput type="url" name="ltc-url" required placeholder="http://localhost:7545"
-                                    [(ngModel)]="config.litecoin.url" />
-                            </mat-form-field>
-                            <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Blockcypher Url</mat-label>
                                 <input matInput type="url" name="ltc-blockcypherUrl" required
                                     [(ngModel)]="config.litecoin.blockcypherUrl" />
@@ -181,6 +162,36 @@
                                     Is Mainnet
                                 </mat-checkbox>
                             </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_dot"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Polkadot
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Ws Url</mat-label>
+                                <input matInput type="url" name="polkadot-url" required placeholder="wss://polkadot.rpc.io"
+                                    [(ngModel)]="config.polkadot.wsUrl" />
+                            </mat-form-field>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon svgIcon="blockchain_ksm"></mat-icon>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Kusama
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Ws Url</mat-label>
+                                <input matInput type="url" name="kusama-url" required placeholder="wss://kusama-rpc.polkadot.io"
+                                    [(ngModel)]="config.kusama.wsUrl" />
+                            </mat-form-field>
                         </mat-expansion-panel>
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>

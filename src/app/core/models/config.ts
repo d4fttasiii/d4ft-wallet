@@ -13,6 +13,7 @@ export interface Config {
     litecoin: BitcoinConfig;
     algorand: AlgorandConfig;
     polkadot: PolkadotConfig;
+    kusama: PolkadotConfig;
     cosmos: CosmosConfig;
 }
 
@@ -36,7 +37,6 @@ export class TerraConfig {
 }
 
 export class BitcoinConfig {
-    url: string;
     blockcypherUrl: string;
     isMainnet: boolean;
 }
@@ -44,13 +44,12 @@ export class BitcoinConfig {
 export class AlgorandConfig {
     algodServer: string;
     algodPort?: number;
-    indxrServer?: string;
-    indxrPort?: number;
 }
 
 export class PolkadotConfig {
     wsUrl: string;
 }
+
 
 export class CosmosConfig {
     endpoint: string;

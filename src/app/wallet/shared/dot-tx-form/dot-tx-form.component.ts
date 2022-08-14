@@ -1,25 +1,25 @@
-import { AfterViewChecked, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
 import { Transaction } from '../../../core/models/transaction';
 import { IBlockchainClient } from '../../../core/services/blockchain/blockchain-client';
 import BigNumber from 'bignumber.js';
 
 @Component({
-  selector: 'app-default-tx-form',
-  templateUrl: './default-tx-form.component.html',
-  styleUrls: ['./default-tx-form.component.scss']
+  selector: 'app-dot-tx-form',
+  templateUrl: './dot-tx-form.component.html',
+  styleUrls: ['./dot-tx-form.component.scss']
 })
-export class DefaultTxFormComponent implements OnChanges {
+export class DotTxFormComponent implements OnChanges {
 
   @Input() client: IBlockchainClient;
   @Output() rawTxBuilt = new EventEmitter<string>();
   tx: Transaction;
   isLoading: boolean;
   minFeeOrGas = 0;
-  feeEstimationLoading = false;
   decimals: number;
   nativeSymbol: string;
   poweredDecimals: BigNumber;
+  feeEstimationLoading: boolean;
 
   constructor() { }
 
@@ -30,19 +30,16 @@ export class DefaultTxFormComponent implements OnChanges {
       this.nativeSymbol = x.symbol;
       this.poweredDecimals = new BigNumber(10).pow(x.decimals);
       this.client.getFeeOrGasInfo().then(x => {
-        this.tx.feeOrGas = x;
-        // if (x.feeOrGas) {
-        //   this.tx.feeOrGas = this.toNative(x.feeOrGas);
-        // }
-        // if (x.minFeeOrGas) {
-        //   this.minFeeOrGas = this.toNative(x.minFeeOrGas)
-        // }
+        this.tx.feeOrGas = this.toNative(new BigNumber(x));
       });
-      // this.client.getFeeOrGasInfo().then(x => {
-      //   this.tx.feeOrGas = this.toNative(new BigNumber(x));
-      // });
     });
+  }
 
+  toNative(amount: BigNumber): number {
+    if (typeof (amount) === "string") {
+      amount = new BigNumber(amount);
+    }
+    return amount.dividedBy(this.poweredDecimals).toNumber();
   }
 
   build() {
@@ -54,6 +51,16 @@ export class DefaultTxFormComponent implements OnChanges {
       })
       .catch(error => console.error(error))
       .finally(() => setTimeout(() => this.isLoading = false, 5000));
+  }
+
+  updateGasInfo() {
+    if (this.tx.amount && this.tx.to && this.tx.from) {
+      this.feeEstimationLoading = true;
+      this.client.getFeeOrGasInfo(this.tx).then((x) => {
+        this.tx.feeOrGas = this.toNative(new BigNumber(x));
+        this.feeEstimationLoading = false;
+      }).finally(() => setTimeout(() => this.feeEstimationLoading = false, 10000));
+    }
   }
 
   setFrom(address: string) {
@@ -69,23 +76,6 @@ export class DefaultTxFormComponent implements OnChanges {
   setAmount(amount: BigNumber) {
     this.tx.amount = amount;
     this.updateGasInfo();
-  }
-
-  updateGasInfo() {
-    if (this.tx.amount && this.tx.to && this.tx.from) {
-      this.feeEstimationLoading = true;
-      this.client.getFeeOrGasInfo(this.tx).then((x) => {
-        this.tx.feeOrGas = x;
-        this.feeEstimationLoading = false;
-      }).finally(() => setTimeout(() => this.feeEstimationLoading = false, 10000));
-    }
-  }
-
-  toNative(amount: BigNumber): number {
-    if (typeof (amount) === "string") {
-      amount = new BigNumber(amount);
-    }
-    return amount.dividedBy(this.poweredDecimals).toNumber();
   }
 
 }

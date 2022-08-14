@@ -1,0 +1,37 @@
+<div class="animate__animated animate__fadeIn" *ngIf="client">
+    <app-address-bar label="Transferring from" [client]="client"
+        (addressChanged)="setFrom($event)"></app-address-bar>
+    <app-amount-bar [client]="client" [address]="tx.from"
+        (amountChanged)="setAmount($event)">
+    </app-amount-bar>
+    <app-address-bar label="Transferring to" [client]="client"
+        (addressChanged)="setTo($event)">
+    </app-address-bar>
+    <mat-form-field class="full-width mg-b2" appearance="fill">
+        <mat-label>Max gas</mat-label>
+        <input type="number" matInput name="feeOrGas" required [min]="minGas"
+            [(ngModel)]="tx.gas" />
+        <mat-hint align="start">Maximum gas limit (default 200 000)</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field class="full-width mg-b2" appearance="fill">
+        <mat-label>Fee amount</mat-label>
+        <input type="number" matInput name="fee" required [min]="minFee"
+            [(ngModel)]="tx.fee" />
+            <mat-icon matSuffix 
+            matTooltip="On cosmos 0 fee transactions are valid and is/was allowed. If transaction fails because of the fee is too low, then check console-log (Ctrl+Shift+I then the Console tab) for estimated fee or try with 500 uatom (0.0005 atom).">info</mat-icon>
+        <mat-hint align="start">Fee amount in uatom (1atom = 1 000 000 uatom).</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field class="full-width mg-b2" appearance="fill">
+        <mat-label>Memo</mat-label>
+        <input type="text" matInput #memo name="memo" maxlength="50" [(ngModel)]="tx.memo"
+            placeholder="Memo for exchange">
+        <mat-hint align="end">{{memo.value.length}} / 50</mat-hint>
+    </mat-form-field>
+</div>
+<div class="ta-r">
+    <app-loading-button label="Build" [isDisabled]="tx.isInvalid()" [isLoading]="isLoading"
+        (clicked)="build()">
+    </app-loading-button>
+</div>

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 
 import { BitcoinTransaction, Utxo } from '../../../core/models/transaction';
 import { IBlockchainClient } from '../../../core/services/blockchain/blockchain-client';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-btc-tx-form',
@@ -9,7 +10,7 @@ import { IBlockchainClient } from '../../../core/services/blockchain/blockchain-
   styleUrls: ['./btc-tx-form.component.scss']
 })
 export class BtcTxFormComponent implements OnChanges {
- 
+
   @Input() client: IBlockchainClient;
   @Output() rawTxBuilt = new EventEmitter<string>();
   tx: BitcoinTransaction;
@@ -17,20 +18,23 @@ export class BtcTxFormComponent implements OnChanges {
   minFeeOrGas = 0;
 
   constructor() { }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     this.tx = new BitcoinTransaction();
-    this.tx.feeOrGas = this.client.getMinFeeOrGas();
+    this.client.getFeeOrGasInfo().then(x => this.minFeeOrGas = x);
   }
-  
+
   build() {
     this.isLoading = true;
     this.client.buildRawTx(this.tx)
-      .then(rawTx => this.rawTxBuilt.emit(rawTx))
+      .then(rawTx => {
+        this.rawTxBuilt.emit(rawTx)
+        this.isLoading = false;
+      })
       .catch(error => console.error(error))
       .finally(() => setTimeout(() => this.isLoading = false, 1000));
   }
-  
+
   setFrom(address: string) {
     this.tx.from = address;
   }
@@ -39,11 +43,11 @@ export class BtcTxFormComponent implements OnChanges {
     this.tx.to = address;
   }
 
-  setAmount(amount: number) {
+  setAmount(amount: BigNumber) {
     this.tx.amount = amount;
   }
 
-  setUtxos(utxos: Utxo[]){
+  setUtxos(utxos: Utxo[]) {
     this.tx.utxos = utxos;
   }
 

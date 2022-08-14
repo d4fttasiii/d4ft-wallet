@@ -11,6 +11,7 @@ import { EthereumService } from './ethereum.service';
 })
 export class BinanceService extends EthereumService {
 
+  nativeSymbol: string = "BNB";
   constructor(protected config: ConfigService, protected notification: NotificationService) {
     super(config, notification);
   }

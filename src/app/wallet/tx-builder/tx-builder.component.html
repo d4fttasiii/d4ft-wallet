@@ -7,27 +7,26 @@
                 <app-blockchain-selector (blockchainSelected)="setSelectedBlockchain($event)">
                 </app-blockchain-selector>
                 <div *ngIf="client" [ngSwitch]="selectedBlockchain">
-                    <app-eth-tx-form *ngSwitchCase="Blockchains.Ethereum" [client]="client"
-                        (rawTxBuilt)="setRawTx($event)">
+                    <app-eth-tx-form *ngSwitchCase="Blockchains.Ethereum" [client]="client" (rawTxBuilt)="setRawTx($event)">
                     </app-eth-tx-form>
-                    <app-eth-tx-form *ngSwitchCase="Blockchains.Polygon" [client]="client"
-                        (rawTxBuilt)="setRawTx($event)">
+                    <app-eth-tx-form *ngSwitchCase="Blockchains.Polygon" [client]="client" (rawTxBuilt)="setRawTx($event)">
                     </app-eth-tx-form>
-                    <app-eth-tx-form *ngSwitchCase="Blockchains.Binance" [client]="client"
-                        (rawTxBuilt)="setRawTx($event)">
+                    <app-eth-tx-form *ngSwitchCase="Blockchains.Binance" [client]="client" (rawTxBuilt)="setRawTx($event)">
                     </app-eth-tx-form>
-                    <app-eth-tx-form *ngSwitchCase="Blockchains.Avalanche" [client]="client"
-                        (rawTxBuilt)="setRawTx($event)">
+                    <app-eth-tx-form *ngSwitchCase="Blockchains.Avalanche" [client]="client" (rawTxBuilt)="setRawTx($event)">
                     </app-eth-tx-form>
-                    <app-eth-tx-form *ngSwitchCase="Blockchains.Harmony" [client]="client"
-                        (rawTxBuilt)="setRawTx($event)">
+                    <app-eth-tx-form *ngSwitchCase="Blockchains.Harmony" [client]="client" (rawTxBuilt)="setRawTx($event)">
                     </app-eth-tx-form>
-                    <app-btc-tx-form *ngSwitchCase="Blockchains.Bitcoin" [client]="client"
-                        (rawTxBuilt)="setRawTx($event)">
+                    <app-dot-tx-form *ngSwitchCase="Blockchains.Polkadot" [client]="client" (rawTxBuilt)="setRawTx($event)">
+                    </app-dot-tx-form>
+                    <app-dot-tx-form *ngSwitchCase="Blockchains.Kusama" [client]="client" (rawTxBuilt)="setRawTx($event)">
+                    </app-dot-tx-form>
+                    <app-btc-tx-form *ngSwitchCase="Blockchains.Bitcoin" [client]="client" (rawTxBuilt)="setRawTx($event)">
                     </app-btc-tx-form>
-                    <app-btc-tx-form *ngSwitchCase="Blockchains.Litecoin" [client]="client"
-                        (rawTxBuilt)="setRawTx($event)">
+                    <app-btc-tx-form *ngSwitchCase="Blockchains.Litecoin" [client]="client" (rawTxBuilt)="setRawTx($event)">
                     </app-btc-tx-form>
+                    <app-cosmos-tx-form *ngSwitchCase="Blockchains.Cosmos" [client]="client" (rawTxBuilt)="setRawTx($event)" >
+                    </app-cosmos-tx-form>
                     <app-default-tx-form *ngSwitchDefault [client]="client" (rawTxBuilt)="setRawTx($event)">
                     </app-default-tx-form>
                 </div>

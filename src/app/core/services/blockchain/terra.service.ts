@@ -3,10 +3,14 @@ import { Coins, Fee, LCDClient, MsgSend, RawKey, SimplePublicKey, Tx } from '@te
 
 import { Blockchains } from '../../models/blockchains';
 import { TerraConfig } from '../../models/config';
+import { Keypair } from '../../models/keypair';
 import { Transaction } from '../../models/transaction';
 import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
+
+import BigNumber from 'bignumber.js';
+
 
 class TxInternal {
   from: string;
@@ -29,16 +33,27 @@ class FeeInternal {
   providedIn: 'root'
 })
 export class TerraService extends BaseBlockchainClient implements IBlockchainClient {
-
-  private convertionRate = 1000000;
+  nativeSymbol: string = "LUNA";
+  decimals: number = 6;
+  derivationkeypath: string = "m/84'/330'/0'/0/0";
+  private convertionRate = new BigNumber(10).pow(this.decimals);
 
   constructor(private configService: ConfigService, protected notification: NotificationService) {
     super(notification);
   }
+  async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
+    return await this.tryExecuteAsync(async () => {
+      throw new Error('Method not implemented.');
+    });
+  }
 
   async buildRawTx(tx: Transaction): Promise<string> {
     return await this.tryExecuteAsync(async () => {
-      const ulunaAmount = tx.amount * this.convertionRate;
+      const bnamount = tx.amount.multipliedBy(this.convertionRate);
+      if (!bnamount.isInteger()) {
+        throw Error("The transaction amount is exceeded the max decimals: " + this.decimals);
+      }
+      const ulunaAmount = bnamount.toNumber();
       const client = this.getClient();
       const accountInfo = await client.auth.accountInfo(tx.from);
       const txInternal = {
@@ -115,19 +130,19 @@ export class TerraService extends BaseBlockchainClient implements IBlockchainCli
     }
   }
 
-  async getBalance(address: string, contractAddress?: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<BigNumber> {
     const client = this.getClient();
     try {
       const balances = await client.bank.balance(address);
       const uluna = balances[0]['_coins'].uluna.amount.toNumber();
-      return uluna / this.convertionRate;
+      return new BigNumber(uluna).dividedBy(this.convertionRate);
     }
     catch {
-      return 0;
+      return new BigNumber(0);
     }
   }
 
-  getMinFeeOrGas(): number {
+  async getFeeOrGasInfo(tx?: any): Promise<any> {
     return 150000;
   }
 

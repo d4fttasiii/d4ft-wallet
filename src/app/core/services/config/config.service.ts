@@ -61,6 +61,8 @@ export class ConfigService {
         return cfg.algorand;
       case Blockchains.Polkadot:
         return cfg.polkadot;
+      case Blockchains.Kusama:
+        return cfg.kusama;
       case Blockchains.Cosmos:
         return cfg.cosmos;
     }
@@ -158,23 +160,22 @@ export class ConfigService {
         chainId: 'bombay-12',
       },
       bitcoin: {
-        url: '',
         blockcypherUrl: 'https://api.blockcypher.com/v1/btc/main',
-        isMainnet: false,
+        isMainnet: true,
       },
       litecoin: {
-        url: '',
         blockcypherUrl: 'https://api.blockcypher.com/v1/ltc/main',
-        isMainnet: false,
+        isMainnet: true,
       },
       algorand: {
-        algodServer: "http://localhost",
-        algodPort: 4001,
-        indxrServer: "http://localhost",
-        indxrPort: 8980,
+        algodServer: "https://node.algoexplorerapi.io",
+        algodPort: 443
       },
       polkadot: {
-        wsUrl: 'wss://dot.getblock.io/mainnet/?api_key=8484a249-a86a-4c79-a157-d93923be38f3',
+        wsUrl: 'wss://rpc.polkadot.io',
+      },
+      kusama: {
+        wsUrl: 'wss://kusama-rpc.polkadot.io',
       },
       cosmos: {
         endpoint: 'https://rpc.atomscan.com/',

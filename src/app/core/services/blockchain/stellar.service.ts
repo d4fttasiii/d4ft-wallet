@@ -1,19 +1,41 @@
 import { Injectable } from '@angular/core';
-import * as StellarSdk from 'stellar-sdk/dist/stellar-sdk.min.js';
+import * as StellarSdk from 'stellar-sdk';
+import { Keypair } from '../../models/keypair';
 
 import { Transaction } from '../../models/transaction';
 import { NotificationService } from '../notification/notification.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
-
-declare const StellarSdk: any;
+import BigNumber from 'bignumber.js';
+import { ConfigService } from '../config/config.service';
+import { Blockchains } from '../../models/blockchains';
+import { StellarConfig } from '../../models/config';
+import { validateMnemonic, mnemonicToSeed } from 'bip39';
+import { derivePath } from 'ed25519-hd-key';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StellarService extends BaseBlockchainClient implements IBlockchainClient {
-
-  constructor(protected notification: NotificationService) {
+  nativeSymbol: string = "XLM";
+  decimals: number = 7;
+  derivationkeypath: string = "m/44'/148'/0'";
+  constructor(private config: ConfigService, protected notification: NotificationService) {
     super(notification);
+  }
+  async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
+    return await this.tryExecuteAsync(async () => {
+      if (validateMnemonic(mnemonic)) {
+        const seed = await mnemonicToSeed(mnemonic);
+        const result = derivePath(keypath ? keypath : this.derivationkeypath, seed.toString("hex"));
+        const keypair = StellarSdk.Keypair.fromRawEd25519Seed(Buffer.from(result.key));
+        return {
+          privateKey: keypair.secret(),
+          publicAddress: keypair.publicKey(),
+        };
+      } else {
+        throw new Error('Invalid mnemonic keypharse');
+      }
+    });
   }
 
   async buildRawTx(tx: Transaction): Promise<string> {
@@ -21,8 +43,10 @@ export class StellarService extends BaseBlockchainClient implements IBlockchainC
       const srv = this.getServer();
       const fromAccount = await srv.loadAccount(tx.from);
       const toAccount = StellarSdk.Keypair.fromPublicKey(tx.to);
-      const txBuilder = new StellarSdk.TransactionBuilder(fromAccount, { fee: tx.feeOrGas });
+      const txBuilder = new StellarSdk.TransactionBuilder(fromAccount, { fee: tx.feeOrGas.toString() });
+      console.log("before exists")
       const accountExists = await this.accountExists(tx.to);
+      console.log("after exists")
 
       if (accountExists) {
         txBuilder.addOperation(
@@ -84,17 +108,17 @@ export class StellarService extends BaseBlockchainClient implements IBlockchainC
     }
   }
 
-  async getBalance(address: string, contractAddress?: string): Promise<number> {
+  async getBalance(address: string, contractAddress?: string): Promise<BigNumber> {
     try {
       const srv = this.getServer();
       const account = await srv.loadAccount(address);
-      return parseFloat(account.balances.find(b => b.asset_type === 'native').balance);
+      return new BigNumber(account.balances.find(b => b.asset_type === 'native').balance);
     } catch {
-      return 0;
+      return new BigNumber(0);
     }
   }
 
-  getMinFeeOrGas(): number {
+  async getFeeOrGasInfo(tx?: any): Promise<any> {
     return 1000;
   }
 
@@ -113,7 +137,8 @@ export class StellarService extends BaseBlockchainClient implements IBlockchainC
   }
 
   private getServer(): StellarSdk.Server {
-    return new StellarSdk.Server('https://horizon-testnet.stellar.org', {
+    const cfg = this.config.get(Blockchains.Stellar) as StellarConfig;
+    return new StellarSdk.Server(cfg.url, {
       allowHttp: false,
     });
   }

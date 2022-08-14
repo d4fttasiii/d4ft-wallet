@@ -1,0 +1,23 @@
+<div class="animate__animated animate__fadeIn" *ngIf="client">
+    <app-address-bar label="Transferring from" [client]="client"
+        (addressChanged)="setFrom($event)"></app-address-bar>
+    <app-amount-bar [client]="client" [address]="tx.from"
+        (amountChanged)="setAmount($event)">
+    </app-amount-bar>
+    <app-address-bar label="Transferring to" [client]="client"
+        (addressChanged)="setTo($event)">
+    </app-address-bar>
+    <mat-form-field class="full-width mg-b2" appearance="fill">
+        <mat-label>Estimated Fee</mat-label>
+        <input type="number" matInput name="feeOrGas" disabled [min]="minFeeOrGas"
+            [(ngModel)]="tx.feeOrGas" disabled/>
+        <mat-hint align="start" *ngIf="feeEstimationLoading">Loading... <i class="fa-solid fa-spinner fa-spin"></i></mat-hint>
+        <mat-hint align="start" *ngIf="!feeEstimationLoading && nativeSymbol">In {{nativeSymbol}}</mat-hint>
+    </mat-form-field>
+    
+</div>
+<div class="ta-r">
+    <app-loading-button label="Build" [isDisabled]="tx.isInvalid()" [isLoading]="isLoading"
+        (clicked)="build()">
+    </app-loading-button>
+</div>

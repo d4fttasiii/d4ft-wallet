@@ -61,6 +61,8 @@ export class SVGLibraryService {
                 return 'blockchain_algo';
             case Blockchains.Polkadot:
                 return 'blockchain_dot';
+            case Blockchains.Kusama:
+                return 'blockchain_ksm';
             case Blockchains.Cosmos:
                 return 'blockchain_atom';
         }
