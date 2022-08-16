@@ -113,10 +113,7 @@ export class AlgorandService extends BaseBlockchainClient implements IBlockchain
   }
 
   async getFeeOrGasInfo(tx?: any): Promise<any> {
-    return {
-      feeOrGas: 1000,
-      minFeeOrGas: 1000
-    }
+    return 1000;
   }
 
   private getAlgodClient() {

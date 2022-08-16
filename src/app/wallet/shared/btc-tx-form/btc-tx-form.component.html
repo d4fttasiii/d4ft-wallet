@@ -7,7 +7,8 @@
     <mat-form-field class="full-width mg-b2" appearance="fill">
         <mat-label>Transaction fee</mat-label>
         <input type="number" matInput name="feeOrGas" required [min]="minFeeOrGas" [(ngModel)]="tx.feeOrGas" />
-        <mat-hint align="start">Transaction fee in satoshies.</mat-hint>
+        <mat-hint align="start">Transaction fee in satoshi.</mat-hint>
+        <mat-hint *ngIf="tx.feeOrGas && nativeSymbol" align="end">{{toNative(tx.feeOrGas)}} in {{nativeSymbol}}</mat-hint>
     </mat-form-field>
     <app-utxo-selector [address]="tx.from" (selectionChanged)="setUtxos($event)" [client]="client"></app-utxo-selector>
 </div>

@@ -13,6 +13,7 @@
         <mat-error>Minimum fee is {{minFeeOrGas}}</mat-error>
         <mat-hint align="start" *ngIf="feeEstimationLoading">Loading... <i class="fa-solid fa-spinner fa-spin"></i></mat-hint>
         <mat-hint align="start" *ngIf="!feeEstimationLoading">Gas or fee in the smallest unit on given blockchain (wei, satoshi,...etc)</mat-hint>
+        <mat-hint align="end" *ngIf="nativeSymbol && poweredDecimals && tx.feeOrGas">{{toNative(tx.feeOrGas)}} in {{nativeSymbol}}</mat-hint>
     </mat-form-field>
     <mat-form-field class="full-width mg-b2" appearance="fill">
         <mat-label>Memo</mat-label>

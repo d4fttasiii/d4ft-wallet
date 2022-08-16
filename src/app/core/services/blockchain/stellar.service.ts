@@ -40,13 +40,12 @@ export class StellarService extends BaseBlockchainClient implements IBlockchainC
 
   async buildRawTx(tx: Transaction): Promise<string> {
     return await this.tryExecuteAsync(async () => {
+
       const srv = this.getServer();
       const fromAccount = await srv.loadAccount(tx.from);
       const toAccount = StellarSdk.Keypair.fromPublicKey(tx.to);
       const txBuilder = new StellarSdk.TransactionBuilder(fromAccount, { fee: tx.feeOrGas.toString() });
-      console.log("before exists")
       const accountExists = await this.accountExists(tx.to);
-      console.log("after exists")
 
       if (accountExists) {
         txBuilder.addOperation(
@@ -73,7 +72,7 @@ export class StellarService extends BaseBlockchainClient implements IBlockchainC
 
       return txBuilder
         .setTimeout(StellarSdk.TimeoutInfinite)
-        .setNetworkPassphrase(StellarSdk.Networks.TESTNET)
+        .setNetworkPassphrase(this.getNetworkPhrase())
         .build()
         .toXDR();
     });
@@ -82,7 +81,7 @@ export class StellarService extends BaseBlockchainClient implements IBlockchainC
   async signRawTx(rawTx: string, pk: string): Promise<string> {
     return await this.tryExecuteAsync(async () => {
       const keypair = StellarSdk.Keypair.fromSecret(pk);
-      const tx = StellarSdk.TransactionBuilder.fromXDR(rawTx, StellarSdk.Networks.TESTNET);
+      const tx = StellarSdk.TransactionBuilder.fromXDR(rawTx, this.getNetworkPhrase());
       tx.sign(keypair);
 
       return await Promise.resolve(tx.toXDR());
@@ -92,7 +91,7 @@ export class StellarService extends BaseBlockchainClient implements IBlockchainC
   async submitSignedTx(rawTx: string): Promise<string> {
     return await this.tryExecuteAsync(async () => {
       const srv = this.getServer();
-      const tx = StellarSdk.TransactionBuilder.fromXDR(rawTx, StellarSdk.Networks.TESTNET);
+      const tx = StellarSdk.TransactionBuilder.fromXDR(rawTx, this.getNetworkPhrase());
       const txResponse = await srv.submitTransaction(tx);
 
       return txResponse.hash;
@@ -134,6 +133,11 @@ export class StellarService extends BaseBlockchainClient implements IBlockchainC
     } catch {
       return false;
     }
+  }
+
+  private getNetworkPhrase(): string {
+    const cfg = this.config.get(Blockchains.Stellar) as StellarConfig;
+    return cfg.isMainnet ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET;
   }
 
   private getServer(): StellarSdk.Server {

@@ -208,7 +208,7 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
   }
 
   async getFeeOrGasInfo(tx?: any): Promise<any> {
-    return 5430;
+    return 1000;
   }
 
 

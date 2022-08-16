@@ -30,17 +30,8 @@ export class DefaultTxFormComponent implements OnChanges {
       this.nativeSymbol = x.symbol;
       this.poweredDecimals = new BigNumber(10).pow(x.decimals);
       this.client.getFeeOrGasInfo().then(x => {
-        this.tx.feeOrGas = x;
-        // if (x.feeOrGas) {
-        //   this.tx.feeOrGas = this.toNative(x.feeOrGas);
-        // }
-        // if (x.minFeeOrGas) {
-        //   this.minFeeOrGas = this.toNative(x.minFeeOrGas)
-        // }
+        this.tx.feeOrGas = x; //smallest unit
       });
-      // this.client.getFeeOrGasInfo().then(x => {
-      //   this.tx.feeOrGas = this.toNative(new BigNumber(x));
-      // });
     });
 
   }
@@ -81,11 +72,10 @@ export class DefaultTxFormComponent implements OnChanges {
     }
   }
 
-  toNative(amount: BigNumber): number {
-    if (typeof (amount) === "string") {
+  toNative(amount: BigNumber | string | number): number {
+    if (typeof (amount) === "string" || typeof (amount) === "number") {
       amount = new BigNumber(amount);
     }
     return amount.dividedBy(this.poweredDecimals).toNumber();
   }
-
 }
