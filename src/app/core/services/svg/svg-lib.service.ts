@@ -29,7 +29,7 @@ export class SVGLibraryService {
             cat.icons.forEach((icon) => {
                 this.matIconRegistry.addSvgIcon(
                     `${cat.category}_${icon}`,
-                    safeUrl(`/assets/icons/${cat.category}/${icon}.svg`)
+                    safeUrl(`assets/icons/${cat.category}/${icon}.svg`)
                 );
             });
         });
