@@ -245,11 +245,9 @@
                                 <input matInput type="url" name="xlm-url" required
                                     placeholder="https://horizon.stellar.org" [(ngModel)]="config.stellar.url" />
                             </mat-form-field>
-                            <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Network phrase</mat-label>
-                                <input matInput type="text" name="xlm-np" required
-                                    [(ngModel)]="config.stellar.networkPhrase" />
-                            </mat-form-field>
+                                <mat-checkbox class="full-width" name="btc-isMainnet" [(ngModel)]="config.stellar.isMainnet">
+                                    Is Mainnet
+                                </mat-checkbox>
                         </mat-expansion-panel>
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>

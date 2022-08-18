@@ -24,7 +24,7 @@ export class EthereumConfig {
 
 export class StellarConfig {
     url: string;
-    networkPhrase: string;
+    isMainnet: boolean;
 }
 
 export class SolanaConfig {

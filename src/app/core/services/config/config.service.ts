@@ -134,7 +134,7 @@ export class ConfigService {
       },
       stellar: {
         url: 'https://horizon-testnet.stellar.org/',
-        networkPhrase: 'Test SDF Network ; September 2015'
+        isMainnet: false
       },
       polygon: {
         chainId: 1337,

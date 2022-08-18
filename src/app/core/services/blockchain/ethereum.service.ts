@@ -102,7 +102,7 @@ export class EthereumService extends BaseBlockchainClient implements IBlockchain
         to: this.addressToPublicKey(tx.to),
         value: web3.utils.toWei(tx.amount.toString(10), 'ether'),
         gasPrice: gasPrice,
-        gas: tx.feeOrGas,
+        gas: gas,
         nonce: nonce,
         chainId: cfg.chainId,
       };

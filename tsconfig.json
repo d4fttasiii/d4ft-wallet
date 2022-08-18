@@ -10,7 +10,7 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
-    "target": "es2017",
+    "target": "es2016",
     "esModuleInterop": true,
     "typeRoots": [
       "node_modules/@types"

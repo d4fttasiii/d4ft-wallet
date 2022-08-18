@@ -23,21 +23,24 @@
 
     <mat-form-field class="full-width mg-b2" appearance="fill" >
         <mat-label>Gas (limit)</mat-label>
-        <input type="number" matInput name="feeOrGas" required  [min]="minFeeOrGas" [(ngModel)]="ethTx.feeOrGas" disabled/>        
+        <input type="number" matInput name="feeOrGas" required  [min]="minFeeOrGas" [(ngModel)]="ethTx.feeOrGas" disabled/>
+        <mat-hint align="start">The gas amount for this transaction</mat-hint>
     </mat-form-field>
     
     <mat-form-field class="full-width mg-b2" appearance="fill">
         <mat-label>Gas Price</mat-label>
         <input type="BigNumber" matInput name="gas_price" [(ngModel)]="gas_price_string" #gasPriceString (keyup)="calculateFee(gasPriceString.value)"/>
-        <mat-hint *ngIf="nativeSymbol" align="start">In {{nativeSymbol}}</mat-hint>
+        <mat-hint  align="start">Price of 1 unit of gas </mat-hint>
+        <mat-hint *ngIf="nativeSymbol" align="end">in {{nativeSymbol}}</mat-hint>
         <mat-icon matSuffix matTooltip="Adjust to set the fee. Transactions with lower fee can stay in the queue for longer">info</mat-icon>
     </mat-form-field>
 
     <mat-form-field class="full-width mg-b2" appearance="fill">
         <mat-label>Estimated Fee</mat-label>
         <input type="string" matInput name="estimated_fee" [(ngModel)]="estimated_fee" disabled/>
-        <mat-icon matSuffix matTooltip="The fee will be paid on top of the transaction amount.">info</mat-icon>
-        <mat-hint *ngIf="nativeSymbol" align="start">In {{nativeSymbol}}</mat-hint>
+        <mat-icon matSuffix matTooltip="The fee will be paid by the sender on top of the transaction amount">info</mat-icon>
+        <mat-hint align="start">The estimated fee for this transaction</mat-hint>
+        <mat-hint *ngIf="nativeSymbol" align="end">in {{nativeSymbol}}</mat-hint>
     </mat-form-field>
 </div>
 <div class="ta-r">
