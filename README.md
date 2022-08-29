@@ -30,13 +30,13 @@ npm run electron:build
 
 <img width="951" alt="2_sign_offline" src="https://user-images.githubusercontent.com/20213949/187164605-88a6ddbc-9f2f-48af-8be0-3354aec06720.png">
 
-## Submit signed transactions
-
-<img width="950" alt="3_submit" src="https://user-images.githubusercontent.com/20213949/187164700-5c37a7e1-5427-473a-b33f-d09d5c661705.png">
-
 ## Generate keypair
 
-<img width="950" alt="4_keypair" src="https://user-images.githubusercontent.com/20213949/187164911-25231635-f934-4e9e-a3e5-f83230e0699c.png">
+<img width="950" alt="3_keypair" src="https://user-images.githubusercontent.com/20213949/187164911-25231635-f934-4e9e-a3e5-f83230e0699c.png">
+
+## Submit signed transactions
+
+<img width="950" alt="4_submit" src="https://user-images.githubusercontent.com/20213949/187164700-5c37a7e1-5427-473a-b33f-d09d5c661705.png">
 
 ## Customize connections
 
