@@ -15,7 +15,7 @@ import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
 import { BaseBlockchainClient, IBlockchainClient } from './blockchain-client';
 
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { stringify } from 'querystring';
 import { mnemonicToSeed } from 'bip39';
 import * as bitcoin from 'bitcoinjs-lib';
@@ -111,22 +111,27 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
           });
         }
       }
-      const bn = btx.amount.multipliedBy(this.conversionRate);
-      if (!bn.isInteger()) {
+
+      const amount = btx.amount.multipliedBy(this.conversionRate)
+      if (!amount.isInteger()) {
         throw Error(`The transaction amount is exceeded the max decimals: ${this.decimals}`)
       }
-      const toTransfer = bn.toNumber();
+      const toTransfer = amount.toNumber();
       const utxoSum = btx.utxos.map(u => u.value).reduce((u1, u2) => u1 + u2);
       const change = utxoSum - toTransfer - btx.feeOrGas;
+      if (change < 0) {
+        throw Error(`Amount plus fee exceeded the unspent transaction outputs by ${Math.abs(change)}!`)
+      }
       psbt.addOutput({
         address: btx.to,
         value: toTransfer,
       });
-      psbt.addOutput({
-        address: btx.from,
-        value: change,
-      });
-
+      if (change > 0) {
+        psbt.addOutput({
+          address: btx.from,
+          value: change,
+        });
+      }
       return psbt.toHex();
     });
   }
