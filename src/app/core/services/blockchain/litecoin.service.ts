@@ -106,9 +106,6 @@ export class LitecoinService extends BitcoinService {
   }
 
   protected override getNetwork(isMainnet?: boolean) {
-    if (typeof (isMainnet) === "undefined") {
-      isMainnet = this.getConfig().isMainnet
-    }
-    return isMainnet ? litecoin.network.main : litecoin.network.test
+    return this.getConfig().isMainnet ? litecoin.network.main : litecoin.network.test
   }
 }
