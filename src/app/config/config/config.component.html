@@ -82,11 +82,9 @@
                                     [(ngModel)]="config.bitcoin.blockcypherUrl" />
                                     <mat-icon matSuffix matTooltip="check: https://www.blockcypher.com/dev/#restful-resources">info</mat-icon>
                             </mat-form-field>
-                            <div class="full-width">
-                                <mat-checkbox name="btc-isMainnet" [(ngModel)]="config.bitcoin.isMainnet">
+                                <mat-checkbox class="full-width" name="btc-isMainnet" [(ngModel)]="config.bitcoin.isMainnet">
                                     Is Mainnet
                                 </mat-checkbox>
-                            </div>
                         </mat-expansion-panel>
                         <mat-expansion-panel>
                             <mat-expansion-panel-header>
@@ -245,7 +243,7 @@
                                 <input matInput type="url" name="xlm-url" required
                                     placeholder="https://horizon.stellar.org" [(ngModel)]="config.stellar.url" />
                             </mat-form-field>
-                                <mat-checkbox class="full-width" name="btc-isMainnet" [(ngModel)]="config.stellar.isMainnet">
+                                <mat-checkbox class="full-width" name="xlm-isMainnet" [(ngModel)]="config.stellar.isMainnet">
                                     Is Mainnet
                                 </mat-checkbox>
                         </mat-expansion-panel>
