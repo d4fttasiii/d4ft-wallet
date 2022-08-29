@@ -83,11 +83,8 @@ export class BitcoinService extends BaseBlockchainClient implements IBlockchainC
       } else { throw new Error('Invalid mnemonic keypharse'); }
     });
   }
-  protected getNetwork(isMainnet?: boolean) {
-    if (typeof (isMainnet) === "undefined") {
-      isMainnet = this.getConfig().isMainnet
-    }
-    return isMainnet ? networks.bitcoin : networks.testnet
+  protected getNetwork() {
+    return this.getConfig().isMainnet ? networks.bitcoin : networks.testnet
   }
 
   async buildRawTx(tx: Transaction): Promise<string> {
