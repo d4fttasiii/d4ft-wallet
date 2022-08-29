@@ -59,10 +59,10 @@ export class BtcTxFormComponent implements OnChanges {
     this.tx.utxos = utxos;
   }
 
-  toNative(amount: BigNumber | string | number): number {
+  toNative(amount: BigNumber | string | number): string {
     if (typeof (amount) === "string" || typeof (amount) === "number") {
       amount = new BigNumber(amount);
     }
-    return amount.dividedBy(this.poweredDecimals).toNumber();
+    return amount.dividedBy(this.poweredDecimals).toString(10);
   }
 }
