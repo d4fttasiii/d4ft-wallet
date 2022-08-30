@@ -34,7 +34,8 @@ export class BitcoinTransaction extends Transaction {
     utxos: Utxo[];
 
     isInvalid(): boolean {
-        return false; // super.isInvalid() && (this.utxos.length === 0);
+        console.log(this.utxos)
+        return super.isInvalid() || (this.utxos === null || this.utxos === undefined || this.utxos.length === 0);
     }
 }
 
