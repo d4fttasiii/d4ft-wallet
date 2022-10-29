@@ -20,6 +20,7 @@ import { UtxoSelectorComponent } from './shared/utxo-selector/utxo-selector.comp
 import { MnemonicToPrivateKeyComponent } from './shared/mnemonic-priv-gen/mnemonic-priv-gen.component';
 import { CosmosTxFormComponent } from './shared/cosmos-tx-form/cosmos-tx-form.component';
 import { DotTxFormComponent } from './shared/dot-tx-form/dot-tx-form.component';
+import { ShamirSecretSharingComponent } from './shared/shamir-secret-sharing/shamir-secret-sharing.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { DotTxFormComponent } from './shared/dot-tx-form/dot-tx-form.component';
     DefaultTxFormComponent,
     BtcTxFormComponent,
     UtxoSelectorComponent,
+    ShamirSecretSharingComponent,
     MnemonicToPrivateKeyComponent,
     CosmosTxFormComponent,
     DotTxFormComponent

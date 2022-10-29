@@ -22,8 +22,7 @@
         </div>
       </form>
     </mat-card-content>
-  </mat-card>
-  <mat-card
+    <mat-card
     class="animate__animated animate__fadeIn result-card" *ngIf="signedTx">
     <div class="result">
       <div class="header">
@@ -39,5 +38,7 @@
       <em>{{ signedTx }}</em>
     </div>
   </mat-card>
+  </mat-card>
 </div>
 <app-mnemonic-priv-gen></app-mnemonic-priv-gen>
+<app-shamir-secret-sharing></app-shamir-secret-sharing>
