@@ -40,7 +40,7 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
   async generatePrivateKeyFromMnemonic(mnemonic: string, keypath: string): Promise<Keypair> {
     return await this.tryExecuteAsync(async () => {
       await cryptoWaitReady();
-      const keyring = new Keyring({ type: keypath as Curves });
+      const keyring = new Keyring({ type: keypath as Curves, ss58Format: this.ss58Format });
       const keypair = keyring.addFromUri(mnemonic);
       return {
         privateKey: mnemonic,
@@ -93,7 +93,7 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
     const input = JSON.parse(rawTx) as PolkadotSignDto;
     this.validatePayload(input.unsignedPayload);
     await cryptoWaitReady();
-    const keyringObj = new Keyring({ type: 'sr25519' });
+    const keyringObj = new Keyring({ type: 'sr25519', ss58Format: this.ss58Format });
     const kp = keyringObj.createFromUri(pk);
     let signature = kp.sign(hexToU8a(input.unsignedPayload), { withType: true });
     input.signature = u8aToHex(signature);;
@@ -156,6 +156,4 @@ export class PolkadotService extends BaseBlockchainClient implements IBlockchain
   protected getConfig(): PolkadotConfig {
     return this.config.get(Blockchains.Polkadot) as PolkadotConfig;
   }
-
-
 }
